@@ -3,8 +3,8 @@
 function initDB() {
 	$host="localhost";
 	$db="agresearch";
-	$db_user="mysautiyaw";
-	$db_pass="j8bA0y11";
+	$db_user="xxx";
+	$db_pass="xxx";
 	$dbh=mysqli_connect($host, $db_user, $db_pass, $db);
 	return $dbh;
 }
