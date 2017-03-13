@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Agroeco Research</string>
+    <string name="userAliasLabel">User name</string>
+    <string name="loginButtonText">Log in</string>
+    <string name="loginScreenTitle">Agroeco Research</string>
+    <string name="userPasswordLabel">Password</string>
+    <string name="okButtonText">OK</string>
+    <string name="cancelButtonText">Cancel</string>
+    <string name="defineServerTitle">Define server</string>
+    <string name="defineServerLabel">Enter server URL</string>
+    <string name="emptyString"></string>
+</resources>
