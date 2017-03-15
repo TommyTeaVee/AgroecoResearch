@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Agroeco Research</string>
+    <string name="app_name" translatable="false">Agroeco Research</string>
     <string name="userAliasLabel">User name</string>
     <string name="loginButtonText">Log in</string>
     <string name="loginScreenTitle">Agroeco Research</string>
@@ -9,4 +9,16 @@
     <string name="defineServerTitle">Define server</string>
     <string name="defineServerLabel">Enter server URL</string>
     <string name="emptyString"></string>
+    <string name="connectingMessage">Connecting ...</string>
+    <string name="checkConnectionMessage">Check internet connection</string>
+    <string name="invalidUserMessage">Invalid user or password</string>
+    <string name="mainMenuTitle">Main menu</string>
+    <string name="registerActivityButtonText">REGISTER ACTIVITY</string>
+    <string name="registerMeasurementButtonText">REGISTER MEASUREMENT</string>
+    <string name="manageDataButtonText">MANAGE DATA</string>
+    <string name="settingsButtonText">SETTINGS</string>
+    <string name="logoutButtonText">LOG OUT</string>
+    <string name="downloadCatalogsButtonText">Download catalogs</string>
+    <string name="defineEditFieldsButtonText">Define/edit fields</string>
+    <string name="settingsTitle">Settings</string>
 </resources>

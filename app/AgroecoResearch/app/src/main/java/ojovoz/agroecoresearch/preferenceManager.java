@@ -27,4 +27,27 @@ public class preferenceManager {
         prefEditor.putString(keyName, keyValue);
         prefEditor.commit();
     }
+
+    public void updateUserPrefs(String keyName, String keyValue){
+        String value = getPreference(keyName);
+        if(value.isEmpty()){
+            savePreference(keyName,keyValue);
+        } else if(!value.contains(keyValue)){
+            savePreference(keyName,value + ";" + keyValue);
+        }
+    }
+
+    public String getUserFromPrefs(String keyName, String aliasPass){
+        String ret="-1";
+        String value = getPreference(keyName);
+        CharSequence users[] = value.split(";");
+        for(int i=0; i < users.length; i++){
+            if(users[i].toString().contains(aliasPass)){
+                CharSequence parts[] = users[i].toString().split(",");
+                ret=parts[2]+","+parts[3];
+                break;
+            }
+        }
+        return ret;
+    }
 }

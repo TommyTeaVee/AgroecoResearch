@@ -62,6 +62,7 @@
             android:layout_height="wrap_content"
             android:text="@string/loginButtonText"
             android:id="@+id/loginButton"
+            android:onClick="validateUser"
             android:layout_below="@+id/userPassword"
             android:layout_alignParentStart="true"
             android:layout_marginTop="34dp"
@@ -70,6 +71,19 @@
             android:height="40dp"
             android:background="@drawable/button_background"
             android:textColor="@color/colorWhite" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:id="@+id/loginMessage"
+            android:layout_marginTop="20dp"
+            android:layout_below="@+id/loginButton"
+            android:layout_alignParentStart="true"
+            android:layout_alignEnd="@+id/loginButton"
+            android:textSize="20dp"
+            android:visibility="invisible"
+            android:textAlignment="center" />
 
     </RelativeLayout>
 

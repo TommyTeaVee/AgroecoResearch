@@ -4,7 +4,6 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,7 +18,6 @@ import java.net.URL;
 public class httpConnection extends AsyncTask<String, Void, String> {
 
     Context context;
-    private String action;
     public AsyncResponse delegate = null;
 
     httpConnection(Context c, AsyncResponse delegate){
@@ -34,7 +32,6 @@ public class httpConnection extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... params) {
 
-        action = params[1];
         return getData(params[0]);
 
     }

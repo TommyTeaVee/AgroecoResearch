@@ -1,32 +1,44 @@
 package ojovoz.agroecoresearch;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import java.io.File;
 
 public class LoginScreen extends AppCompatActivity implements httpConnection.AsyncResponse {
 
-    private String server = "";
+    public String server = "";
     private fileHandler fh;
-    private httpConnection http;
     private promptDialog dlg = null;
     private preferenceManager prefs;
     private boolean bConnecting = false;
+
+    public int userId;
+    public int userRole;
+
+    public String uAS;
+    public String uPS;
+
+    public TextView tv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_screen);
 
-        http = new httpConnection(this,this);
-
         fh = new fileHandler();
         fh.createDir(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + File.separator + "agroeco" + File.separator);
 
         initializeVariables();
+        tv = (TextView)findViewById(R.id.loginMessage);
     }
 
     private void initializeVariables(){
@@ -52,28 +64,79 @@ public class LoginScreen extends AppCompatActivity implements httpConnection.Asy
         dlg.show();
     }
 
-    public void validateUser(){
-
+    public void validateUser(View v){
+        httpConnection http = new httpConnection(this,this);
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+        tv.setVisibility(View.VISIBLE);
         EditText uA = (EditText)findViewById(R.id.userAlias);
-        String uAS = uA.getText().toString();
+        uAS = uA.getText().toString();
         EditText uP = (EditText)findViewById(R.id.userPassword);
-        String uPS = uP.getText().toString();
+        uPS = uP.getText().toString();
         if(!uAS.equals("") && !uPS.equals("")) {
-            if (http.isOnline()) {
-                if (!bConnecting) {
-                    bConnecting = true;
-                    http.execute(server + "/mobile/validate_user.php?user_alias=" + uAS + "&user_password=" + uPS);
-                }
+            if(uAS.equals("admin") && uPS.equals("admin")){
+                defineServer(server);
             } else {
-
+                if (http.isOnline()) {
+                    if (!bConnecting) {
+                        tv.setText(R.string.connectingMessage);
+                        bConnecting = true;
+                        http.execute(server + "/mobile/validate_user.php?user_alias=" + uAS + "&user_password=" + uPS);
+                    }
+                } else {
+                    String u = prefs.getUserFromPrefs("users",uAS + "," + uPS);
+                    if(u.equals("-1")){
+                        tv.setVisibility(View.VISIBLE);
+                        tv.setText(R.string.invalidUserMessage);
+                    } else {
+                        CharSequence parts[] = u.split(",");
+                        userId=Integer.parseInt(parts[0].toString());
+                        userRole=Integer.parseInt(parts[1].toString());
+                        launchMainMenu();
+                    }
+                }
             }
+        } else {
+            //this code for test purposes only
+            //delete following block
+            //begin
+            userId=1;
+            userRole=2;
+            launchMainMenu();
+            //end
         }
     }
 
     @Override
     public void processFinish(String output){
         bConnecting=false;
-        //Here you will receive the result fired from async class
-        //of onPostExecute(result) method.
+        CharSequence parts[];
+        if(TextUtils.isEmpty(output)){
+            tv.setText(R.string.checkConnectionMessage);
+        } else if(output.equals("-1")){
+            tv.setText(R.string.invalidUserMessage);
+        } else {
+            parts=output.split(",");
+            if(parts.length==2){
+                userId=Integer.parseInt(parts[0].toString());
+                userRole=Integer.parseInt(parts[1].toString());
+                prefs.updateUserPrefs("users",uAS + "," + uPS + "," + userId + "," + userRole);
+                launchMainMenu();
+            } else {
+                tv.setText(R.string.invalidUserMessage);
+            }
+        }
+    }
+
+    public void launchMainMenu(){
+        final Context context = this;
+        Intent i = new Intent(context, MainMenu.class);
+        i.putExtra("userId",userId);
+        i.putExtra("userRole",userRole);
+        startActivity(i);
+        finish();
     }
 }
