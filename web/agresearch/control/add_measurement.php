@@ -1,0 +1,110 @@
+<?php
+header("Cache-Control: no-cache, must-revalidate");
+include_once "./../includes/init_database.php";
+include_once "./../includes/variables.php";
+include_once "./../includes/functions.php";
+$dbh = initDB();
+
+session_start();
+
+if($_SERVER["REQUEST_METHOD"] == "POST") {
+	if(isset($_POST['add_measurement'])){
+		$measurement_name=normalize($_POST['measurement_name']);
+		$c=$_POST['measurement_category'];
+		if($c=="-1"){
+			$measurement_category=normalize($_POST['other_measurement_category']);
+		} else {
+			$measurement_category=normalize($c);
+		}
+		$measurement_type=$_POST['measurement_type'];
+		if($measurement_type==0){
+			$measurement_range_min=0;
+			$measurement_range_max=0;
+			$measurement_units="";
+			$measurement_categories=normalize($_POST['measurement_categories']);
+		} else if($measurement_type==1) {
+			$measurement_range_min=$_POST['measurement_range_min'];
+			$measurement_range_max=$_POST['measurement_range_max'];
+			$measurement_units=normalize($_POST['measurement_units']);
+			$measurement_categories="";
+		} else {
+			$measurement_type=1;
+			$measurement_range_min=0;
+			$measurement_range_max=0;
+			$measurement_units="";
+			$measurement_categories="";
+		}
+		$measurement_periodicity=$_POST['measurement_periodicity'];
+		$query="INSERT INTO measurement (measurement_name, measurement_category, measurement_type, measurement_range_min, measurement_range_max, measurement_units, measurement_categories, measurement_periodicity) VALUES ('$measurement_name', '$measurement_category', $measurement_type, $measurement_range_min, $measurement_range_max, '$measurement_units', '$measurement_categories', $measurement_periodicity)";
+		$result = mysqli_query($dbh,$query);
+		header("Location: measurements.php");
+	} else if(isset($_POST['cancel'])){
+		header("Location: measurements.php");
+	}
+} else if(isset($_SESSION['admin']) && $_SESSION['admin']==true) {
+	$measurement_categories=getMeasurementCategories($dbh);
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="./../css/w3.css">
+<title>Agroeco Research</title>
+<script type="text/javascript">
+	var crops=[];
+</script>
+</head>
+<body>
+<div class="w3-container w3-card-4">
+<h2 class="w3-green">Add measurement</h2>
+<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+<input name="added_crops" type="hidden" id="added_crops" value="">
+<p>      
+<label class="w3-text-green">Measurement name:</label>
+<input class="w3-input w3-border-green w3-text-green" name="measurement_name" type="text" maxlength="100"></p>
+<p><select class="w3-select w3-text-green" name="measurement_category" id="measurement_category">
+  <option value="" disabled selected>Category:</option>
+<?php
+for($i=0;$i<sizeof($measurement_categories);$i++){
+	echo('<option value="'.$measurement_categories[$i].'">'.$measurement_categories[$i].'</option>');
+}
+?>
+  <option value="-1">Other</option>
+</select>
+<div id="otherfield"></div></p>
+<script type="text/javascript">
+	document.getElementById("measurement_category").onclick = function () {
+		if(document.getElementById("measurement_category").value=="-1"){
+			document.getElementById("otherfield").innerHTML='<label class="w3-text-green">Enter category:</label><input class="w3-input w3-border-green w3-text-green" name="other_measurement_category" type="text" maxlength="30">';
+		} else {
+			document.getElementById("otherfield").innerHTML='';
+		}
+    };
+</script>
+<p><select class="w3-select w3-text-green" name="measurement_type" id="measurement_type">
+  <option value="" disabled selected>Type:</option>
+  <option value="0">Qualitative</option>
+  <option value="1">Quantitative</option>
+</select>
+<div id="quantiquali"></div></p>
+<script type="text/javascript">
+	document.getElementById("measurement_type").onclick = function () {
+		if(document.getElementById("measurement_type").value=="0"){
+			document.getElementById("quantiquali").innerHTML='<label class="w3-text-green">Enter categories (separated by commas):</label><input class="w3-input w3-border-green w3-text-green" name="measurement_categories" type="text">';
+		} else if(document.getElementById("measurement_type").value=="1"){
+			document.getElementById("quantiquali").innerHTML='<div class="w3-row-padding"><div class="w3-third w3-text-green">Min range:<input class="w3-input w3-border-green w3-text-green" name="measurement_range_min" type="text"></div><div class="w3-third w3-text-green">Max range:<input class="w3-input w3-border-green w3-text-green" name="measurement_range_max" type="text"></div><div class="w3-third w3-text-green">Units:<input class="w3-input w3-border-green w3-text-green" name="measurement_units" type="text" maxlenght="30"></div></div>';
+		} else {
+			document.getElementById("quantiquali").innerHTML='';
+		}
+    };
+</script> 
+<p><label class="w3-text-green">Periodicity (days):</label>
+<input class="w3-input w3-border-green w3-text-green" name="measurement_periodicity" type="text" maxlength="10"></p>
+<br><button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="add_measurement" name="add_measurement">Add measurement</button> <button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="cancel" name="cancel">Cancel</button></form><br>
+<br><br></div>
+</body>
+</html>
+<?php
+}
+?>

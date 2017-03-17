@@ -87,7 +87,7 @@ public class LoginScreen extends AppCompatActivity implements httpConnection.Asy
                         http.execute(server + "/mobile/validate_user.php?user_alias=" + uAS + "&user_password=" + uPS);
                     }
                 } else {
-                    String u = prefs.getUserFromPrefs("users",uAS + "," + uPS);
+                    String u = prefs.getUserFromPrefs("users","*"+ uAS + "," + uPS + "*");
                     if(u.equals("-1")){
                         tv.setVisibility(View.VISIBLE);
                         tv.setText(R.string.invalidUserMessage);
@@ -123,7 +123,7 @@ public class LoginScreen extends AppCompatActivity implements httpConnection.Asy
             if(parts.length==2){
                 userId=Integer.parseInt(parts[0].toString());
                 userRole=Integer.parseInt(parts[1].toString());
-                prefs.updateUserPrefs("users",uAS + "," + uPS + "," + userId + "," + userRole);
+                prefs.updateUserPrefs("users","*"+ uAS + "," + uPS + "*," + userId + "," + userRole);
                 launchMainMenu();
             } else {
                 tv.setText(R.string.invalidUserMessage);

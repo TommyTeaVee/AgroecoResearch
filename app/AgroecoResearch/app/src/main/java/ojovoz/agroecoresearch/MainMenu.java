@@ -40,9 +40,9 @@ public class MainMenu extends AppCompatActivity {
 
         for(int i=0;i<5;i++){
             params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.height=80;
+            params.height=70;
             params.gravity=Gravity.CENTER;
-            params.topMargin=34;
+            params.topMargin=50;
 
             if((i<3) && bFieldsCreated) {
                 Button b = new Button(MainMenu.this);

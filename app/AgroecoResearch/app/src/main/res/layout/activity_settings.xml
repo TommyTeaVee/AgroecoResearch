@@ -20,6 +20,7 @@
             android:layout_height="wrap_content"
             android:text="@string/defineServerTitle"
             android:id="@+id/defineServerButton"
+            android:onClick="defineServerButton"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentStart="true"
@@ -34,20 +35,6 @@
             android:layout_height="wrap_content"
             android:text="@string/downloadCatalogsButtonText"
             android:id="@+id/downloadCatalogsButton"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="34dp"
-            android:height="40dp"
-            android:textSize="20dp"
-            android:background="@drawable/button_background"
-            android:textColor="@color/colorWhite" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/defineEditFieldsButtonText"
-            android:id="@+id/defineEditFieldsButton"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentStart="true"
