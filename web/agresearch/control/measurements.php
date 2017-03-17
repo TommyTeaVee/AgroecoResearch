@@ -44,7 +44,7 @@ while($row = mysqli_fetch_array($result,MYSQL_NUM)){
 		echo('<br><div class="w3-container '.$row_color[$cat_color].'">Category: '.$row[2].'</div>');
 	}
 	$mname=$row[1]." (Category: ".$prev_cat.")";
-	echo('<div class="w3-container '.$row_color[$cat_color].'">'.$row[1].' <a class="w3-text-black" href="edit_measurement.php?id='.$row[0].'">Edit</a> <a class="w3-text-black" href="delete_measurement.php?id='.$row[0].'&mname='.$mname.'">Delete</a> <a class="w3-text-black" href="measurement_dependency.php?id='.$row[0].'&mname='.$mname.'">Applies to...</a></div>');
+	echo('<div class="w3-container '.$row_color[$cat_color].'">'.$row[1].' <a class="w3-text-black" href="edit_measurement.php?id='.$row[0].'">Edit</a> <a class="w3-text-black" href="delete_measurement.php?id='.$row[0].'&mname='.$mname.'">Delete</a> <a class="w3-text-black" href="measurement_applied.php?id='.$row[0].'&mname='.$mname.'">Applies to...</a></div>');
 }
 ?>
 <br></div>
