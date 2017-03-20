@@ -47,6 +47,21 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/controlPanelButtonText"
+            android:id="@+id/controlPanelButton"
+            android:onClick="controlPanel"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="34dp"
+            android:height="40dp"
+            android:textSize="20dp"
+            android:background="@drawable/button_background"
+            android:textColor="@color/colorWhite" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/mainMenuTitle"
             android:id="@+id/mainMenuButton"
             android:onClick="mainMenu"

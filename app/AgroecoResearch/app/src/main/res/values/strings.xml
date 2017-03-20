@@ -21,4 +21,6 @@
     <string name="downloadCatalogsButtonText">Download catalogs</string>
     <string name="defineEditFieldsButtonText">Define/edit fields</string>
     <string name="settingsTitle">Settings</string>
+    <string name="controlPanelButtonText">Control panel</string>
+    <string name="pleaseConnectMessage">Please connect to the Internet</string>
 </resources>
