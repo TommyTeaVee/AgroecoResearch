@@ -6,8 +6,8 @@ $dbh = initDB();
 session_start();
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
-	if(isset($_POST['add_measurement'])){
-		header("Location: add_measurement.php");
+	if(isset($_POST['add_activity'])){
+		header("Location: add_activity.php");
 	} else if(isset($_POST['menu'])){
 		header("Location: menu.php");
 	}
@@ -23,11 +23,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
 <div class="w3-container w3-card-4">
-<h2 class="w3-green">Measurements</h2><br>
+<h2 class="w3-green">Activities</h2><br>
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-<button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="add_measurement" name="add_measurement">Add measurement</button> <button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="menu" name="menu">Main menu</button></form><br>
+<button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="add_activity" name="add_activity">Add activity</button> <button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="menu" name="menu">Main menu</button></form><br>
 <?php
-$query="SELECT measurement_id, measurement_name, measurement_category FROM measurement ORDER BY measurement_category, measurement_name";
+$query="SELECT activity_id, activity_name, activity_category FROM activity ORDER BY activity_category, activity_name";
 $result = mysqli_query($dbh,$query);
 $cat_color=0;
 $prev_cat="";
@@ -43,8 +43,8 @@ while($row = mysqli_fetch_array($result,MYSQL_NUM)){
 		}
 		echo('<br><div class="w3-container '.$row_color[$cat_color].'">Category: '.$row[2].'</div>');
 	}
-	$mname=$row[1]." (Category: ".$prev_cat.")";
-	echo('<div class="w3-container '.$row_color[$cat_color].'">'.$row[1].' <a class="w3-text-black" href="edit_measurement.php?id='.$row[0].'">Edit</a> -- <a class="w3-text-black" href="delete_measurement.php?id='.$row[0].'&mname='.$mname.'">Delete</a> -- <a class="w3-text-black" href="measurement_applied.php?id='.$row[0].'&mname='.$mname.'">Applies to...</a></div>');
+	$aname=$row[1]." (Category: ".$prev_cat.")";
+	echo('<div class="w3-container '.$row_color[$cat_color].'">'.$row[1].' <a class="w3-text-black" href="edit_activity.php?id='.$row[0].'">Edit</a> -- <a class="w3-text-black" href="delete_activity.php?id='.$row[0].'&aname='.$aname.'">Delete</a> -- <a class="w3-text-black" href="activity_applied.php?id='.$row[0].'&aname='.$aname.'">Applies to...</a></div>');
 }
 ?>
 <br></div>

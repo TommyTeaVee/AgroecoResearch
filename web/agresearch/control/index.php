@@ -18,6 +18,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 			if($parts[1]==2){
 				$success=true;
 				$_SESSION['admin']=true;
+				$_SESSION['user_id']=$parts[0];
 				header("Location: menu.php");
 			}
 		}

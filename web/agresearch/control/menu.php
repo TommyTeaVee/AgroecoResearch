@@ -11,6 +11,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 		header("Location: treatments.php");
 	} else if(isset($_POST['measurements'])){
 		header("Location: measurements.php");
+	} else if(isset($_POST['activities'])){
+		header("Location: activities.php");
+	} else if(isset($_POST['fields'])){
+		header("Location: fields.php");
 	}
 } else if(isset($_SESSION['admin']) && $_SESSION['admin']==true){
 ?>

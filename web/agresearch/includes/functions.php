@@ -56,4 +56,16 @@ function getMeasurementCategories($dbh){
 	}
 	return $ret;
 }
+
+function getActivityCategories($dbh){
+	$ret=array();
+	$query="SELECT DISTINCT activity_category FROM activity ORDER BY activity_category";
+	$result = mysqli_query($dbh,$query);
+	$i=0;
+	while($row = mysqli_fetch_array($result,MYSQL_NUM)){
+		$ret[$i]=$row[0];
+		$i++;
+	}
+	return $ret;
+}
 ?>

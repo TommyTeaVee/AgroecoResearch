@@ -51,15 +51,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="./../css/w3.css">
 <title>Agroeco Research</title>
-<script type="text/javascript">
-	var crops=[];
-</script>
 </head>
 <body>
 <div class="w3-container w3-card-4">
 <h2 class="w3-green">Add measurement</h2>
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-<input name="added_crops" type="hidden" id="added_crops" value="">
 <p>      
 <label class="w3-text-green">Measurement name:</label>
 <input class="w3-input w3-border-green w3-text-green" name="measurement_name" type="text" maxlength="100"></p>
@@ -99,7 +95,7 @@ for($i=0;$i<sizeof($measurement_categories);$i++){
 		}
     };
 </script> 
-<p><label class="w3-text-green">Periodicity (days):</label>
+<p><label class="w3-text-green">Periodicity in days: (Enter '0' if variable)</label>
 <input class="w3-input w3-border-green w3-text-green" name="measurement_periodicity" type="text" maxlength="10"></p>
 <br><button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="add_measurement" name="add_measurement">Add measurement</button> <button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="cancel" name="cancel">Cancel</button></form><br>
 <br><br></div>
