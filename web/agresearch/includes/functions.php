@@ -17,9 +17,15 @@ function validateUser($dbh, $user_alias, $user_password) {
 	return $ret;
 }
 
-function getCrops($dbh){
+function getCrops($dbh,$int){
 	$ret=array();
-	$query="SELECT crop_id, CONCAT(crop_name,' (',crop_variety_name,')') AS name FROM crop ORDER BY name";
+	if($int==1){
+		$query="SELECT crop_id, CONCAT(crop_name,' (',crop_variety_name,')') AS name FROM crop WHERE crop_used_for_intercropping=1 ORDER BY name";
+	} else if ($int==0) {
+		$query="SELECT crop_id, CONCAT(crop_name,' (',crop_variety_name,')') AS name FROM crop WHERE crop_used_for_intercropping=0 ORDER BY name";
+	} else {
+		$query="SELECT crop_id, CONCAT(crop_name,' (',crop_variety_name,')') AS name FROM crop ORDER BY name";
+	}
 	$result = mysqli_query($dbh,$query);
 	$i=0;
 	while($row = mysqli_fetch_array($result,MYSQL_NUM)){
@@ -67,5 +73,33 @@ function getActivityCategories($dbh){
 		$i++;
 	}
 	return $ret;
+}
+
+function fieldHasConfiguration($field_id,$dbh){
+	$ret=false;
+	$query="SELECT field_configuration FROM field WHERE field_id=$field_id";
+	$result = mysqli_query($dbh,$query);
+	if($row = mysqli_fetch_array($result,MYSQL_NUM)){
+		if($row[0]!=""){
+			$ret=true;
+		}
+	}
+	return $ret;
+}
+
+function getFieldConfiguration($field_id,$dbh){
+	$ret="";
+	$query="SELECT field_configuration FROM field WHERE field_id=$field_id";
+	$result = mysqli_query($dbh,$query);
+	if($row = mysqli_fetch_array($result,MYSQL_NUM)){
+		$ret=$row[0];
+	}
+	return $ret;
+}
+
+function parseConfig($element){
+	$inner=substr($element,3,(strlen($element)-4));
+	$parts=explode(",",$inner);
+	return $parts;
 }
 ?>

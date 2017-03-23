@@ -30,6 +30,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 	}
 } else if(isset($_SESSION['admin']) && $_SESSION['admin']==true) {
 	$field_id=$_GET['id'];
+	$fname=$_GET['fname'];
 	$query="SELECT field_date_created, field_name, field_lat, field_lng FROM field WHERE field_id=$field_id";
 	$result = mysqli_query($dbh,$query);
 	if($row = mysqli_fetch_array($result,MYSQL_NUM)){
@@ -56,7 +57,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
 <div class="w3-container w3-card-4">
-<h2 class="w3-green">Edit field</h2>
+<h2 class="w3-green">Edit field -- <?php echo($fname); ?></h2>
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 <input name="field_id" type="hidden" id="field_id" value="<? echo($field_id); ?>">
 <p>      

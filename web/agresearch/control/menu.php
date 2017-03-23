@@ -28,7 +28,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
 <div class="w3-container w3-card-4">
-<h2 class="w3-green">Menu</h2><br>
+<h2 class="w3-green">Control panel</h2><br>
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 <p>
 <div align="center"><button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:40%; height:40px" id="users" name="users">Users</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" id="fields" name="fields" style="width:40%; height:40px">Fields</button></div><br>

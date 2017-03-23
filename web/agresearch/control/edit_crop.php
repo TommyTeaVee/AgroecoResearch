@@ -12,7 +12,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 		$crop_id=$_POST['id'];
 		$crop_name=normalize($_POST['crop_name']);
 		$crop_variety_name=normalize($_POST['crop_variety_name']);
-		$query="UPDATE crop SET crop_name='$crop_name', crop_variety_name='$crop_variety_name' WHERE crop_id=$crop_id";
+		if(isset($_POST['crop_used_for_intercropping'])){
+			$crop_used_for_intercropping=$_POST['crop_used_for_intercropping'];
+		} else {
+			$crop_used_for_intercropping=0;
+		}
+		$query="UPDATE crop SET crop_name='$crop_name', crop_variety_name='$crop_variety_name', crop_used_for_intercropping=$crop_used_for_intercropping WHERE crop_id=$crop_id";
 		$result = mysqli_query($dbh,$query);
 		header("Location: crops.php");
 	} else if(isset($_POST['cancel'])){
@@ -20,11 +25,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 	}
 } else if($_SERVER["REQUEST_METHOD"] == "GET" && isset($_SESSION['admin']) && $_SESSION['admin']==true) {
 	$crop_id=$_GET['id'];
-	$query="SELECT crop_name, crop_variety_name FROM crop WHERE crop_id=$crop_id";
+	$query="SELECT crop_name, crop_variety_name,crop_used_for_intercropping FROM crop WHERE crop_id=$crop_id";
 	$result = mysqli_query($dbh,$query);
 	while($row = mysqli_fetch_array($result,MYSQL_NUM)){
 		$crop_name=$row[0];
 		$crop_variety_name=$row[1];
+		$crop_used_for_intercropping=$row[2];
 	}
 ?>
 
@@ -46,7 +52,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 <p>      
 <label class="w3-text-green">Crop variety:</label>
 <input class="w3-input w3-border-green w3-text-green" name="crop_variety_name" type="text" maxlength="40" value="<?php echo($crop_variety_name); ?>"></p>
-<button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="edit_crop" name="edit_crop">Edit crop</button> <button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="cancel" name="cancel">Cancel</button></form><br>
+<p><input class="w3-check" type="checkbox" value="1" name="crop_used_for_intercropping" id="crop_used_for_intercropping" <?php echo($crop_used_for_intercropping==1 ? 'checked' : ''); ?>>
+<label class="w3-validate w3-text-green">Crop used for intercropping</label></p>
+<br><button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="edit_crop" name="edit_crop">Edit crop</button> <button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="cancel" name="cancel">Cancel</button></form><br>
 <br><br></div>
 </body>
 </html>

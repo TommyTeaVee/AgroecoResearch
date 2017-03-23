@@ -37,7 +37,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 		$query="DELETE FROM activity_x_crop_or_treatment WHERE activity_id=$activity_id AND treatment_id=$rt_id";
 		$result = mysqli_query($dbh,$query);
 	}
-	$crops=getCrops($dbh);
+	$crops=getCrops($dbh,-1);
 	$treatments=getTreatments($dbh);
 	$query="SELECT crop_id, treatment_id FROM activity_x_crop_or_treatment WHERE activity_id=$activity_id";
 	$result = mysqli_query($dbh,$query);

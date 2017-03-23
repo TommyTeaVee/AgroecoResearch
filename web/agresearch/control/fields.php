@@ -32,7 +32,7 @@ $result = mysqli_query($dbh,$query);
 while($row = mysqli_fetch_array($result,MYSQL_NUM)){
 	$fname="Field: ".$row[1]." -- Replication ".$row[2];
 	echo($fname."<br>");
-?><a class="w3-text-green" href="edit_field.php?id=<?php echo($row[0]); ?>">Edit</a> -- <a class="w3-text-green" href="delete_field.php?id=<?php echo($row[0]); ?>&fname=<?php echo($fname); ?>">Delete</a> -- <a class="w3-text-green" href="configure_field.php?id=<?php echo($row[0]); ?>&fname=<?php echo($fname); ?>">Configure</a><br><br>
+?><a class="w3-text-green" href="edit_field.php?id=<?php echo($row[0]); ?>&fname=<?php echo($fname); ?>">Edit</a> -- <a class="w3-text-green" href="delete_field.php?id=<?php echo($row[0]); ?>&fname=<?php echo($fname); ?>">Delete</a> -- <a class="w3-text-green" href="configure_field.php?id=<?php echo($row[0]); ?>&fname=<?php echo($fname); ?>">Configure</a><br><br>
 <?php
 }
 ?>
