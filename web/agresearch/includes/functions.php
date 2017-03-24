@@ -97,6 +97,16 @@ function getFieldConfiguration($field_id,$dbh){
 	return $ret;
 }
 
+function getParentField($field_id,$dbh){
+	$ret="";
+	$query="SELECT parent_field_id FROM field WHERE field_id=$field_id";
+	$result = mysqli_query($dbh,$query);
+	if($row = mysqli_fetch_array($result,MYSQL_NUM)){
+		$ret=$row[0];
+	}
+	return $ret;
+}
+
 function parseConfig($element){
 	$inner=substr($element,3,(strlen($element)-4));
 	$parts=explode(",",$inner);
