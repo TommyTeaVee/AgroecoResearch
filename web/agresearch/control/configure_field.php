@@ -123,12 +123,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 				$plots="";
 				for($i=0;$i<$n;$i++){
 					if($plots==""){
-						$plots="P=(-1,-1,0,0)";
+						$plots="P=(0,0,0,0)";
 					} else {
-						$plots=$plots.";P=(-1,-1,0,0)";
+						$plots=$plots.";P=(0,0,0,0)";
 					}
 				}
-				$configuration="F(0,0,0,0);G=($rows,$columns);".$plots;
+				$configuration="F=(0,0,0,0);G=($rows,$columns);".$plots;
 				
 				//echo($configuration);
 				//break;

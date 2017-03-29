@@ -16,6 +16,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 		} else {
 			$measurement_category=normalize($c);
 		}
+		$s=$_POST['measurement_subcategory'];
+		if($s=="-1"){
+			$measurement_subcategory=normalize($_POST['other_measurement_subcategory']);
+		} else {
+			$measurement_subcategory=normalize($s);
+		}
 		$measurement_type=$_POST['measurement_type'];
 		if($measurement_type==0){
 			$measurement_range_min=0;
@@ -35,7 +41,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 			$measurement_categories="";
 		}
 		$measurement_periodicity=$_POST['measurement_periodicity'];
-		$query="INSERT INTO measurement (measurement_name, measurement_category, measurement_type, measurement_range_min, measurement_range_max, measurement_units, measurement_categories, measurement_periodicity) VALUES ('$measurement_name', '$measurement_category', $measurement_type, $measurement_range_min, $measurement_range_max, '$measurement_units', '$measurement_categories', $measurement_periodicity)";
+		$query="INSERT INTO measurement (measurement_name, measurement_category, measurement_subcategory, measurement_type, measurement_range_min, measurement_range_max, measurement_units, measurement_categories, measurement_periodicity) VALUES ('$measurement_name', '$measurement_category', '$measurement_subcategory', $measurement_type, $measurement_range_min, $measurement_range_max, '$measurement_units', '$measurement_categories', $measurement_periodicity)";
 		$result = mysqli_query($dbh,$query);
 		header("Location: measurements.php");
 	} else if(isset($_POST['cancel'])){
@@ -43,6 +49,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 	}
 } else if(isset($_SESSION['admin']) && $_SESSION['admin']==true) {
 	$measurement_categories=getMeasurementCategories($dbh);
+	$measurement_subcategories=getMeasurementSubcategories($dbh);
 ?>
 
 <!DOCTYPE html>
@@ -75,6 +82,25 @@ for($i=0;$i<sizeof($measurement_categories);$i++){
 			document.getElementById("otherfield").innerHTML='<label class="w3-text-green">Enter category:</label><input class="w3-input w3-border-green w3-text-green" name="other_measurement_category" type="text" maxlength="30">';
 		} else {
 			document.getElementById("otherfield").innerHTML='';
+		}
+    };
+</script>
+<p><select class="w3-select w3-text-green" name="measurement_subcategory" id="measurement_subcategory">
+  <option value="" disabled selected>Subcategory:</option>
+<?php
+for($i=0;$i<sizeof($measurement_subcategories);$i++){
+	echo('<option value="'.$measurement_subcategories[$i].'">'.$measurement_subcategories[$i].'</option>');
+}
+?>
+  <option value="-1">Other</option>
+</select>
+<div id="otherfieldsub"></div></p>
+<script type="text/javascript">
+	document.getElementById("measurement_subcategory").onclick = function () {
+		if(document.getElementById("measurement_subcategory").value=="-1"){
+			document.getElementById("otherfieldsub").innerHTML='<label class="w3-text-green">Enter subcategory:</label><input class="w3-input w3-border-green w3-text-green" name="other_measurement_subcategory" type="text" maxlength="40">';
+		} else {
+			document.getElementById("otherfieldsub").innerHTML='';
 		}
     };
 </script>

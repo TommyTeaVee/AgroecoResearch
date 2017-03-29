@@ -1,6 +1,7 @@
 <?php
 header("Cache-Control: no-cache, must-revalidate");
 include_once "./../includes/init_database.php";
+include_once "./../includes/functions.php";
 $dbh = initDB();
 
 session_start();
@@ -9,6 +10,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 	if(isset($_POST['delete_field'])){
 		$field_id=$_POST['id'];
 		$query="DELETE FROM field WHERE field_id=$field_id";
+		$result = mysqli_query($dbh,$query);
+		header("Location: fields.php");
+	} else if(isset($_POST['delete_field_replications'])){
+		$field_id=$_POST['id'];
+		$parent_field_id=getParentField($field_id,$dbh);
+		$query="DELETE FROM field WHERE parent_field_id=$parent_field_id";
 		$result = mysqli_query($dbh,$query);
 		header("Location: fields.php");
 	} else if(isset($_POST['cancel'])){
@@ -31,7 +38,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 <input name="id" type="hidden" id="id" value="<? echo($field_id); ?>">
 <span class="w3-text-red">Are you sure you want to delete field <?php echo($fname) ?>?</span><br><br>
-<button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="delete_field" name="delete_field">Delete</button> <button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="cancel" name="cancel">Cancel</button>
+<button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="delete_field" name="delete_field">Delete field</button> <button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="delete_field_replications" name="delete_field_replications">Delete field and replications</button> <button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="cancel" name="cancel">Cancel</button>
 </form><br>
 <br><br></div>
 </body>

@@ -17,6 +17,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 		} else {
 			$measurement_category=normalize($c);
 		}
+		$s=$_POST['measurement_subcategory'];
+		if($s=="-1"){
+			$measurement_subcategory=normalize($_POST['other_measurement_subcategory']);
+		} else {
+			$measurement_subcategory=normalize($s);
+		}
 		$measurement_type=$_POST['measurement_type'];
 		if($measurement_type==0){
 			$measurement_range_min=0;
@@ -36,7 +42,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 			$measurement_categories="";
 		}
 		$measurement_periodicity=$_POST['measurement_periodicity'];
-		$query="UPDATE measurement SET measurement_name='$measurement_name', measurement_category='$measurement_category', measurement_type=$measurement_type, measurement_range_min=$measurement_range_min, measurement_range_max=$measurement_range_max, measurement_units='$measurement_units', measurement_categories='$measurement_categories', measurement_periodicity=$measurement_periodicity WHERE measurement_id=$measurement_id";
+		$query="UPDATE measurement SET measurement_name='$measurement_name', measurement_category='$measurement_category', measurement_subcategory='$measurement_subcategory', measurement_type=$measurement_type, measurement_range_min=$measurement_range_min, measurement_range_max=$measurement_range_max, measurement_units='$measurement_units', measurement_categories='$measurement_categories', measurement_periodicity=$measurement_periodicity WHERE measurement_id=$measurement_id";
 		$result = mysqli_query($dbh,$query);
 		header("Location: measurements.php");
 	} else if(isset($_POST['cancel'])){
@@ -44,19 +50,21 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 	}
 } else if(isset($_SESSION['admin']) && $_SESSION['admin']==true) {
 	$measurement_id=$_GET['id'];
-	$query="SELECT measurement_name, measurement_category, measurement_type, measurement_range_min, measurement_range_max, measurement_units, measurement_categories, measurement_periodicity FROM measurement WHERE measurement_id=$measurement_id";
+	$query="SELECT measurement_name, measurement_category, measurement_subcategory, measurement_type, measurement_range_min, measurement_range_max, measurement_units, measurement_categories, measurement_periodicity FROM measurement WHERE measurement_id=$measurement_id";
 	$result = mysqli_query($dbh,$query);
 	if($row = mysqli_fetch_array($result,MYSQL_NUM)){
 		$measurement_name=$row[0];
 		$measurement_category=$row[1];
-		$measurement_type=$row[2];
-		$measurement_range_min=$row[3];
-		$measurement_range_max=$row[4];
-		$measurement_units=$row[5];
-		$measurement_categories=$row[6];
-		$measurement_periodicity=$row[7];
+		$measurement_subcategory=$row[2];
+		$measurement_type=$row[3];
+		$measurement_range_min=$row[4];
+		$measurement_range_max=$row[5];
+		$measurement_units=$row[6];
+		$measurement_categories=$row[7];
+		$measurement_periodicity=$row[8];
 	}
 	$measurement_categories_catalog=getMeasurementCategories($dbh);
+	$measurement_subcategories_catalog=getMeasurementSubcategories($dbh);
 ?>
 
 <!DOCTYPE html>
@@ -94,6 +102,29 @@ for($i=0;$i<sizeof($measurement_categories_catalog);$i++){
 			document.getElementById("otherfield").innerHTML='<label class="w3-text-green">Enter category:</label><input class="w3-input w3-border-green w3-text-green" name="other_measurement_category" type="text" maxlength="30">';
 		} else {
 			document.getElementById("otherfield").innerHTML='';
+		}
+    };
+</script>
+<p><select class="w3-select w3-text-green" name="measurement_subcategory" id="measurement_subcategory">
+  <option value="" disabled>Subcategory:</option>
+<?php
+for($i=0;$i<sizeof($measurement_subcategories_catalog);$i++){
+	if($measurement_subcategory==$measurement_subcategories_catalog[$i]){
+		echo('<option value="'.$measurement_subcategories_catalog[$i].'" selected>'.$measurement_subcategories_catalog[$i].'</option>');
+	} else {
+		echo('<option value="'.$measurement_subcategories_catalog[$i].'">'.$measurement_subcategories_catalog[$i].'</option>');
+	}
+}
+?>
+<option value="-1">Other</option>
+</select>
+<div id="otherfieldsub"></div></p>
+<script type="text/javascript">
+	document.getElementById("measurement_subcategory").onclick = function () {
+		if(document.getElementById("measurement_subcategory").value=="-1"){
+			document.getElementById("otherfieldsub").innerHTML='<label class="w3-text-green">Enter subcategory:</label><input class="w3-input w3-border-green w3-text-green" name="other_measurement_subcategory" type="text" maxlength="40">';
+		} else {
+			document.getElementById("otherfieldsub").innerHTML='';
 		}
     };
 </script>

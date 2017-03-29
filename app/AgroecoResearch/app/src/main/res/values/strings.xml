@@ -23,4 +23,11 @@
     <string name="settingsTitle">Settings</string>
     <string name="controlPanelButtonText">Control panel</string>
     <string name="pleaseConnectMessage">Please connect to the Internet</string>
+    <string name="downloadCropsText">CROPS</string>
+    <string name="downloadTreatmentsText">TREATMENTS</string>
+    <string name="downloadSelectedButton">Download selected</string>
+    <string name="downloadCatalogsTitle">Download catalogs</string>
+    <string name="downloadMeasurementsText">MEASUREMENTS</string>
+    <string name="downloadActivitiesText">ACTIVITIES</string>
+    <string name="downloadFieldsText">FIELDS</string>
 </resources>

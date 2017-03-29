@@ -8,8 +8,9 @@ $dbh = initDB();
 session_start();
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
-	$field_id=$_POST['field_id'];
-	$config=$_POST['config'];
+	$field_id=$_POST['id'];
+	$config=$_POST['fieldConfig'];
+	$config=recalculateConfig($config);
 	if(isset($_POST['update'])){
 		$query="UPDATE field SET field_configuration='$config' WHERE field_id=$field_id";
 		$result = mysqli_query($dbh,$query);
@@ -68,6 +69,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 	?>
 	var cropsNI=[<?php echo($js_crops_ni); ?>];
 	var cropsI=[<?php echo($js_crops_i); ?>];
+	var cellColors=[<?php for($i=0;$i<sizeof($cell_color);$i++){ if($i==0){ 
+		echo("'".$cell_color[$i]."'"); 
+	} else { 
+		echo(",'".$cell_color[$i]."'"); 
+	}
+	}?>];
+	var currentPlot=-1;
 </script>
 </head>
 <body>
@@ -75,7 +83,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 <h2 class="w3-green">Configure plots: <?php echo($fname); ?></h2><br>
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" id="config">
 <input name="id" id="id" type="hidden" value="<?php  echo($field_id); ?>">
-<input name="config" id="config" type="hidden" value="<?php  echo($config); ?>">
+<input name="fieldConfig" id="fieldConfig" type="hidden" value="<?php  echo($config); ?>">
 <p><div class="w3-row-padding"><div class="w3-half w3-text-green">
 <table>
 <?php
@@ -147,12 +155,70 @@ for($i=0;$i<sizeof($used_colors);$i++){
 <div id="plotIntercroppingCrop"></div><br>
 <div id="plotSoilManagement"></div><br>
 <div id="plotPestControl"></div><br>
+<div id="updatePlotButton"></div><br>
+<div id="plotUpdatedMsg" class="w3-text-green"></div><br>
 </div>
 </div>
 <script type="text/javascript">
-	function displayPlotConfiguration(plot,plotConfig){
+	function updateFieldConfiguration(plotConfig){
+		plotN=currentPlot;
+		fieldConfiguration=document.getElementById("fieldConfig").value;
+		var fieldParts=fieldConfiguration.split(";");
+		fieldParts[plotN+2]='P=('+ plotConfig +')';
+		fieldConfiguration=fieldParts.join(";");
+		document.getElementById("fieldConfig").value=fieldConfiguration;
+		
+		configParts=plotConfig.split(",");
+		var cellClass='';
+		if(configParts[2]==0 && configParts[3]==0){
+			cellClass=cellColors[0];
+		} else if(configParts[2]==1 && configParts[3]==0){
+			cellClass=cellColors[1];
+		} else if(configParts[2]==0 && configParts[3]==1){
+			cellClass=cellColors[2];
+		} else if(configParts[2]==1 && configParts[3]==1){
+			cellClass=cellColors[3];
+		}
+	
+		document.getElementById('cell'+plotN.toString()).className=cellClass;
+		
+		var index=0;
+		var i;
+		for(i=0;i<cropsNI.length;i++){
+			parts=cropsNI[i].split(",");
+			id=parts[0];
+			if(configParts[0]==id){
+				index=i+1;
+				break;
+			}
+		}
+		var content='C'+index;
+		if(configParts[1]>0){
+			content+='+L';
+		}
+		
+		document.getElementById('cell'+plotN.toString()).innerHTML='<div align="center"><strong><a class="w3-text-black" href="javascript:displayPlotConfiguration('+ plotN +',\''+ plotConfig +'\')">'+ content +'</a></strong></div>';
+	}
+	
+	function showIntercroppingCrops(configParts){
+		options="";
+		for(i=0;i<cropsI.length;i++){
+			selected="";
+			parts=cropsI[i].split(",");
+			id=parts[0];
+			name=parts[1];
+			if(id==configParts[1]){
+				selected=" selected";
+			}
+			options+='<option value="'+id+'"'+selected+'>'+name+'</option>';
+		}
+		document.getElementById("plotIntercroppingCrop").innerHTML='<select class="w3-select w3-text-green" name="intercropping_crop" id="intercropping_crop">'+ options +'</select>';
+	}
+	
+	function displayPlotConfiguration(plotN,plotConfig){
+		currentPlot=plotN;
 		var configParts=plotConfig.split(",");
-		document.getElementById("plotNumber").innerHTML='<span class="w3-green">&nbsp;Plot number '+ (plot+1) +':&nbsp;</span>';
+		document.getElementById("plotNumber").innerHTML='<span class="w3-green">&nbsp;Plot number '+ (plotN+1) +':&nbsp;</span>';
 		var i;
 		var options="";
 		var selected="";
@@ -174,18 +240,14 @@ for($i=0;$i<sizeof($used_colors);$i++){
 			document.getElementById("plotIntercroppingCrop").innerHTML='';
 		} else {
 			document.getElementById("plotIntercropping").innerHTML='<input class="w3-check" type="checkbox" value="1" name="intercropping" id="intercropping" checked><label class="w3-validate w3-text-green">Intercropping</label>';
-			options="";
-			for(i=0;i<cropsI.length;i++){
-				selected="";
-				parts=cropsI[i].split(",");
-				id=parts[0];
-				name=parts[1];
-				if(id==configParts[0]){
-					selected=" selected";
-				}
-				options+='<option value="'+id+'"'+selected+'>'+name+'</option>';
+			showIntercroppingCrops(configParts);
+		}
+		document.getElementById("intercropping").onclick = function(configParts){
+			if(document.getElementById("intercropping").checked){
+				showIntercroppingCrops(configParts);
+			} else {
+				document.getElementById("plotIntercroppingCrop").innerHTML='';
 			}
-			document.getElementById("plotIntercroppingCrop").innerHTML='<select class="w3-select w3-text-green" name="intercropping_crop" id="intercropping_crop">'+ options +'</select>';
 		}
 		if(configParts[2]==0){
 			document.getElementById("plotSoilManagement").innerHTML='<input class="w3-check" type="checkbox" value="1" name="soil_management" id="soil_management"><label class="w3-validate w3-text-green">Soil management</label>';
@@ -196,6 +258,33 @@ for($i=0;$i<sizeof($used_colors);$i++){
 			document.getElementById("plotPestControl").innerHTML='<input class="w3-check" type="checkbox" value="1" name="pest_control" id="pest_control"><label class="w3-validate w3-text-green">Pest control</label>';
 		} else {
 			document.getElementById("plotPestControl").innerHTML='<input class="w3-check" type="checkbox" value="1" name="pest_control" id="pest_control" checked><label class="w3-validate w3-text-green">Pest control</label>';
+		}
+		document.getElementById("updatePlotButton").innerHTML='<button type="button" class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="updatePlot" name="updatePlot">Update plot</button>';
+		document.getElementById("plotUpdatedMsg").innerHTML='';
+		
+		document.getElementById("updatePlot").onclick = function () {
+			var primary_crop_id=document.getElementById("primary_crop").value;
+			var intercropping=document.getElementById("intercropping").checked;
+			if(intercropping){
+				intercropping_crop_id=document.getElementById("intercropping_crop").value;
+			} else {
+				intercropping_crop_id=0;
+			}
+			var soil_managament=document.getElementById("soil_management").checked;
+			if(soil_managament){
+				soil_management=1;
+			} else {
+				soil_management=0;
+			}
+			var pest_control=document.getElementById("pest_control").checked;
+			if(pest_control){
+				pest_control=1;
+			} else {
+				pest_control=0;
+			}
+			var new_plot_config=primary_crop_id +','+ intercropping_crop_id +','+ soil_management +','+ pest_control;
+			updateFieldConfiguration(new_plot_config);
+			document.getElementById("plotUpdatedMsg").innerHTML='Plot updated successfully.';
 		}
 	}
 </script>

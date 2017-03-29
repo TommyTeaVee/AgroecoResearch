@@ -145,7 +145,7 @@ public class MainMenu extends AppCompatActivity {
 
     public void settings(){
         final Context context = this;
-        Intent i = new Intent(context, Settings.class);
+        Intent i = new Intent(context, settings.class);
         i.putExtra("userId",userId);
         i.putExtra("userRole",userRole);
         startActivity(i);

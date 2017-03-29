@@ -11,7 +11,7 @@ import android.widget.Toast;
 /**
  * Created by Eugenio on 15/03/2017.
  */
-public class Settings extends AppCompatActivity implements httpConnection.AsyncResponse {
+public class settings extends AppCompatActivity implements httpConnection.AsyncResponse {
 
     public int userId;
     public int userRole;
@@ -24,6 +24,8 @@ public class Settings extends AppCompatActivity implements httpConnection.AsyncR
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        userId = getIntent().getExtras().getInt("userId");
+        userRole = getIntent().getExtras().getInt("userRole");
 
         initializeVariables();
     }
@@ -47,7 +49,7 @@ public class Settings extends AppCompatActivity implements httpConnection.AsyncR
                 if(!input.startsWith("http://")){
                     input="http://"+input;
                 }
-                Settings.this.server = input;
+                settings.this.server = input;
                 prefs.savePreference("server", input);
                 return true;
             }
@@ -68,6 +70,15 @@ public class Settings extends AppCompatActivity implements httpConnection.AsyncR
             Toast.makeText(this, R.string.pleaseConnectMessage, Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    public void downloadCatalogs(View v){
+        final Context context = this;
+        Intent i = new Intent(context, downloadCatalogs.class);
+        i.putExtra("userId",userId);
+        i.putExtra("userRole",userRole);
+        startActivity(i);
+        finish();
     }
 
     public void logout(View v){

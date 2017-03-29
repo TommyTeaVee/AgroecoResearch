@@ -17,6 +17,16 @@ function validateUser($dbh, $user_alias, $user_password) {
 	return $ret;
 }
 
+function getUserRole($dbh,$user_id){
+	$ret=-1;
+	$query="SELECT user_role FROM user WHERE user_id=$user_id";
+	$result = mysqli_query($dbh,$query);
+	if($row = mysqli_fetch_array($result,MYSQL_NUM)){
+		$ret=$row[0];
+	}
+	return $ret;
+}
+
 function getCrops($dbh,$int){
 	$ret=array();
 	if($int==1){
@@ -54,6 +64,18 @@ function getTreatments($dbh){
 function getMeasurementCategories($dbh){
 	$ret=array();
 	$query="SELECT DISTINCT measurement_category FROM measurement ORDER BY measurement_category";
+	$result = mysqli_query($dbh,$query);
+	$i=0;
+	while($row = mysqli_fetch_array($result,MYSQL_NUM)){
+		$ret[$i]=$row[0];
+		$i++;
+	}
+	return $ret;
+}
+
+function getMeasurementSubcategories($dbh){
+	$ret=array();
+	$query="SELECT DISTINCT measurement_subcategory FROM measurement ORDER BY measurement_subcategory";
 	$result = mysqli_query($dbh,$query);
 	$i=0;
 	while($row = mysqli_fetch_array($result,MYSQL_NUM)){
@@ -111,5 +133,33 @@ function parseConfig($element){
 	$inner=substr($element,3,(strlen($element)-4));
 	$parts=explode(",",$inner);
 	return $parts;
+}
+
+function recalculateConfig($config){
+	$elements=explode(";",$config);
+	$included_crops=array();
+	$n=0;
+	$intercropping=0;
+	$soil_management=0;
+	$pest_control=0;
+	for($i=2;$i<(sizeof($elements)-1);$i++){
+		$parts=parseConfig($elements[$i]);
+		if(!in_array($parts[0],$included_crops)){
+			$included_crops[$n]=$parts[0];
+			$n++;
+		}
+		if($parts[1]!=0){
+			$intercropping=1;
+		}
+		if($parts[2]!=0){
+			$soil_management=1;
+		}
+		if($parts[3]!=0){
+			$pest_control=1;
+		}
+	}
+	$elements[0]='F=('.$n.','.$intercropping.','.$soil_management.','.$pest_control.')';
+	$ret=implode(";",$elements);
+	return $ret;
 }
 ?>
