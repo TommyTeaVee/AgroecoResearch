@@ -77,20 +77,21 @@ public class settings extends AppCompatActivity implements httpConnection.AsyncR
         Intent i = new Intent(context, downloadCatalogs.class);
         i.putExtra("userId",userId);
         i.putExtra("userRole",userRole);
+        i.putExtra("server",server);
         startActivity(i);
         finish();
     }
 
     public void logout(View v){
         final Context context = this;
-        Intent i = new Intent(context, LoginScreen.class);
+        Intent i = new Intent(context, loginScreen.class);
         startActivity(i);
         finish();
     }
 
     public void mainMenu(View v){
         final Context context = this;
-        Intent i = new Intent(context, MainMenu.class);
+        Intent i = new Intent(context, mainMenu.class);
         i.putExtra("userId",userId);
         i.putExtra("userRole",userRole);
         startActivity(i);

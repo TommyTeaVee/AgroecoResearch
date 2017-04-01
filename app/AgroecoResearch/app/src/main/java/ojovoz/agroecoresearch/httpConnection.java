@@ -32,7 +32,7 @@ public class httpConnection extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... params) {
 
-        return getData(params[0]);
+        return getData(params[0], params[1]);
 
     }
 
@@ -41,7 +41,7 @@ public class httpConnection extends AsyncTask<String, Void, String> {
         delegate.processFinish(ret);
     }
 
-    private String getData(String u) {
+    private String getData(String u, String csv) {
         String ret = null;
         URL url;
         HttpURLConnection urlConnection = null;
@@ -51,7 +51,7 @@ public class httpConnection extends AsyncTask<String, Void, String> {
             urlConnection.setRequestMethod("GET");
             urlConnection.setDoInput(true);
             urlConnection.connect();
-            ret = readStream(urlConnection.getInputStream());
+            ret = readStream(urlConnection.getInputStream(), csv);
         } catch (Exception e) {
             ret = "";
         } finally {
@@ -62,14 +62,18 @@ public class httpConnection extends AsyncTask<String, Void, String> {
         return ret;
     }
 
-    private String readStream(InputStream in) throws IOException {
+    private String readStream(InputStream in, String csv) throws IOException {
 
         BufferedReader r = null;
         r = new BufferedReader(new InputStreamReader(in));
         StringBuilder total = new StringBuilder();
         String line;
         while ((line = r.readLine()) != null) {
-            total.append(line);
+            if(csv.contains("csv")){
+                total.append(line+"\n");
+            } else {
+                total.append(line);
+            }
         }
         if (r != null) {
             r.close();
@@ -81,9 +85,6 @@ public class httpConnection extends AsyncTask<String, Void, String> {
     public boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isConnected()) {
-            return true;
-        }
-        return false;
+        return netInfo != null && netInfo.isConnected();
     }
 }

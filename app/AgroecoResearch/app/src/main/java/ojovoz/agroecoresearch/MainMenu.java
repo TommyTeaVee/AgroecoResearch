@@ -14,13 +14,13 @@ import android.widget.LinearLayout;
 /**
  * Created by Eugenio on 14/03/2017.
  */
-public class MainMenu extends AppCompatActivity {
+public class mainMenu extends AppCompatActivity {
 
     public int userId;
     public int userRole;
 
     private preferenceManager prefs;
-    boolean bFieldsCreated=false;
+    boolean bCatalogsDownloaded=false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,7 +29,7 @@ public class MainMenu extends AppCompatActivity {
         userId = getIntent().getExtras().getInt("userId");
         userRole = getIntent().getExtras().getInt("userRole");
 
-        checkFieldsCreated();
+        checkCatalogsDownloaded();
         createButtons();
     }
 
@@ -44,8 +44,8 @@ public class MainMenu extends AppCompatActivity {
             params.gravity=Gravity.CENTER;
             params.topMargin=50;
 
-            if((i<3) && bFieldsCreated) {
-                Button b = new Button(MainMenu.this);
+            if((i<3) && bCatalogsDownloaded) {
+                Button b = new Button(mainMenu.this);
                 b.setBackgroundResource(R.drawable.button_background);
                 b.setTextColor(Color.WHITE);
                 b.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
@@ -86,7 +86,7 @@ public class MainMenu extends AppCompatActivity {
                         break;
                 }
             } else if(i>=3) {
-                Button b = new Button(MainMenu.this);
+                Button b = new Button(mainMenu.this);
                 b.setBackgroundResource(R.drawable.button_background);
                 b.setTextColor(Color.WHITE);
                 b.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
@@ -120,15 +120,11 @@ public class MainMenu extends AppCompatActivity {
         }
     }
 
-    public void checkFieldsCreated(){
-        String fields;
+    public void checkCatalogsDownloaded(){
 
         prefs = new preferenceManager(this);
-        fields = prefs.getPreference("fields");
 
-        if(!fields.isEmpty()){
-            bFieldsCreated=true;
-        }
+        bCatalogsDownloaded = (prefs.exists("crops") && prefs.exists("treatments") && prefs.exists("measurements") && prefs.exists("activities") && prefs.exists("fields"));
     }
 
     public void addActivity(){
@@ -154,7 +150,7 @@ public class MainMenu extends AppCompatActivity {
 
     public void logout(){
         final Context context = this;
-        Intent i = new Intent(context, LoginScreen.class);
+        Intent i = new Intent(context, loginScreen.class);
         startActivity(i);
         finish();
     }

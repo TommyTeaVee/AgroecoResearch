@@ -39,5 +39,7 @@ while($row = mysqli_fetch_array($result,MYSQL_NUM)){
 </body>
 </html>
 <?php
+} else {
+        header("Location: index.php");
 }
 ?>

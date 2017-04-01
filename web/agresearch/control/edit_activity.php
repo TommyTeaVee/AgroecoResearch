@@ -81,5 +81,7 @@ for($i=0;$i<sizeof($activity_categories_catalog);$i++){
 </body>
 </html>
 <?php
+} else {
+        header("Location: index.php");
 }
 ?>

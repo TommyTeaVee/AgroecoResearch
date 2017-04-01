@@ -11,7 +11,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoginScreen"
+        <activity android:name=".loginScreen"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:label="@string/loginScreenTitle">
@@ -22,7 +22,7 @@
         </activity>
         <activity
             android:label="@string/mainMenuTitle"
-            android:name=".MainMenu"
+            android:name=".mainMenu"
             android:screenOrientation="portrait"
             android:launchMode="singleTask">
         </activity>

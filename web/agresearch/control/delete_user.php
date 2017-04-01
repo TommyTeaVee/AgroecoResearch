@@ -41,5 +41,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 </body>
 </html>
 <?php
+} else {
+        header("Location: index.php");
 }
 ?>

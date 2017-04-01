@@ -128,5 +128,7 @@ for($i=0;$i<sizeof($measurement_subcategories);$i++){
 </body>
 </html>
 <?php
+} else {
+        header("Location: index.php");
 }
 ?>

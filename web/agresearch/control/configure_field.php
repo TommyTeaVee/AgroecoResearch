@@ -294,6 +294,8 @@ if($proceed){
 </body>
 </html>
 <?php
+} else {
+        header("Location: index.php");
 }
 
 if($goto_plots){

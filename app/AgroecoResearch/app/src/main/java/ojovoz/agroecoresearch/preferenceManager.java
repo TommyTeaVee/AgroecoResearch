@@ -16,15 +16,29 @@ public class preferenceManager {
 
     public String getPreference(String keyName) {
         String value = "";
-        SharedPreferences agroEcoPrefs = context.getSharedPreferences("agroEcoPrefs", context.MODE_PRIVATE);
+        SharedPreferences agroEcoPrefs = context.getSharedPreferences("agroEcoPrefs", Context.MODE_PRIVATE);
         value = agroEcoPrefs.getString(keyName, "");
         return value;
     }
 
+    public boolean exists(String keyName) {
+        boolean ret;
+        SharedPreferences agroEcoPrefs = context.getSharedPreferences("agroEcoPrefs", Context.MODE_PRIVATE);
+        ret = agroEcoPrefs.contains(keyName);
+        return ret;
+    }
+
     public void savePreference(String keyName, String keyValue) {
-        SharedPreferences agroEcoPrefs = context.getSharedPreferences("agroEcoPrefs", context.MODE_PRIVATE);
+        SharedPreferences agroEcoPrefs = context.getSharedPreferences("agroEcoPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor prefEditor = agroEcoPrefs.edit();
         prefEditor.putString(keyName, keyValue);
+        prefEditor.commit();
+    }
+
+    public void savePreferenceBoolean(String keyName, boolean keyValue){
+        SharedPreferences agroEcoPrefs = context.getSharedPreferences("agroEcoPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor prefEditor = agroEcoPrefs.edit();
+        prefEditor.putBoolean(keyName, keyValue);
         prefEditor.commit();
     }
 

@@ -31,14 +31,16 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 <h2 class="w3-green">Control panel</h2><br>
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 <p>
-<div align="center"><button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:40%; height:40px" id="users" name="users">Users</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" id="fields" name="fields" style="width:40%; height:40px">Fields</button></div><br>
-<div align="center"><button class="w3-button w3-green w3-round w3-border w3-border-green" id="crops" name="crops" style="width:40%; height:40px">Crops</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" id="treatments" name="treatments" style="width:40%; height:40px">Treatments</button></div><br>
-<div align="center"><button class="w3-button w3-green w3-round w3-border w3-border-green" id="activities" name="activities" style="width:40%; height:40px">Activities</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" id="measurements" name="measurements" style="width:40%; height:40px">Measurements</button></div>
+<div align="center"><button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:40%; height:40px; max-width:500px;" id="users" name="users">Users</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" id="fields" name="fields" style="width:40%; height:40px; max-width:500px;">Fields</button></div><br>
+<div align="center"><button class="w3-button w3-green w3-round w3-border w3-border-green" id="crops" name="crops" style="width:40%; height:40px; max-width:500px;">Crops</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" id="treatments" name="treatments" style="width:40%; height:40px; max-width:500px;">Treatments</button></div><br>
+<div align="center"><button class="w3-button w3-green w3-round w3-border w3-border-green" id="activities" name="activities" style="width:40%; height:40px; max-width:500px;">Activities</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" id="measurements" name="measurements" style="width:40%; height:40px; max-width:500px;">Measurements</button></div>
 <br>
 </form><br>
 </div>
 </body>
 </html>
 <?php
+} else {
+        header("Location: index.php");
 }
 ?>

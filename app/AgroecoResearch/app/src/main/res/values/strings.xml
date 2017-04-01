@@ -30,4 +30,6 @@
     <string name="downloadMeasurementsText">MEASUREMENTS</string>
     <string name="downloadActivitiesText">ACTIVITIES</string>
     <string name="downloadFieldsText">FIELDS</string>
+    <string name="noCatalogsSelectedText">No catalogs selected</string>
+    <string name="downloadCatalogsProgressDialogTitle">Downloading</string>
 </resources>

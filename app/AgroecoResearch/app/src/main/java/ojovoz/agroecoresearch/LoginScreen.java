@@ -13,10 +13,9 @@ import android.widget.TextView;
 
 import java.io.File;
 
-public class LoginScreen extends AppCompatActivity implements httpConnection.AsyncResponse {
+public class loginScreen extends AppCompatActivity implements httpConnection.AsyncResponse {
 
     public String server = "";
-    private fileHandler fh;
     private promptDialog dlg = null;
     private preferenceManager prefs;
     private boolean bConnecting = false;
@@ -33,9 +32,6 @@ public class LoginScreen extends AppCompatActivity implements httpConnection.Asy
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_screen);
-
-        fh = new fileHandler();
-        fh.createDir(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + File.separator + "agroeco" + File.separator);
 
         initializeVariables();
         tv = (TextView)findViewById(R.id.loginMessage);
@@ -56,7 +52,7 @@ public class LoginScreen extends AppCompatActivity implements httpConnection.Asy
                 if(!input.startsWith("http://")){
                     input="http://"+input;
                 }
-                LoginScreen.this.server = input;
+                loginScreen.this.server = input;
                 prefs.savePreference("server", input);
                 return true;
             }
@@ -84,7 +80,7 @@ public class LoginScreen extends AppCompatActivity implements httpConnection.Asy
                     if (!bConnecting) {
                         tv.setText(R.string.connectingMessage);
                         bConnecting = true;
-                        http.execute(server + "/mobile/validate_user.php?user_alias=" + uAS + "&user_password=" + uPS);
+                        http.execute(server + "/mobile/validate_user.php?user_alias=" + uAS + "&user_password=" + uPS,"");
                     }
                 } else {
                     String u = prefs.getUserFromPrefs("users","*"+ uAS + "," + uPS + "*");
@@ -133,7 +129,7 @@ public class LoginScreen extends AppCompatActivity implements httpConnection.Asy
 
     public void launchMainMenu(){
         final Context context = this;
-        Intent i = new Intent(context, MainMenu.class);
+        Intent i = new Intent(context, mainMenu.class);
         i.putExtra("userId",userId);
         i.putExtra("userRole",userRole);
         startActivity(i);

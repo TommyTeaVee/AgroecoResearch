@@ -109,5 +109,7 @@ for($i=0;$i<sizeof($user_roles);$i++){
 </body>
 </html>
 <?php
+} else {
+        header("Location: index.php");
 }
 ?>

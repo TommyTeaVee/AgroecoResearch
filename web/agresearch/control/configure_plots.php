@@ -293,5 +293,7 @@ for($i=0;$i<sizeof($used_colors);$i++){
 </body>
 </html>
 <?php
+} else {
+        header("Location: index.php");
 }
 ?>
