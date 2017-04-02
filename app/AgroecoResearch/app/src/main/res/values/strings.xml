@@ -32,4 +32,6 @@
     <string name="downloadFieldsText">FIELDS</string>
     <string name="noCatalogsSelectedText">No catalogs selected</string>
     <string name="downloadCatalogsProgressDialogTitle">Downloading</string>
+    <string name="chooseFieldPlotTitle">Choose field and plot</string>
+    <string name="chooseFieldPrompt">Choose a field</string>
 </resources>

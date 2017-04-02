@@ -128,7 +128,13 @@ public class mainMenu extends AppCompatActivity {
     }
 
     public void addActivity(){
-
+        final Context context = this;
+        Intent i = new Intent(context, chooseFieldPlot.class);
+        i.putExtra("userId",userId);
+        i.putExtra("userRole",userRole);
+        i.putExtra("task","activity");
+        startActivity(i);
+        finish();
     }
 
     public void addMeasurement(){
