@@ -132,7 +132,7 @@ public class mainMenu extends AppCompatActivity {
         Intent i = new Intent(context, chooseFieldPlot.class);
         i.putExtra("userId",userId);
         i.putExtra("userRole",userRole);
-        i.putExtra("task","activity");
+        i.putExtra("task","Activity");
         startActivity(i);
         finish();
     }

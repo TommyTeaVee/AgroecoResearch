@@ -17,4 +17,8 @@ public class oTreatment {
         primaryCrop=c;
         intercroppingCrop=l;
     }
+
+    oTreatment(){
+
+    }
 }

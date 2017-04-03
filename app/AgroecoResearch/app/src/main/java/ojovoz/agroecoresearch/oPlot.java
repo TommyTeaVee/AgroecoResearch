@@ -10,13 +10,19 @@ public class oPlot {
     public int column;
     public oCrop primaryCrop;
     public oCrop intercroppingCrop;
-    public ArrayList<oTreatment> treatments;
+    public boolean hasSoilManagement;
+    public boolean hasPestControl;
 
-    oPlot(int r, int c, oCrop c1, oCrop l, ArrayList<oTreatment> t){
+    oPlot(int r, int c, oCrop c1, oCrop l, boolean sm, boolean pc){
         row=r;
         column=c;
         primaryCrop=c1;
         intercroppingCrop=l;
-        treatments=t;
+        hasSoilManagement=sm;
+        hasPestControl=pc;
+    }
+
+    oPlot(){
+
     }
 }

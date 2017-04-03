@@ -13,4 +13,8 @@ public class oCrop {
         cropName=name;
         cropVariety=variety;
     }
+
+    oCrop(){
+
+    }
 }

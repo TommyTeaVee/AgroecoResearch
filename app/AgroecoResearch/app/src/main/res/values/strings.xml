@@ -34,4 +34,6 @@
     <string name="downloadCatalogsProgressDialogTitle">Downloading</string>
     <string name="chooseFieldPlotTitle">Choose field and plot</string>
     <string name="chooseFieldPrompt">Choose a field</string>
+    <string name="choosePlotPrompt">Choose a plot</string>
+    <string name="chooseEntireFieldButton">Choose entire field</string>
 </resources>
