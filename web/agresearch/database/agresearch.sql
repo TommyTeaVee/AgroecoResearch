@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: 192.168.86.55
--- Tiempo de generación: 29-03-2017 a las 18:27:49
+-- Tiempo de generación: 04-04-2017 a las 14:43:00
 -- Versión del servidor: 5.5.54-0+deb7u2-log
 -- Versión de PHP: 5.3.29-1~dotdeb.0
 
@@ -30,8 +30,9 @@ CREATE TABLE IF NOT EXISTS `activity` (
 `activity_id` int(10) unsigned NOT NULL,
   `activity_name` varchar(100) NOT NULL,
   `activity_category` varchar(30) NOT NULL,
-  `activity_periodicity` int(10) unsigned NOT NULL COMMENT 'in days'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+  `activity_periodicity` int(10) unsigned NOT NULL COMMENT 'in days',
+  `activity_measurement_units` varchar(30) NOT NULL
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
 
 -- --------------------------------------------------------
 
@@ -75,7 +76,7 @@ CREATE TABLE IF NOT EXISTS `field` (
   `field_lat` varchar(30) NOT NULL,
   `field_lng` varchar(30) NOT NULL,
   `field_configuration` text NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Fields registered in the ag. research' AUTO_INCREMENT=29 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Fields registered in the ag. research' AUTO_INCREMENT=35 ;
 
 -- --------------------------------------------------------
 
@@ -86,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `field` (
 CREATE TABLE IF NOT EXISTS `log` (
 `log_id` int(10) unsigned NOT NULL,
   `field_id` int(10) unsigned NOT NULL,
-  `plot_id` int(10) unsigned NOT NULL,
+  `plot_number` int(10) unsigned NOT NULL,
   `user_id` int(10) unsigned NOT NULL,
   `crop_id` int(10) unsigned NOT NULL,
   `treatment_id` int(10) unsigned NOT NULL,
@@ -246,7 +247,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT de la tabla `activity`
 --
 ALTER TABLE `activity`
-MODIFY `activity_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+MODIFY `activity_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
 --
 -- AUTO_INCREMENT de la tabla `activity_x_crop_or_treatment`
 --
@@ -261,7 +262,7 @@ MODIFY `crop_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=10;
 -- AUTO_INCREMENT de la tabla `field`
 --
 ALTER TABLE `field`
-MODIFY `field_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=29;
+MODIFY `field_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=35;
 --
 -- AUTO_INCREMENT de la tabla `log`
 --
