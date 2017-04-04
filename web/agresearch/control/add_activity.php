@@ -17,7 +17,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 			$activity_category=normalize($c);
 		}
 		$activity_periodicity=$_POST['activity_periodicity'];
-		$query="INSERT INTO activity (activity_name, activity_category, activity_periodicity) VALUES ('$activity_name', '$activity_category', $activity_periodicity)";
+		$activity_measurement_units=$_POST['activity_measurement_units'];
+		$query="INSERT INTO activity (activity_name, activity_category, activity_periodicity, activity_measurement_units) VALUES ('$activity_name', '$activity_category', $activity_periodicity, '$activity_measurement_units')";
 		$result = mysqli_query($dbh,$query);
 		header("Location: activities.php");
 	} else if(isset($_POST['cancel'])){
@@ -62,6 +63,8 @@ for($i=0;$i<sizeof($activity_categories);$i++){
 </script>
 <p><label class="w3-text-green">Periodicity in days: (Enter '0' if variable)</label>
 <input class="w3-input w3-border-green w3-text-green" name="activity_periodicity" type="text" maxlength="10"></p>
+<p><label class="w3-text-green">Measurement units</label>
+<input class="w3-input w3-border-green w3-text-green" name="activity_measurement_units" type="text" maxlength="30"></p>
 <br><button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="add_activity" name="add_activity">Add activity</button> <button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="cancel" name="cancel">Cancel</button></form><br>
 <br><br></div>
 </body>

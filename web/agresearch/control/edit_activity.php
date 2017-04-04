@@ -18,7 +18,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 			$activity_category=normalize($c);
 		}
 		$activity_periodicity=$_POST['activity_periodicity'];
-		$query="UPDATE activity SET activity_name='$activity_name', activity_category='$activity_category', activity_periodicity=$activity_periodicity WHERE activity_id=$activity_id";
+		$activity_measurement_units=$_POST['activity_measurement_units'];
+		$query="UPDATE activity SET activity_name='$activity_name', activity_category='$activity_category', activity_periodicity=$activity_periodicity, activity_measurement_units='$activity_measurement_units' WHERE activity_id=$activity_id";
 		$result = mysqli_query($dbh,$query);
 		header("Location: activities.php");
 	} else if(isset($_POST['cancel'])){
@@ -26,12 +27,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 	}
 } else if(isset($_SESSION['admin']) && $_SESSION['admin']==true) {
 	$activity_id=$_GET['id'];
-	$query="SELECT activity_name, activity_category, activity_periodicity FROM activity WHERE activity_id=$activity_id";
+	$query="SELECT activity_name, activity_category, activity_periodicity, activity_measurement_units FROM activity WHERE activity_id=$activity_id";
 	$result = mysqli_query($dbh,$query);
 	if($row = mysqli_fetch_array($result,MYSQL_NUM)){
 		$activity_name=$row[0];
 		$activity_category=$row[1];
 		$activity_periodicity=$row[2];
+		$activity_measurement_units=$row[3];
 	}
 	$activity_categories_catalog=getActivityCategories($dbh);
 ?>
@@ -76,6 +78,8 @@ for($i=0;$i<sizeof($activity_categories_catalog);$i++){
 </script>
 <p><label class="w3-text-green">Periodicity in days: (Enter '0' if variable)</label>
 <input class="w3-input w3-border-green w3-text-green" name="activity_periodicity" type="text" maxlength="10" value="<?php echo($activity_periodicity); ?>"></p>
+<p><label class="w3-text-green">Measurement units:</label>
+<input class="w3-input w3-border-green w3-text-green" name="activity_measurement_units" type="text" maxlength="30" value="<?php echo($activity_measurement_units); ?>"></p>
 <br><button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="edit_activity" name="edit_activity">Edit activity</button> <button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="cancel" name="cancel">Cancel</button></form><br>
 <br><br></div>
 </body>

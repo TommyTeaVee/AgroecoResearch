@@ -294,9 +294,7 @@ if($proceed){
 </body>
 </html>
 <?php
-} else {
-        header("Location: index.php");
-}
+} 
 
 if($goto_plots){
 	header("Location: configure_plots.php?id=".$field_id."&fname=".$fname);

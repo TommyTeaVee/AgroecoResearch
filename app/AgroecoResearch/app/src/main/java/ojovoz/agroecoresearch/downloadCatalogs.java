@@ -13,13 +13,10 @@ import android.widget.CheckBox;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.List;
 
 
 import au.com.bytecode.opencsv.CSVReader;
@@ -53,7 +50,11 @@ public class downloadCatalogs extends AppCompatActivity implements httpConnectio
         initializeChecboxes();
     }
 
-    public void settings(View v){
+    @Override public void onBackPressed(){
+        settings();
+    }
+
+    public void settings(){
         final Context context = this;
         Intent i = new Intent(context, settings.class);
         i.putExtra("userId",userId);

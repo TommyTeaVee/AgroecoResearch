@@ -30,6 +30,16 @@ public class settings extends AppCompatActivity implements httpConnection.AsyncR
         initializeVariables();
     }
 
+    @Override
+    public void onBackPressed(){
+        final Context context = this;
+        Intent i = new Intent(context, mainMenu.class);
+        i.putExtra("userId",userId);
+        i.putExtra("userRole",userRole);
+        startActivity(i);
+        finish();
+    }
+
     private void initializeVariables(){
         prefs = new preferenceManager(this);
         server = prefs.getPreference("server");
@@ -78,22 +88,6 @@ public class settings extends AppCompatActivity implements httpConnection.AsyncR
         i.putExtra("userId",userId);
         i.putExtra("userRole",userRole);
         i.putExtra("server",server);
-        startActivity(i);
-        finish();
-    }
-
-    public void logout(View v){
-        final Context context = this;
-        Intent i = new Intent(context, loginScreen.class);
-        startActivity(i);
-        finish();
-    }
-
-    public void mainMenu(View v){
-        final Context context = this;
-        Intent i = new Intent(context, mainMenu.class);
-        i.putExtra("userId",userId);
-        i.putExtra("userRole",userRole);
         startActivity(i);
         finish();
     }

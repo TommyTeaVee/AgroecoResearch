@@ -33,6 +33,11 @@ public class mainMenu extends AppCompatActivity {
         createButtons();
     }
 
+    @Override
+    public void onBackPressed(){
+        logout();
+    }
+
     public void createButtons(){
 
         LinearLayout.LayoutParams params;

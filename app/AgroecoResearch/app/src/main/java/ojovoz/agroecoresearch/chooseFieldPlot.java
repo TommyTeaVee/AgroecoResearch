@@ -1,9 +1,9 @@
 package ojovoz.agroecoresearch;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.LightingColorFilter;
-import android.graphics.drawable.Drawable;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +17,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
 
 /**
  * Created by Eugenio on 02/04/2017.
@@ -35,6 +35,8 @@ public class chooseFieldPlot extends AppCompatActivity {
     ArrayList<oField> fields;
     CharSequence fieldsArray[];
     oField field;
+
+    public String legend;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,6 +80,15 @@ public class chooseFieldPlot extends AppCompatActivity {
 
     }
 
+    @Override public void onBackPressed(){
+        final Context context = this;
+        Intent i = new Intent(context, mainMenu.class);
+        i.putExtra("userId",userId);
+        i.putExtra("userRole",userRole);
+        startActivity(i);
+        finish();
+    }
+
     public void showSelectFieldsDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
@@ -119,6 +130,10 @@ public class chooseFieldPlot extends AppCompatActivity {
         int n=0;
         ArrayList cropList = new ArrayList();
         int currentCropN;
+        String cropsInLegend="";
+        String intercropInLegend="";
+        String[] treatmentNames = {"No treatments","Soil management","Pest control","Soil management and pest control"};
+        ArrayList<String> treatmentLegends = new ArrayList<>();
         for(int i=0;i<field.rows;i++){
             final TableRow trow = new TableRow(chooseFieldPlot.this);
             TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.MATCH_PARENT);
@@ -130,12 +145,24 @@ public class chooseFieldPlot extends AppCompatActivity {
                 b.setPadding(3,3,3,3);
                 if(!plot.hasPestControl && !plot.hasSoilManagement){
                     b.setBackgroundColor(ContextCompat.getColor(this, R.color.noTreatments));
+                    if(!treatmentLegends.contains(treatmentNames[0])){
+                        treatmentLegends.add(treatmentNames[0]);
+                    }
                 } else if(!plot.hasPestControl && plot.hasSoilManagement){
                     b.setBackgroundColor(ContextCompat.getColor(this, R.color.soilManagement));
+                    if(!treatmentLegends.contains(treatmentNames[1])){
+                        treatmentLegends.add(treatmentNames[1]);
+                    }
                 } else if(plot.hasPestControl && !plot.hasSoilManagement){
                     b.setBackgroundColor(ContextCompat.getColor(this, R.color.pestControl));
+                    if(!treatmentLegends.contains(treatmentNames[2])){
+                        treatmentLegends.add(treatmentNames[2]);
+                    }
                 } else {
                     b.setBackgroundColor(ContextCompat.getColor(this, R.color.bothTreatments));
+                    if(!treatmentLegends.contains(treatmentNames[3])){
+                        treatmentLegends.add(treatmentNames[3]);
+                    }
                 }
 
                 b.setTextColor(ContextCompat.getColor(this, R.color.colorBlack));
@@ -145,6 +172,11 @@ public class chooseFieldPlot extends AppCompatActivity {
                 if(!cropList.contains(pcId)){
                     cropList.add(pcId);
                     currentCropN=cropList.size();
+                    if(cropsInLegend.isEmpty()){
+                        cropsInLegend="C" + Integer.toString(currentCropN) + ": " + pc.cropName + " (" + pc.cropVariety + ")";
+                    } else {
+                        cropsInLegend+="\nC" + Integer.toString(currentCropN) + ": " + pc.cropName + " (" + pc.cropVariety + ")";
+                    }
                 } else {
                     currentCropN=cropList.indexOf(pcId)+1;
                 }
@@ -153,6 +185,7 @@ public class chooseFieldPlot extends AppCompatActivity {
                 oCrop ic = plot.intercroppingCrop;
                 if(ic!=null){
                     cropsInPlot += "+L";
+                    intercropInLegend="\nL: " + ic.cropName + " (" + ic.cropVariety + ")";
                 }
 
                 b.setText(cropsInPlot);
@@ -172,6 +205,45 @@ public class chooseFieldPlot extends AppCompatActivity {
         }
         Button b = (Button)findViewById(R.id.chooseEntireFieldButton);
         b.setVisibility(View.VISIBLE);
+
+        legend=cropsInLegend+intercropInLegend;
+
+        TextView l = (TextView)findViewById(R.id.fieldLegend);
+        l.setVisibility(View.VISIBLE);
+        l.setText(legend);
+
+        int i=0;
+        Iterator<String> iterator = treatmentLegends.iterator();
+        while (iterator.hasNext()) {
+            TextView tl= new TextView(this);
+            String record = iterator.next();
+            switch(i){
+                case 0:
+                    tl = (TextView)findViewById(R.id.treatment1Legend);
+                    break;
+                case 1:
+                    tl = (TextView)findViewById(R.id.treatment2Legend);
+                    break;
+                case 2:
+                    tl = (TextView)findViewById(R.id.treatment3Legend);
+                    break;
+                case 3:
+                    tl = (TextView)findViewById(R.id.treatment4Legend);
+                    break;
+            }
+            tl.setVisibility(View.VISIBLE);
+            if(record.equals(treatmentNames[0])) {
+                tl.setTextColor(ContextCompat.getColor(this, R.color.noTreatments));
+            } else if(record.equals(treatmentNames[1])) {
+                tl.setTextColor(ContextCompat.getColor(this, R.color.soilManagement));
+            } else if(record.equals(treatmentNames[2])) {
+                tl.setTextColor(ContextCompat.getColor(this, R.color.pestControl));
+            } else if(record.equals(treatmentNames[3])) {
+                tl.setTextColor(ContextCompat.getColor(this, R.color.bothTreatments));
+            }
+            tl.setText(record);
+            i++;
+        }
     }
 
     void choosePlot(int n, View v){
