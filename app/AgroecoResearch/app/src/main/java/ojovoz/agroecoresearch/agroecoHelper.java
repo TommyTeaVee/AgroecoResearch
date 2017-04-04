@@ -33,7 +33,7 @@ public class agroecoHelper {
         createTreatments();
         createFields();
         createActivities();
-        //createLog();
+        createLog();
     }
 
     public void createCrops(){
@@ -118,10 +118,10 @@ public class agroecoHelper {
     }
 
     public void createLog(){
-        DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+        DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
         log = new ArrayList<>();
         List<String[]> logCSV = readFile("log");
-        if(!logCSV.isEmpty()) {
+        if(logCSV!=null) {
             Iterator<String[]> iterator = logCSV.iterator();
             while (iterator.hasNext()) {
                 String[] record = iterator.next();
