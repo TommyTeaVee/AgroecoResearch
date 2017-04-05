@@ -28,8 +28,6 @@ public class chooseFieldPlot extends AppCompatActivity {
     public int userRole;
     public String task;
 
-    private preferenceManager prefs;
-
     public agroecoHelper agroHelper;
 
     ArrayList<oField> fields;
@@ -46,15 +44,12 @@ public class chooseFieldPlot extends AppCompatActivity {
         userId = getIntent().getExtras().getInt("userId");
         userRole = getIntent().getExtras().getInt("userRole");
         task = getIntent().getExtras().getString("task");
+        int fieldId = getIntent().getExtras().getInt("field");
 
-
-        CharSequence title = task + ": " + getTitle();
+        CharSequence title = getTitle() + " " + task;
         setTitle(title);
 
-        prefs = new preferenceManager(this);
-
-        agroHelper = new agroecoHelper(this);
-
+        agroHelper = new agroecoHelper(this,"crops,fields");
         fields = agroHelper.fields;
 
 
@@ -65,6 +60,7 @@ public class chooseFieldPlot extends AppCompatActivity {
         fieldsArray=tf.toArray(new CharSequence[tf.size()]);
 
         Button fieldListView = (Button) findViewById(R.id.chooseFieldButton);
+
         fieldListView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,6 +73,16 @@ public class chooseFieldPlot extends AppCompatActivity {
                 }
             }
         });
+
+        if(fieldId>=0){
+            field = agroHelper.getFieldFromId(fieldId);
+            fieldListView = (Button) findViewById(R.id.chooseFieldButton);
+            fieldListView.setText(field.fieldName + " r" + field.fieldReplicationN);
+            String msg=getString(R.string.choosePlotPrompt);
+            TextView choosePlotMessage = (TextView) findViewById(R.id.choosePlotMessage);
+            choosePlotMessage.setText(msg);
+            drawPlots();
+        }
 
     }
 
@@ -107,7 +113,6 @@ public class chooseFieldPlot extends AppCompatActivity {
                     Button fieldListView = (Button) findViewById(R.id.chooseFieldButton);
                     fieldListView.setText(field.fieldName + " r" + field.fieldReplicationN);
                     msg=getString(R.string.choosePlotPrompt);
-                    prefs.savePreference("currentField",Integer.toString(field.fieldId));
                     drawPlots();
                 }
                 TextView choosePlotMessage = (TextView) findViewById(R.id.choosePlotMessage);
@@ -122,7 +127,7 @@ public class chooseFieldPlot extends AppCompatActivity {
 
     void drawPlots(){
 
-        ArrayList<oPlot> plots = agroHelper.getPlotsFromFieldId(field.fieldId);
+        ArrayList<oPlot> plots = field.plots;
 
         TableLayout plotsGrid = (TableLayout) findViewById(R.id.plotsGrid);
         plotsGrid.removeAllViews();
@@ -136,7 +141,7 @@ public class chooseFieldPlot extends AppCompatActivity {
         ArrayList<String> treatmentLegends = new ArrayList<>();
         for(int i=0;i<field.rows;i++){
             final TableRow trow = new TableRow(chooseFieldPlot.this);
-            TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.MATCH_PARENT);
+            TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f);
             lp.setMargins(2,2,2,2);
             for(int j=0;j<field.columns;j++){
                 oPlot plot = plots.get(n);
@@ -249,5 +254,29 @@ public class chooseFieldPlot extends AppCompatActivity {
     void choosePlot(int n, View v){
         Button b = (Button)v;
         b.setBackgroundColor(ContextCompat.getColor(this,R.color.colorPrimaryDark));
+
+        final Context context = this;
+        Intent i = new Intent(context, chooser.class);
+        i.putExtra("userId",userId);
+        i.putExtra("userRole",userRole);
+        i.putExtra("task","activity");
+        i.putExtra("field",field.fieldId);
+        i.putExtra("plot",n);
+
+        startActivity(i);
+        finish();
+    }
+
+    public void chooseEntireField(View v){
+        final Context context = this;
+        Intent i = new Intent(context, chooser.class);
+        i.putExtra("userId",userId);
+        i.putExtra("userRole",userRole);
+        i.putExtra("task","activity");
+        i.putExtra("field",field.fieldId);
+        i.putExtra("plot",-1);
+
+        startActivity(i);
+        finish();
     }
 }

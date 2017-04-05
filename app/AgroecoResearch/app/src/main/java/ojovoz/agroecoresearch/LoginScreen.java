@@ -42,9 +42,6 @@ public class loginScreen extends AppCompatActivity implements httpConnection.Asy
         if (server.equals("")) {
             defineServer("");
         }
-
-        prefs.savePreference("currentField","-1");
-        prefs.savePreference("currentPlot","-1");
     }
 
     public void defineServer(String current) {

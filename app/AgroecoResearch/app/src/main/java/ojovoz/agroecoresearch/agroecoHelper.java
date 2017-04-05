@@ -1,6 +1,8 @@
 package ojovoz.agroecoresearch;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.io.File;
 import java.io.FileReader;
@@ -27,49 +29,66 @@ public class agroecoHelper {
 
     ArrayList<oLog> log;
 
-    agroecoHelper(Context context){
+    agroecoHelper(Context context, String catalogsNeeded){
         this.context=context;
-        createCrops();
-        createTreatments();
-        createFields();
-        createActivities();
-        createLog();
+        if(catalogsNeeded.contains("crops")) {
+            createCrops();
+        }
+        if(catalogsNeeded.contains("treatments")) {
+            createTreatments();
+        }
+        if(catalogsNeeded.contains("fields")) {
+            createFields();
+        }
+        if(catalogsNeeded.contains("activities")) {
+            createActivities();
+        }
+        if(catalogsNeeded.contains("log")) {
+            createLog();
+            //TODO: sort log by date
+        }
     }
 
     public void createCrops(){
         crops = new ArrayList<>();
         List<String[]> cropsCSV = readFile("crops");
-        Iterator<String[]> iterator = cropsCSV.iterator();
-        while (iterator.hasNext()){
-            String[] record = iterator.next();
-            oCrop crop = new oCrop();
-            crop.cropId=Integer.parseInt(record[0]);
-            crop.cropName=record[1];
-            crop.cropVariety=record[2];
-            crops.add(crop);
+        if(cropsCSV!=null) {
+            Iterator<String[]> iterator = cropsCSV.iterator();
+            while (iterator.hasNext()) {
+                String[] record = iterator.next();
+                oCrop crop = new oCrop();
+                crop.cropId = Integer.parseInt(record[0]);
+                crop.cropName = record[1];
+                crop.cropVariety = record[2];
+                crops.add(crop);
+            }
         }
     }
 
     public void createActivities(){
         activities = new ArrayList<>();
         List<String[]> activitiesCSV = readFile("activities");
-        Iterator<String[]> iterator = activitiesCSV.iterator();
-        while (iterator.hasNext()) {
-            String[] record = iterator.next();
-            oActivity activity = new oActivity();
-            activity.activityId=Integer.parseInt(record[0]);
-            activity.activityName=record[1];
-            activity.activityCategory=record[2];
-            activity.activityPeriodicity=Integer.parseInt(record[3]);
-            activity.activityMeasurementUnits=record[4];
-            activities.add(activity);
-        }
+        if(activitiesCSV!=null) {
+            Iterator<String[]> iterator = activitiesCSV.iterator();
+            while (iterator.hasNext()) {
+                String[] record = iterator.next();
+                oActivity activity = new oActivity();
+                activity.activityId = Integer.parseInt(record[0]);
+                activity.activityName = record[1];
+                activity.activityCategory = record[2];
+                activity.activityPeriodicity = Integer.parseInt(record[3]);
+                activity.activityMeasurementUnits = record[4];
+                activities.add(activity);
+            }
 
-        List<String[]> activitiesAppliedCSV = readFile("activities_applied");
-        Iterator<String[]> iteratorApplied = activitiesAppliedCSV.iterator();
-        while (iteratorApplied.hasNext()) {
-            String[] record = iteratorApplied.next();
-            addCropTreatmentToActivity(Integer.parseInt(record[0]), record[1], record[2]);
+            List<String[]> activitiesAppliedCSV = readFile("activities_applied");
+            if (activitiesAppliedCSV != null) {
+                Iterator<String[]> iteratorApplied = activitiesAppliedCSV.iterator();
+                while (iteratorApplied.hasNext()) {
+                    String[] record = iteratorApplied.next();
+                    addCropTreatmentToActivity(Integer.parseInt(record[0]), record[1], record[2]);
+                }
+            }
         }
     }
 
@@ -94,26 +113,28 @@ public class agroecoHelper {
     public void createTreatments(){
         treatments = new ArrayList<>();
         List<String[]> treatmentsCSV = readFile("treatments");
-        Iterator<String[]> iterator = treatmentsCSV.iterator();
-        while (iterator.hasNext()) {
-            String[] record = iterator.next();
-            oTreatment treatment = new oTreatment();
-            treatment.treatmentId=Integer.parseInt(record[0]);
-            treatment.treatmentName=record[1];
-            treatment.treatmentCategory=record[2];
-            if(!record[3].isEmpty()){
-                oCrop treatmentPrimaryCrop = getCropFromId(Integer.parseInt(record[3]));
-                treatment.primaryCrop = treatmentPrimaryCrop;
-            } else {
-                treatment.primaryCrop = null;
+        if(treatmentsCSV!=null) {
+            Iterator<String[]> iterator = treatmentsCSV.iterator();
+            while (iterator.hasNext()) {
+                String[] record = iterator.next();
+                oTreatment treatment = new oTreatment();
+                treatment.treatmentId = Integer.parseInt(record[0]);
+                treatment.treatmentName = record[1];
+                treatment.treatmentCategory = record[2];
+                if (!record[3].isEmpty()) {
+                    oCrop treatmentPrimaryCrop = getCropFromId(Integer.parseInt(record[3]));
+                    treatment.primaryCrop = treatmentPrimaryCrop;
+                } else {
+                    treatment.primaryCrop = null;
+                }
+                if (!record[4].isEmpty()) {
+                    oCrop treatmentIntercroppingCrop = getCropFromId(Integer.parseInt(record[4]));
+                    treatment.intercroppingCrop = treatmentIntercroppingCrop;
+                } else {
+                    treatment.intercroppingCrop = null;
+                }
+                treatments.add(treatment);
             }
-            if(!record[4].isEmpty()){
-                oCrop treatmentIntercroppingCrop = getCropFromId(Integer.parseInt(record[4]));
-                treatment.intercroppingCrop = treatmentIntercroppingCrop;
-            } else {
-                treatment.intercroppingCrop = null;
-            }
-            treatments.add(treatment);
         }
     }
 
@@ -176,20 +197,34 @@ public class agroecoHelper {
     public void createFields(){
         fields=new ArrayList<>();
         List<String[]> fieldsCSV = readFile("fields");
-
-        Iterator<String[]> iterator = fieldsCSV.iterator();
-        while (iterator.hasNext()){
-            String[] record = iterator.next();
-            oField field = new oField();
-            field.fieldId=Integer.parseInt(record[0]);
-            field.fieldName=record[4];
-            field.fieldReplicationN=Integer.parseInt(record[5]);
-            field.plots=parsePlots(record[8]);
-            String[] grid = getFieldRowsColumns(record[8]);
-            field.rows=Integer.parseInt(grid[0]);
-            field.columns=Integer.parseInt(grid[1]);
-            fields.add(field);
+        if(fieldsCSV!=null) {
+            Iterator<String[]> iterator = fieldsCSV.iterator();
+            while (iterator.hasNext()) {
+                String[] record = iterator.next();
+                oField field = new oField();
+                field.fieldId = Integer.parseInt(record[0]);
+                field.fieldName = record[4];
+                field.fieldReplicationN = Integer.parseInt(record[5]);
+                field.plots = parsePlots(record[8]);
+                String[] grid = getFieldRowsColumns(record[8]);
+                field.rows = Integer.parseInt(grid[0]);
+                field.columns = Integer.parseInt(grid[1]);
+                fields.add(field);
+            }
         }
+    }
+
+    public oField getFieldFromId(int id){
+        oField ret=null;
+        Iterator<oField> iterator = fields.iterator();
+        while (iterator.hasNext()) {
+            oField field = iterator.next();
+            if(field.fieldId==id){
+                ret=field;
+                break;
+            }
+        }
+        return ret;
     }
 
     public String[] getFieldRowsColumns(String plotsString){
@@ -229,6 +264,12 @@ public class agroecoHelper {
         return ret;
     }
 
+    public ArrayList<oActivity> getActivities(){
+        //TODO: add filters. Activity is returned only if: 1) has no associations or 2) is associated with relevant crop and/or treatment
+        //TODO: check log for latest update to activity, add legend: "Last: n days ago" (or "Never", or "Today")
+        return activities;
+    }
+
     public List<String[]> readFile(String filename){
         List<String[]> ret = null;
 
@@ -244,20 +285,6 @@ public class agroecoHelper {
             }
         }
 
-        return ret;
-    }
-
-    public ArrayList<oPlot> getPlotsFromFieldId(int id){
-        oField field;
-        ArrayList<oPlot> ret = null;
-        Iterator<oField> iterator = fields.iterator();
-        while (iterator.hasNext()) {
-            field = iterator.next();
-            if(field.fieldId==id){
-                ret = field.plots;
-                break;
-            }
-        }
         return ret;
     }
 }

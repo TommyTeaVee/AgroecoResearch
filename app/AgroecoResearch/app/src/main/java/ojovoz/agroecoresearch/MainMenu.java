@@ -43,11 +43,13 @@ public class mainMenu extends AppCompatActivity {
         LinearLayout.LayoutParams params;
         LinearLayout layout = (LinearLayout)findViewById(R.id.menu_layout);
 
-        for(int i=0;i<5;i++){
+        for(int i=0;i<6;i++){
             params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             params.height=70;
             params.gravity=Gravity.CENTER;
-            params.topMargin=50;
+            if(i>0) {
+                params.topMargin = 50;
+            }
 
             if((i<3) && bCatalogsDownloaded) {
                 Button b = new Button(mainMenu.this);
@@ -68,6 +70,17 @@ public class mainMenu extends AppCompatActivity {
                         layout.addView(b, params);
                         break;
                     case 1:
+                        b.setText(R.string.registerInputButton);
+                        b.setOnClickListener(new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View v) {
+                                addInput();
+                            }
+                        });
+                        layout.addView(b, params);
+                        break;
+                    case 2:
                         b.setText(R.string.registerMeasurementButtonText);
                         b.setOnClickListener(new View.OnClickListener() {
 
@@ -78,7 +91,7 @@ public class mainMenu extends AppCompatActivity {
                         });
                         layout.addView(b, params);
                         break;
-                    case 2:
+                    case 3:
                         b.setText(R.string.manageDataButtonText);
                         b.setOnClickListener(new View.OnClickListener() {
 
@@ -90,7 +103,7 @@ public class mainMenu extends AppCompatActivity {
                         layout.addView(b, params);
                         break;
                 }
-            } else if(i>=3) {
+            } else if(i>=4) {
                 Button b = new Button(mainMenu.this);
                 b.setBackgroundResource(R.drawable.button_background);
                 b.setTextColor(Color.WHITE);
@@ -98,7 +111,7 @@ public class mainMenu extends AppCompatActivity {
                 b.setId(i);
 
                 switch(i){
-                    case 3:
+                    case 4:
                         b.setText(R.string.settingsButtonText);
                         b.setOnClickListener(new View.OnClickListener() {
 
@@ -109,7 +122,7 @@ public class mainMenu extends AppCompatActivity {
                         });
                         layout.addView(b,params);
                         break;
-                    case 4:
+                    case 5:
                         b.setText(R.string.logoutButtonText);
                         b.setOnClickListener(new View.OnClickListener() {
 
@@ -137,9 +150,14 @@ public class mainMenu extends AppCompatActivity {
         Intent i = new Intent(context, chooseFieldPlot.class);
         i.putExtra("userId",userId);
         i.putExtra("userRole",userRole);
-        i.putExtra("task","Activity");
+        i.putExtra("task","activity");
+        i.putExtra("field",-1);
         startActivity(i);
         finish();
+    }
+
+    public void addInput(){
+
     }
 
     public void addMeasurement(){

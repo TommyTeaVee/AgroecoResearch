@@ -56,6 +56,7 @@
             android:layout_height="wrap_content"
             android:text="@string/chooseEntireFieldButton"
             android:id="@+id/chooseEntireFieldButton"
+            android:onClick="chooseEntireField"
             android:layout_marginTop="15dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"

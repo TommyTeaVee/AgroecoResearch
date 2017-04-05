@@ -10,4 +10,6 @@
     <color name="bothTreatments">#8bc34a</color>
     <color name="colorBlack">#000000</color>
     <color name="darkGray">#999999</color>
+    <color name="mediumGray">#cccccc</color>
+    <color name="lightGray">#eeeeee</color>
 </resources>

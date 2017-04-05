@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: 192.168.86.55
--- Tiempo de generación: 04-04-2017 a las 14:43:00
+-- Tiempo de generación: 05-04-2017 a las 16:30:55
 -- Versión del servidor: 5.5.54-0+deb7u2-log
 -- Versión de PHP: 5.3.29-1~dotdeb.0
 
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `activity` (
   `activity_category` varchar(30) NOT NULL,
   `activity_periodicity` int(10) unsigned NOT NULL COMMENT 'in days',
   `activity_measurement_units` varchar(30) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=16 ;
 
 -- --------------------------------------------------------
 
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `activity_x_crop_or_treatment` (
   `activity_id` int(10) unsigned NOT NULL,
   `crop_id` int(10) unsigned DEFAULT NULL,
   `treatment_id` int(10) unsigned DEFAULT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=19 ;
 
 -- --------------------------------------------------------
 
@@ -77,6 +77,25 @@ CREATE TABLE IF NOT EXISTS `field` (
   `field_lng` varchar(30) NOT NULL,
   `field_configuration` text NOT NULL
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Fields registered in the ag. research' AUTO_INCREMENT=35 ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `input_log`
+--
+
+CREATE TABLE IF NOT EXISTS `input_log` (
+`input_log_id` int(10) unsigned NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `crop_id` int(11) NOT NULL,
+  `treatment_id` int(11) NOT NULL,
+  `input_age` int(11) NOT NULL,
+  `input_origin` varchar(200) NOT NULL,
+  `input_cost` float NOT NULL,
+  `input_treatment_material` text NOT NULL,
+  `input_treatment_preparation_method` text NOT NULL,
+  `input_comments` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -204,6 +223,12 @@ ALTER TABLE `field`
  ADD PRIMARY KEY (`field_id`);
 
 --
+-- Indices de la tabla `input_log`
+--
+ALTER TABLE `input_log`
+ ADD PRIMARY KEY (`input_log_id`);
+
+--
 -- Indices de la tabla `log`
 --
 ALTER TABLE `log`
@@ -247,12 +272,12 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT de la tabla `activity`
 --
 ALTER TABLE `activity`
-MODIFY `activity_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
+MODIFY `activity_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=16;
 --
 -- AUTO_INCREMENT de la tabla `activity_x_crop_or_treatment`
 --
 ALTER TABLE `activity_x_crop_or_treatment`
-MODIFY `activity_x_crop_or_treatment_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=10;
+MODIFY `activity_x_crop_or_treatment_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=19;
 --
 -- AUTO_INCREMENT de la tabla `crop`
 --
@@ -263,6 +288,11 @@ MODIFY `crop_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=10;
 --
 ALTER TABLE `field`
 MODIFY `field_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=35;
+--
+-- AUTO_INCREMENT de la tabla `input_log`
+--
+ALTER TABLE `input_log`
+MODIFY `input_log_id` int(10) unsigned NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT de la tabla `log`
 --

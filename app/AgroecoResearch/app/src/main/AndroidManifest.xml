@@ -44,6 +44,12 @@
             android:screenOrientation="portrait"
             android:launchMode="singleTask">
         </activity>
+        <activity
+            android:label="@string/chooserTitle"
+            android:name=".chooser"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask">
+        </activity>
     </application>
 
 </manifest>
