@@ -38,4 +38,10 @@
     <string name="chooseEntireFieldButton">Choose entire field</string>
     <string name="registerInputButton">REGISTER INPUT</string>
     <string name="chooserTitle">Choose</string>
+    <string name="logoutAlertTitle">Log out</string>
+    <string name="logoutAlertString">Do you want to log out?</string>
+    <string name="enterDateText">Date</string>
+    <string name="enterValueText">Value</string>
+    <string name="enterCommentsText">Comments</string>
+    <string name="enterActivityTitle">Enter activity</string>
 </resources>

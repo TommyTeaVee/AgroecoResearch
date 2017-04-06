@@ -50,6 +50,12 @@
             android:screenOrientation="portrait"
             android:launchMode="singleTask">
         </activity>
+        <activity
+            android:label="@string/enterActivityTitle"
+            android:name=".enterActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask">
+        </activity>
     </application>
 
 </manifest>

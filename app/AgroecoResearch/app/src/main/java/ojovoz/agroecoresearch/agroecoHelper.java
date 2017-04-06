@@ -194,6 +194,19 @@ public class agroecoHelper {
         return ret;
     }
 
+    public oActivity getActivityFromId(int id){
+        oActivity ret=null;
+        Iterator<oActivity> iterator = activities.iterator();
+        while(iterator.hasNext()){
+            oActivity a = iterator.next();
+            if(a.activityId==id){
+                ret=a;
+                break;
+            }
+        }
+        return ret;
+    }
+
     public void createFields(){
         fields=new ArrayList<>();
         List<String[]> fieldsCSV = readFile("fields");
@@ -264,10 +277,44 @@ public class agroecoHelper {
         return ret;
     }
 
-    public ArrayList<oActivity> getActivities(){
-        //TODO: add filters. Activity is returned only if: 1) has no associations or 2) is associated with relevant crop and/or treatment
+    public ArrayList<oActivity> getActivities(oPlot plot){
+        ArrayList<oActivity> ret = new ArrayList<>();
+        if(plot!=null) {
+            Iterator<oActivity> iterator = activities.iterator();
+            while (iterator.hasNext()) {
+                oActivity activity = iterator.next();
+                if (activity.activityAppliesToCrops.size() == 0 && activity.activityAppliesToTreatments.size() == 0) {
+                    ret.add(activity);
+                } else {
+                    oCrop plotCrop = plot.primaryCrop;
+                    Iterator<oCrop> iteratorCrop = activity.activityAppliesToCrops.iterator();
+                    while (iteratorCrop.hasNext()) {
+                        oCrop aC = iteratorCrop.next();
+                        if (aC.cropId == plotCrop.cropId) {
+                            if (!ret.contains(activity)) {
+                                ret.add(activity);
+                            }
+                        }
+                    }
+
+                    Iterator<oTreatment> iteratorTreatment = activity.activityAppliesToTreatments.iterator();
+                    while (iteratorTreatment.hasNext()) {
+                        oTreatment aT = iteratorTreatment.next();
+                        if ((plot.intercroppingCrop != null && aT.treatmentCategory.equals("Intercropping"))
+                                || (plot.hasSoilManagement && aT.treatmentCategory.equals("Soil management"))
+                                || (plot.hasPestControl && aT.treatmentCategory.equals("Pest control"))) {
+                            if (!ret.contains(activity)) {
+                                ret.add(activity);
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            ret=activities;
+        }
         //TODO: check log for latest update to activity, add legend: "Last: n days ago" (or "Never", or "Today")
-        return activities;
+        return ret;
     }
 
     public List<String[]> readFile(String filename){

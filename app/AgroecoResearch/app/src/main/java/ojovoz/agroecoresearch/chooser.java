@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -73,6 +74,8 @@ public class chooser extends AppCompatActivity {
                     treatmentsTitle+=", Pest control";
                 }
             }
+        } else {
+            plot=null;
         }
 
         TextView tt = (TextView)findViewById(R.id.tableTitle);
@@ -103,7 +106,7 @@ public class chooser extends AppCompatActivity {
         TableLayout chooserTable = (TableLayout) findViewById(R.id.chooserTable);
         chooserTable.removeAllViews();
         if(task.equals("activity")){
-            activities = agroHelper.getActivities();
+            activities = agroHelper.getActivities(plot);
             Iterator<oActivity> iterator = activities.iterator();
             int n=0;
             while (iterator.hasNext()) {
@@ -125,11 +128,36 @@ public class chooser extends AppCompatActivity {
                 tv.setText(activity.activityName);
                 tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP,20f);
                 tv.setPadding(4,4,4,4);
+                tv.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        chooseItem(v.getId(),v);
+                    }
+
+                });
                 trow.addView(tv,lp);
                 trow.setGravity(Gravity.CENTER_VERTICAL);
                 chooserTable.addView(trow, lp);
                 n++;
             }
+        }
+    }
+
+    public void chooseItem(int id, View v){
+        TextView tv = (TextView)v;
+        tv.setBackgroundColor(ContextCompat.getColor(this,R.color.colorPrimaryDark));
+        final Context context = this;
+        if(task.equals("activity")) {
+            Intent i = new Intent(context, enterActivity.class);
+            i.putExtra("userId", userId);
+            i.putExtra("userRole", userRole);
+            i.putExtra("task", task);
+            i.putExtra("field", fieldId);
+            i.putExtra("plot", plotN);
+            i.putExtra("activity", activities.get(id).activityId);
+            startActivity(i);
+            finish();
         }
     }
 }

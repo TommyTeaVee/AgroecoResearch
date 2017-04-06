@@ -1,6 +1,8 @@
 package ojovoz.agroecoresearch;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -128,7 +130,7 @@ public class mainMenu extends AppCompatActivity {
 
                             @Override
                             public void onClick(View v) {
-                                logout();
+                                doLogout();
                             }
                         });
                         layout.addView(b,params);
@@ -178,6 +180,22 @@ public class mainMenu extends AppCompatActivity {
     }
 
     public void logout(){
+        AlertDialog.Builder logoutDialog = new AlertDialog.Builder(this);
+        logoutDialog.setTitle(R.string.logoutAlertTitle);
+        logoutDialog.setMessage(R.string.logoutAlertString);
+        logoutDialog.setNegativeButton(R.string.cancelButtonText,null);
+        logoutDialog.setPositiveButton(R.string.okButtonText, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                doLogout();
+            }
+        });
+        logoutDialog.create();
+        logoutDialog.show();
+
+    }
+
+    public void doLogout(){
         final Context context = this;
         Intent i = new Intent(context, loginScreen.class);
         startActivity(i);
