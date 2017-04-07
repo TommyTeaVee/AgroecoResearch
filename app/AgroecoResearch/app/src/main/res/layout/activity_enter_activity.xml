@@ -42,17 +42,19 @@
             android:layout_alignEnd="@+id/fieldPlotText"
             android:textSize="20dp" />
 
-        <DatePicker
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/datePicker"
-            android:layout_marginTop="20dp"
+            android:text="@string/emptyString"
+            android:id="@+id/dateButton"
             android:layout_below="@+id/enterDateText"
             android:layout_alignParentStart="true"
+            android:layout_marginTop="20dp"
             android:layout_alignEnd="@+id/enterDateText"
-            android:calendarViewShown="false"
-            android:calendarTextColor="@color/colorPrimary"
-            android:datePickerMode="spinner" />
+            android:textSize="20dp"
+            android:height="40dp"
+            android:background="@drawable/button_background"
+            android:textColor="@color/colorWhite" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -61,9 +63,9 @@
             android:textColor="@color/colorPrimary"
             android:id="@+id/enterValueText"
             android:layout_marginTop="20dp"
-            android:layout_below="@+id/datePicker"
+            android:layout_below="@+id/dateButton"
             android:layout_alignParentStart="true"
-            android:layout_alignEnd="@+id/datePicker"
+            android:layout_alignEnd="@+id/dateButton"
             android:textSize="20dp" />
 
         <EditText
@@ -103,6 +105,7 @@
             android:layout_height="wrap_content"
             android:text="@string/okButtonText"
             android:id="@+id/okButton"
+            android:onClick="registerActivity"
             android:layout_below="@+id/activityComments"
             android:layout_alignParentStart="true"
             android:layout_marginTop="20dp"

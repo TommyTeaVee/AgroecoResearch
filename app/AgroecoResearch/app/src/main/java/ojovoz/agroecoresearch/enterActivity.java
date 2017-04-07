@@ -1,10 +1,20 @@
 package ojovoz.agroecoresearch;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.TextView;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Created by Eugenio on 06/04/2017.
@@ -23,6 +33,8 @@ public class enterActivity extends AppCompatActivity {
     public oActivity activity = new oActivity();
 
     public agroecoHelper agroHelper;
+
+    public Date activityDate;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,6 +86,18 @@ public class enterActivity extends AppCompatActivity {
 
         TextView tv = (TextView)findViewById(R.id.enterValueText);
         tv.setText(tv.getText()+" ("+activity.activityMeasurementUnits+")");
+
+        Button cb = (Button)findViewById(R.id.dateButton);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setTimeZone(TimeZone.getDefault());
+        activityDate = new Date();
+        cb.setText(sdf.format(activityDate));
+        cb.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                displayDatePicker();
+            }
+        });
     }
 
     @Override public void onBackPressed(){
@@ -82,6 +106,57 @@ public class enterActivity extends AppCompatActivity {
         i.putExtra("userId",userId);
         i.putExtra("userRole",userRole);
         i.putExtra("task",task);
+        i.putExtra("field", fieldId);
+        i.putExtra("plot", plotN);
+        startActivity(i);
+        finish();
+    }
+
+    public void displayDatePicker(){
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_datepicker);
+
+        DatePicker dp = (DatePicker) dialog.findViewById(R.id.datePicker);
+        Calendar calActivity = Calendar.getInstance();
+        calActivity.setTime(activityDate);
+        dp.init(calActivity.get(Calendar.YEAR), calActivity.get(Calendar.MONTH), calActivity.get(Calendar.DAY_OF_MONTH),null);
+
+        Calendar calMax = Calendar.getInstance();
+        calMax.setTime(new Date());
+
+        dp.setMaxDate(calMax.getTimeInMillis());
+
+        Button dialogButton = (Button) dialog.findViewById(R.id.okButton);
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePicker dp = (DatePicker) dialog.findViewById(R.id.datePicker);
+                int day = dp.getDayOfMonth();
+                int month = dp.getMonth();
+                int year =  dp.getYear();
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(year, month, day);
+
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                sdf.setTimeZone(TimeZone.getDefault());
+                activityDate = calendar.getTime();
+
+                Button cb = (Button)findViewById(R.id.dateButton);
+                cb.setText(sdf.format(activityDate));
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    public void registerActivity(View v){
+        //TODO: get values
+        agroHelper.addActivityToLog();
+        Intent i = new Intent(this, chooser.class);
+        i.putExtra("userId", userId);
+        i.putExtra("userRole", userRole);
+        i.putExtra("task", task);
         i.putExtra("field", fieldId);
         i.putExtra("plot", plotN);
         startActivity(i);

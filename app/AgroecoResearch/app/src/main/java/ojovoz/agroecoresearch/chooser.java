@@ -106,7 +106,7 @@ public class chooser extends AppCompatActivity {
         TableLayout chooserTable = (TableLayout) findViewById(R.id.chooserTable);
         chooserTable.removeAllViews();
         if(task.equals("activity")){
-            activities = agroHelper.getActivities(plot);
+            activities = agroHelper.getActivities(plot,field);
             Iterator<oActivity> iterator = activities.iterator();
             int n=0;
             while (iterator.hasNext()) {

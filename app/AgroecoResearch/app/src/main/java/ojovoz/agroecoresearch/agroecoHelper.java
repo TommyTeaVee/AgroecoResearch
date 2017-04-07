@@ -45,7 +45,6 @@ public class agroecoHelper {
         }
         if(catalogsNeeded.contains("log")) {
             createLog();
-            //TODO: sort log by date
         }
     }
 
@@ -164,6 +163,22 @@ public class agroecoHelper {
                 tLog.loglabourTime = Integer.parseInt(record[10]);
                 tLog.logCost = Float.parseFloat(record[11]);
                 tLog.logComments = record[12];
+                log.add(tLog);
+            }
+        }
+    }
+
+    public void sortLog(){
+        boolean sort=true;
+        oLog tempLog1;
+        oLog tempLog2;
+
+        while(sort){
+            sort=false;
+            for(int i=0;i<log.size()-1;i++){
+                tempLog1=log.get(i);
+                tempLog2=log.get(i+1);
+                //TODO: if tempLog1.date > tempLog2.date: swap, sort=true
             }
         }
     }
@@ -220,11 +235,23 @@ public class agroecoHelper {
                 field.fieldReplicationN = Integer.parseInt(record[5]);
                 field.plots = parsePlots(record[8]);
                 String[] grid = getFieldRowsColumns(record[8]);
+                boolean[] fieldTreatments = getFieldTreatments(record[8]);
+                field.hasIntercropping = fieldTreatments[0];
+                field.hasSoilManagement = fieldTreatments[1];
+                field.hasPestControl = fieldTreatments[2];
                 field.rows = Integer.parseInt(grid[0]);
                 field.columns = Integer.parseInt(grid[1]);
                 fields.add(field);
             }
         }
+    }
+
+    public boolean[] getFieldTreatments(String d){
+        String[] plotParts = d.split(";");
+        String sub = plotParts[0].substring(3,10);
+        String[] defParts = sub.split(",");
+        boolean ret[] = {(!defParts[0].equals("0")),(defParts[1].equals("1")),(defParts[2].equals("1"))};
+        return ret;
     }
 
     public oField getFieldFromId(int id){
@@ -277,7 +304,7 @@ public class agroecoHelper {
         return ret;
     }
 
-    public ArrayList<oActivity> getActivities(oPlot plot){
+    public ArrayList<oActivity> getActivities(oPlot plot, oField field){
         ArrayList<oActivity> ret = new ArrayList<>();
         if(plot!=null) {
             Iterator<oActivity> iterator = activities.iterator();
@@ -310,11 +337,35 @@ public class agroecoHelper {
                     }
                 }
             }
+        } else if(field!=null){
+            Iterator<oActivity> iterator = activities.iterator();
+            while (iterator.hasNext()) {
+                oActivity activity = iterator.next();
+                if (activity.activityAppliesToTreatments.size() == 0) {
+                    ret.add(activity);
+                } else {
+                    Iterator<oTreatment> iteratorTreatment = activity.activityAppliesToTreatments.iterator();
+                    while (iteratorTreatment.hasNext()) {
+                        oTreatment aT = iteratorTreatment.next();
+                        if((field.hasIntercropping && aT.treatmentCategory.equals("Intercropping"))
+                            || (field.hasSoilManagement && aT.treatmentCategory.equals("Soil management"))
+                            || (field.hasPestControl && aT.treatmentCategory.equals("Pest control"))) {
+                            if(!ret.contains(activity)) {
+                                ret.add(activity);
+                            }
+                        }
+                    }
+                }
+            }
         } else {
             ret=activities;
         }
         //TODO: check log for latest update to activity, add legend: "Last: n days ago" (or "Never", or "Today")
         return ret;
+    }
+
+    public void addActivityToLog(){
+        //TODO: add activity, sortLog, write log file
     }
 
     public List<String[]> readFile(String filename){
