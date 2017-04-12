@@ -9,7 +9,9 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -26,13 +28,9 @@ public class enterActivity extends AppCompatActivity {
     public String task;
     public int fieldId;
     public int plotN;
-
-    public oField field;
-    public oPlot plot;
-    public oCrop primaryCrop = new oCrop();
-    public oActivity activity = new oActivity();
-
-    public agroecoHelper agroHelper;
+    public int activityId;
+    public String activityTitle;
+    public String activityMeasurementUnits;
 
     public Date activityDate;
 
@@ -46,58 +44,33 @@ public class enterActivity extends AppCompatActivity {
         task = getIntent().getExtras().getString("task");
         fieldId = getIntent().getExtras().getInt("field");
         plotN = getIntent().getExtras().getInt("plot");
-        int activityId = getIntent().getExtras().getInt("activity");
-
-        agroHelper = new agroecoHelper(this, "crops,fields,treatments,activities,log");
-
-        field = agroHelper.getFieldFromId(fieldId);
-        activity = agroHelper.getActivityFromId(activityId);
-
-        String treatmentsTitle = "";
-        if(plotN>=0) {
-            plot = field.plots.get(plotN);
-            primaryCrop = plot.primaryCrop;
-
-            if (plot.intercroppingCrop != null) {
-                treatmentsTitle = "\nIntercropping";
-            }
-            if (plot.hasSoilManagement) {
-                if (treatmentsTitle.isEmpty()) {
-                    treatmentsTitle = "\nSoil management";
-                } else {
-                    treatmentsTitle += ", Soil management";
-                }
-            }
-            if (plot.hasPestControl) {
-                if (treatmentsTitle.isEmpty()) {
-                    treatmentsTitle = "\nPest control";
-                } else {
-                    treatmentsTitle += ", Pest control";
-                }
-            }
-        }
+        activityId = getIntent().getExtras().getInt("activity");
+        activityTitle = getIntent().getExtras().getString("title");
+        activityMeasurementUnits = getIntent().getExtras().getString("units");
 
         TextView tt = (TextView)findViewById(R.id.fieldPlotText);
-        if(plotN>=0) {
-            tt.setText("Field: " + field.fieldName + " R" + Integer.toString(field.fieldReplicationN) + "\nPlot " + Integer.toString(plotN + 1) + ": " + primaryCrop.cropName + " (" + primaryCrop.cropVariety + ")" + treatmentsTitle + "\nActivity: " + activity.activityName);
-        } else {
-            tt.setText("Field: " + field.fieldName + " R" + Integer.toString(field.fieldReplicationN) + "\nActivity: " + activity.activityName);
-        }
+        tt.setText(activityTitle);
 
         TextView tv = (TextView)findViewById(R.id.enterValueText);
-        tv.setText(tv.getText()+" ("+activity.activityMeasurementUnits+")");
+        tv.setText(tv.getText()+" ("+activityMeasurementUnits+")");
 
         Button cb = (Button)findViewById(R.id.dateButton);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        sdf.setTimeZone(TimeZone.getDefault());
         activityDate = new Date();
-        cb.setText(sdf.format(activityDate));
+        cb.setText(dateToString(activityDate));
         cb.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 displayDatePicker();
             }
         });
+
+        if(getIntent().getExtras().getBoolean("today")){
+            EditText ev = (EditText)findViewById(R.id.activityValue);
+            ev.setText(Float.toString(getIntent().getExtras().getFloat("value")));
+
+            EditText ec = (EditText)findViewById(R.id.activityComments);
+            ec.setText(getIntent().getExtras().getString("comments"));
+        }
     }
 
     @Override public void onBackPressed(){
@@ -108,6 +81,7 @@ public class enterActivity extends AppCompatActivity {
         i.putExtra("task",task);
         i.putExtra("field", fieldId);
         i.putExtra("plot", plotN);
+        i.putExtra("newActivity",false);
         startActivity(i);
         finish();
     }
@@ -138,28 +112,51 @@ public class enterActivity extends AppCompatActivity {
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(year, month, day);
 
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                sdf.setTimeZone(TimeZone.getDefault());
                 activityDate = calendar.getTime();
 
                 Button cb = (Button)findViewById(R.id.dateButton);
-                cb.setText(sdf.format(activityDate));
+                cb.setText(dateToString(activityDate));
                 dialog.dismiss();
             }
         });
         dialog.show();
     }
 
+    public boolean isNumeric(String str) {
+        return str.matches("-?\\d+(\\.\\d+)?");
+    }
+
+    public String dateToString(Date d){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setTimeZone(TimeZone.getDefault());
+        return sdf.format(d);
+    }
+
     public void registerActivity(View v){
-        //TODO: get values
-        agroHelper.addActivityToLog();
-        Intent i = new Intent(this, chooser.class);
-        i.putExtra("userId", userId);
-        i.putExtra("userRole", userRole);
-        i.putExtra("task", task);
-        i.putExtra("field", fieldId);
-        i.putExtra("plot", plotN);
-        startActivity(i);
-        finish();
+        EditText value = (EditText)findViewById(R.id.activityValue);
+        String valueText = String.valueOf(value.getText());
+        if(isNumeric(valueText)){
+            float valueNumber = Float.parseFloat(valueText);
+
+            EditText comments = (EditText)findViewById(R.id.activityComments);
+            String commentsText = String.valueOf(comments.getText());
+
+            Intent i = new Intent(this, chooser.class);
+            i.putExtra("userId", userId);
+            i.putExtra("userRole", userRole);
+            i.putExtra("task", task);
+            i.putExtra("field", fieldId);
+            i.putExtra("plot", plotN);
+            i.putExtra("newActivity",true);
+            i.putExtra("activity",activityId);
+            i.putExtra("activityDate",dateToString(activityDate));
+            i.putExtra("activityValue",valueNumber);
+            i.putExtra("activityComments",commentsText);
+            startActivity(i);
+            finish();
+        } else {
+            Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
+            value.requestFocus();
+        }
     }
 }

@@ -15,10 +15,10 @@ public class oLog {
     public int logActivityId;
     public Date logDate;
     public float logNumberValue;
-    public String logTextValue;
+    public String logTextValue="";
     public int loglabourTime;
     public float logCost;
-    public String logComments;
+    public String logComments="";
 
     oLog(){
 

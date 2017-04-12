@@ -53,7 +53,7 @@ public class mainMenu extends AppCompatActivity {
                 params.topMargin = 50;
             }
 
-            if((i<3) && bCatalogsDownloaded) {
+            if((i<4) && bCatalogsDownloaded) {
                 Button b = new Button(mainMenu.this);
                 b.setBackgroundResource(R.drawable.button_background);
                 b.setTextColor(Color.WHITE);

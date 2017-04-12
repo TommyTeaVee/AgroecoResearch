@@ -137,7 +137,7 @@ public class chooseFieldPlot extends AppCompatActivity {
         int currentCropN;
         String cropsInLegend="";
         String intercropInLegend="";
-        String[] treatmentNames = {"No treatments","Soil management","Pest control","Soil management and pest control"};
+        String[] treatmentNames = {"Control treatment","Soil management","Pest control","Soil management and pest control"};
         ArrayList<String> treatmentLegends = new ArrayList<>();
         for(int i=0;i<field.rows;i++){
             final TableRow trow = new TableRow(chooseFieldPlot.this);

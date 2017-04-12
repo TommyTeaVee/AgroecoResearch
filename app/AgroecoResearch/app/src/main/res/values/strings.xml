@@ -44,4 +44,10 @@
     <string name="enterValueText">Value</string>
     <string name="enterCommentsText">Comments</string>
     <string name="enterActivityTitle">Enter activity</string>
+    <string name="enterValidNumberText">Please enter a valid number</string>
+    <string name="neverText">Never</string>
+    <string name="todayText">Today</string>
+    <string name="daysAgoText">days ago</string>
+    <string name="lastText">Last</string>
+    <string name="yesterdayText">Yesterday</string>
 </resources>
