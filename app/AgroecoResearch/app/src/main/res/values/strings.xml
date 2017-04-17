@@ -43,7 +43,7 @@
     <string name="enterDateText">Date</string>
     <string name="enterValueText">Value</string>
     <string name="enterCommentsText">Comments</string>
-    <string name="enterActivityTitle">Enter activity</string>
+    <string name="enterActivityTitle">Activity</string>
     <string name="enterValidNumberText">Please enter a valid number</string>
     <string name="neverText">Never</string>
     <string name="todayText">Today</string>
@@ -55,4 +55,5 @@
     <string name="sendMenuText">Send</string>
     <string name="deleteMenuText">Delete</string>
     <string name="filtersMenuText">Filters</string>
+    <string name="noLoggedDataMessage">No logged data</string>
 </resources>

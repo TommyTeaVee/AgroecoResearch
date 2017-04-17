@@ -34,6 +34,8 @@ public class enterActivity extends AppCompatActivity {
 
     public Date activityDate;
 
+    boolean edit;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +49,7 @@ public class enterActivity extends AppCompatActivity {
         activityId = getIntent().getExtras().getInt("activity");
         activityTitle = getIntent().getExtras().getString("title");
         activityMeasurementUnits = getIntent().getExtras().getString("units");
+        edit = getIntent().getExtras().getBoolean("edit");
 
         TextView tt = (TextView)findViewById(R.id.fieldPlotText);
         tt.setText(activityTitle);
@@ -63,19 +66,44 @@ public class enterActivity extends AppCompatActivity {
                 displayDatePicker();
             }
         });
+
+        if(!edit){
+            Button ob = (Button)findViewById(R.id.okButton);
+            ob.setVisibility(View.INVISIBLE);
+
+            Button db = (Button)findViewById(R.id.dateButton);
+            db.setText(getIntent().getExtras().getString("date"));
+            db.setEnabled(false);
+
+            EditText av = (EditText)findViewById(R.id.activityValue);
+            av.setText(Float.toString(getIntent().getExtras().getFloat("activityValue")));
+            av.setEnabled(false);
+
+            EditText ac = (EditText)findViewById(R.id.activityComments);
+            ac.setText(getIntent().getExtras().getString("activityComments"));
+            ac.setEnabled(false);
+        }
     }
 
     @Override public void onBackPressed(){
         final Context context = this;
-        Intent i = new Intent(context, chooser.class);
-        i.putExtra("userId",userId);
-        i.putExtra("userRole",userRole);
-        i.putExtra("task",task);
-        i.putExtra("field", fieldId);
-        i.putExtra("plot", plotN);
-        i.putExtra("newActivity",false);
-        startActivity(i);
-        finish();
+        if(edit) {
+            Intent i = new Intent(context, chooser.class);
+            i.putExtra("userId", userId);
+            i.putExtra("userRole", userRole);
+            i.putExtra("task", task);
+            i.putExtra("field", fieldId);
+            i.putExtra("plot", plotN);
+            i.putExtra("newActivity", false);
+            startActivity(i);
+            finish();
+        } else {
+            Intent i = new Intent(context, manageData.class);
+            i.putExtra("userId", userId);
+            i.putExtra("userRole", userRole);
+            startActivity(i);
+            finish();
+        }
     }
 
     public void displayDatePicker(){

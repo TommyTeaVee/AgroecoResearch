@@ -204,6 +204,7 @@ public class chooser extends AppCompatActivity {
             i.putExtra("field", fieldId);
             i.putExtra("plot", plotN);
             i.putExtra("activity", activities.get(id).activityId);
+            i.putExtra("edit",true);
 
             String treatmentsTitle = "";
             if(plotN>=0) {

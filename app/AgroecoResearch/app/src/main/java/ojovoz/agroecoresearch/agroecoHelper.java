@@ -441,7 +441,20 @@ public class agroecoHelper {
         return ret+1;
     }
 
+    public oLog getLogItemFromId(int id){
+        oLog ret=null;
+        Iterator<oLog> iterator = log.iterator();
+        while(iterator.hasNext()){
+            oLog l = iterator.next();
+            if(l.logId==id){
+                ret=l;
+            }
+        }
+        return ret;
+    }
+
     public void updateActivityDaysAgo(int id, int pN, int fId, String d){
+        //TODO: if fieldId = -1, update all plots
         boolean acFound=false;
         Iterator<oActivityCalendar> iteratorAC = activitiesCalendar.iterator();
         while (iteratorAC.hasNext()) {
@@ -487,6 +500,19 @@ public class agroecoHelper {
             oActivity a = iterator.next();
             if(a.activityId==id){
                 ret=a.activityName;
+                break;
+            }
+        }
+        return ret;
+    }
+
+    public String getActivityMeasurementUnitsFromId(int id){
+        String ret="";
+        Iterator<oActivity> iterator = activities.iterator();
+        while(iterator.hasNext()){
+            oActivity a = iterator.next();
+            if(a.activityId==id){
+                ret=a.activityMeasurementUnits;
                 break;
             }
         }
