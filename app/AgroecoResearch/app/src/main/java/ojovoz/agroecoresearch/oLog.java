@@ -6,6 +6,7 @@ import java.util.Date;
  * Created by Eugenio on 04/04/2017.
  */
 public class oLog {
+    public int logId;
     public int logFieldId;
     public int logPlotNumber;
     public int logUserId;

@@ -63,14 +63,6 @@ public class enterActivity extends AppCompatActivity {
                 displayDatePicker();
             }
         });
-
-        if(getIntent().getExtras().getBoolean("today")){
-            EditText ev = (EditText)findViewById(R.id.activityValue);
-            ev.setText(Float.toString(getIntent().getExtras().getFloat("value")));
-
-            EditText ec = (EditText)findViewById(R.id.activityComments);
-            ec.setText(getIntent().getExtras().getString("comments"));
-        }
     }
 
     @Override public void onBackPressed(){

@@ -56,6 +56,12 @@
             android:screenOrientation="portrait"
             android:launchMode="singleTask">
         </activity>
+        <activity
+            android:label="@string/manageDataTitle"
+            android:name=".manageData"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask">
+        </activity>
     </application>
 
 </manifest>

@@ -181,6 +181,7 @@ public class agroecoHelper {
                 tLog.loglabourTime = Integer.parseInt(logItemParts[10]);
                 tLog.logCost = Float.parseFloat(logItemParts[11]);
                 tLog.logComments = logItemParts[12];
+                tLog.logId = Integer.parseInt(logItemParts[13]);
                 log.add(tLog);
             }
         }
@@ -276,6 +277,11 @@ public class agroecoHelper {
             }
         }
         return ret;
+    }
+
+    public String getFieldNameFromId(int id){
+        oField f = getFieldFromId(id);
+        return f.fieldName + " R" + Integer.toString(f.fieldReplicationN);
     }
 
     public String[] getFieldRowsColumns(String plotsString){
@@ -404,13 +410,10 @@ public class agroecoHelper {
     }
 
     public void addActivityToLog(int fieldId, int plotN, int userId, int activityId, String date, float numberValue, String comments){
-        /*
-        Toast.makeText(context,Integer.toString(fieldId)+","+Integer.toString(plotN)+","+Integer.toString(userId)+","+Integer.toString(activityId)
-                +","+date+","+Float.toString(numberValue)+","+comments,Toast.LENGTH_SHORT).show();
-                */
         updateActivityDaysAgo(activityId, plotN, fieldId, date);
         createLog();
         oLog newEntry = new oLog();
+        newEntry.logId = getNewLogId();
         newEntry.logFieldId = fieldId;
         newEntry.logPlotNumber = plotN;
         newEntry.logUserId = userId;
@@ -424,6 +427,18 @@ public class agroecoHelper {
         log.add(newEntry);
         sortLog();
         writeLog();
+    }
+
+    public int getNewLogId(){
+        int ret=-1;
+        Iterator<oLog> iterator = log.iterator();
+        while(iterator.hasNext()){
+            oLog l = iterator.next();
+            if(l.logId>ret){
+                ret=l.logId;
+            }
+        }
+        return ret+1;
     }
 
     public void updateActivityDaysAgo(int id, int pN, int fId, String d){
@@ -465,15 +480,13 @@ public class agroecoHelper {
         return ret;
     }
 
-    public oLog getActivityToday(int activityId, int plotN, int fieldId){
-        oLog ret = new oLog();
-        String today = dateToString(new Date());
-        createLog();
-        Iterator<oLog> iterator = log.iterator();
-        while (iterator.hasNext()) {
-            oLog l = iterator.next();
-            if(dateToString(l.logDate).equals(today) && l.logActivityId==activityId && l.logPlotNumber==plotN && l.logFieldId==fieldId){
-                ret=l;
+    public String getActivityNameFromId(int id){
+        String ret="";
+        Iterator<oActivity> iterator = activities.iterator();
+        while(iterator.hasNext()){
+            oActivity a = iterator.next();
+            if(a.activityId==id){
+                ret=a.activityName;
                 break;
             }
         }
@@ -555,7 +568,7 @@ public class agroecoHelper {
             data+=Integer.toString(l.logFieldId)+";"+Integer.toString(l.logPlotNumber)+";"+Integer.toString(l.logUserId)+";"+Integer.toString(l.logCropId)
                     +";"+Integer.toString(l.logTreatmentId)+";"+Integer.toString(l.logMeasurementId)+";"+Integer.toString(l.logActivityId)
                     +";"+dateToString(l.logDate)+";"+Float.toString(l.logNumberValue)+";"+l.logTextValue+";"+Integer.toString(l.loglabourTime)
-                    +";"+Float.toString(l.logCost)+";"+l.logComments+"|";
+                    +";"+Float.toString(l.logCost)+";"+l.logComments+";"+Integer.toString(l.logId)+"|";
         }
         writeToFile(data,"log");
     }

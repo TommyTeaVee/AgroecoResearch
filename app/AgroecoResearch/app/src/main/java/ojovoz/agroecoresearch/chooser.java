@@ -205,13 +205,6 @@ public class chooser extends AppCompatActivity {
             i.putExtra("plot", plotN);
             i.putExtra("activity", activities.get(id).activityId);
 
-            if(agroHelper.getActivityDaysAgo(activities.get(id).activityId, plotN, fieldId).equals("0")){
-                oLog entryToday = agroHelper.getActivityToday(activities.get(id).activityId, plotN, fieldId);
-                i.putExtra("today",true);
-                i.putExtra("value",entryToday.logNumberValue);
-                i.putExtra("comments",entryToday.logComments);
-            }
-
             String treatmentsTitle = "";
             if(plotN>=0) {
                 plot = field.plots.get(plotN);
