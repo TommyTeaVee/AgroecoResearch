@@ -132,6 +132,8 @@ public class chooser extends AppCompatActivity {
                 }
 
                 oActivity activity = iterator.next();
+                String daysAgo = "";
+                String nDays = agroHelper.getActivityDaysAgo(activity.activityId,plotN,fieldId);
 
                 TextView tv = new TextView(chooser.this);
                 tv.setId(n);
@@ -139,14 +141,16 @@ public class chooser extends AppCompatActivity {
                 tv.setText(activity.activityName);
                 tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP,20f);
                 tv.setPadding(4,4,4,4);
-                tv.setOnClickListener(new View.OnClickListener() {
+                if(!nDays.equals("0")) {
+                    tv.setOnClickListener(new View.OnClickListener() {
 
-                    @Override
-                    public void onClick(View v) {
-                        chooseItem(v.getId(),v);
-                    }
+                        @Override
+                        public void onClick(View v) {
+                            chooseItem(v.getId(), v);
+                        }
 
-                });
+                    });
+                }
                 trow.addView(tv,lp);
                 trow.setGravity(Gravity.CENTER_VERTICAL);
                 chooserTable.addView(trow, lp);
@@ -164,8 +168,6 @@ public class chooser extends AppCompatActivity {
                 TextView tvBelow = new TextView(chooser.this);
                 tvBelow.setTextColor(ContextCompat.getColor(this,R.color.colorBlack));
 
-                String daysAgo = "";
-                String nDays = agroHelper.getActivityDaysAgo(activity.activityId,plotN,fieldId);
                 if(nDays.equals("-1")){
                     daysAgo = getString(R.string.neverText);
                 } else if (nDays.equals("0")) {
@@ -204,7 +206,7 @@ public class chooser extends AppCompatActivity {
             i.putExtra("field", fieldId);
             i.putExtra("plot", plotN);
             i.putExtra("activity", activities.get(id).activityId);
-            i.putExtra("edit",true);
+            i.putExtra("update","");
 
             String treatmentsTitle = "";
             if(plotN>=0) {

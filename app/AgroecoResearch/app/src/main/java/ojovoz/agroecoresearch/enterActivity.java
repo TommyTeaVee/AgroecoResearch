@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -26,6 +27,7 @@ public class enterActivity extends AppCompatActivity {
     public int userId;
     public int userRole;
     public String task;
+    public int logId;
     public int fieldId;
     public int plotN;
     public int activityId;
@@ -34,7 +36,7 @@ public class enterActivity extends AppCompatActivity {
 
     public Date activityDate;
 
-    boolean edit;
+    public String update;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,7 +51,7 @@ public class enterActivity extends AppCompatActivity {
         activityId = getIntent().getExtras().getInt("activity");
         activityTitle = getIntent().getExtras().getString("title");
         activityMeasurementUnits = getIntent().getExtras().getString("units");
-        edit = getIntent().getExtras().getBoolean("edit");
+        update = getIntent().getExtras().getString("update");
 
         TextView tt = (TextView)findViewById(R.id.fieldPlotText);
         tt.setText(activityTitle);
@@ -57,8 +59,26 @@ public class enterActivity extends AppCompatActivity {
         TextView tv = (TextView)findViewById(R.id.enterValueText);
         tv.setText(tv.getText()+" ("+activityMeasurementUnits+")");
 
+        if(update.equals("activity")){
+            logId = getIntent().getExtras().getInt("logId");
+
+            Button ob = (Button)findViewById(R.id.okButton);
+            ob.setText(R.string.editButtonText);
+
+            Button db = (Button)findViewById(R.id.dateButton);
+            db.setText(getIntent().getExtras().getString("date"));
+            activityDate = stringToDate(getIntent().getExtras().getString("date"));
+
+            EditText av = (EditText)findViewById(R.id.activityValue);
+            av.setText(Float.toString(getIntent().getExtras().getFloat("activityValue")));
+
+            EditText ac = (EditText)findViewById(R.id.activityComments);
+            ac.setText(getIntent().getExtras().getString("activityComments"));
+        } else {
+            activityDate = new Date();
+        }
+
         Button cb = (Button)findViewById(R.id.dateButton);
-        activityDate = new Date();
         cb.setText(dateToString(activityDate));
         cb.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -66,28 +86,11 @@ public class enterActivity extends AppCompatActivity {
                 displayDatePicker();
             }
         });
-
-        if(!edit){
-            Button ob = (Button)findViewById(R.id.okButton);
-            ob.setVisibility(View.INVISIBLE);
-
-            Button db = (Button)findViewById(R.id.dateButton);
-            db.setText(getIntent().getExtras().getString("date"));
-            db.setEnabled(false);
-
-            EditText av = (EditText)findViewById(R.id.activityValue);
-            av.setText(Float.toString(getIntent().getExtras().getFloat("activityValue")));
-            av.setEnabled(false);
-
-            EditText ac = (EditText)findViewById(R.id.activityComments);
-            ac.setText(getIntent().getExtras().getString("activityComments"));
-            ac.setEnabled(false);
-        }
     }
 
     @Override public void onBackPressed(){
         final Context context = this;
-        if(edit) {
+        if(update.equals("")) {
             Intent i = new Intent(context, chooser.class);
             i.putExtra("userId", userId);
             i.putExtra("userRole", userRole);
@@ -101,9 +104,22 @@ public class enterActivity extends AppCompatActivity {
             Intent i = new Intent(context, manageData.class);
             i.putExtra("userId", userId);
             i.putExtra("userRole", userRole);
+            i.putExtra("update","");
             startActivity(i);
             finish();
         }
+    }
+
+    public Date stringToDate(String d){
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setTimeZone(TimeZone.getDefault());
+        try {
+            date = sdf.parse(d);
+        } catch (ParseException e) {
+
+        }
+        return date;
     }
 
     public void displayDatePicker(){
@@ -161,19 +177,34 @@ public class enterActivity extends AppCompatActivity {
             EditText comments = (EditText)findViewById(R.id.activityComments);
             String commentsText = String.valueOf(comments.getText());
 
-            Intent i = new Intent(this, chooser.class);
-            i.putExtra("userId", userId);
-            i.putExtra("userRole", userRole);
-            i.putExtra("task", task);
-            i.putExtra("field", fieldId);
-            i.putExtra("plot", plotN);
-            i.putExtra("newActivity",true);
-            i.putExtra("activity",activityId);
-            i.putExtra("activityDate",dateToString(activityDate));
-            i.putExtra("activityValue",valueNumber);
-            i.putExtra("activityComments",commentsText);
-            startActivity(i);
-            finish();
+            if(update.equals("")) {
+                Intent i = new Intent(this, chooser.class);
+                i.putExtra("userId", userId);
+                i.putExtra("userRole", userRole);
+                i.putExtra("task", task);
+                i.putExtra("field", fieldId);
+                i.putExtra("plot", plotN);
+                i.putExtra("newActivity", true);
+                i.putExtra("activity", activityId);
+                i.putExtra("activityDate", dateToString(activityDate));
+                i.putExtra("activityValue", valueNumber);
+                i.putExtra("activityComments", commentsText);
+                startActivity(i);
+                finish();
+            } else {
+                Intent i = new Intent(this, manageData.class);
+                i.putExtra("userId", userId);
+                i.putExtra("userRole", userRole);
+                i.putExtra("task", task);
+                i.putExtra("logId",logId);
+                i.putExtra("update", "activity");
+                i.putExtra("activity", activityId);
+                i.putExtra("activityDate", dateToString(activityDate));
+                i.putExtra("activityValue", valueNumber);
+                i.putExtra("activityComments", commentsText);
+                startActivity(i);
+                finish();
+            }
         } else {
             Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
             value.requestFocus();

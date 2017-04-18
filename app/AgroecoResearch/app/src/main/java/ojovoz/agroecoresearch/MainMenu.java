@@ -171,6 +171,7 @@ public class mainMenu extends AppCompatActivity {
         Intent i = new Intent(context, manageData.class);
         i.putExtra("userId",userId);
         i.putExtra("userRole",userRole);
+        i.putExtra("update","");
         startActivity(i);
         finish();
     }

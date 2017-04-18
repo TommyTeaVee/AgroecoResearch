@@ -4,7 +4,8 @@
     <string name="loginButtonText">Log in</string>
     <string name="loginScreenTitle">Agroeco Research</string>
     <string name="userPasswordLabel">Password</string>
-    <string name="okButtonText">OK</string>
+    <string name="registerButtonText">Register</string>
+    <string name="editButtonText">Edit</string>
     <string name="cancelButtonText">Cancel</string>
     <string name="defineServerTitle">Define server</string>
     <string name="defineServerLabel">Enter server URL</string>
@@ -51,9 +52,12 @@
     <string name="lastText">Last</string>
     <string name="yesterdayText">Yesterday</string>
     <string name="manageDataTitle">Manage data</string>
-    <string name="logTableTitle">Logged data</string>
+    <string name="logTableTitle">Activities and measurements</string>
     <string name="sendMenuText">Send</string>
     <string name="deleteMenuText">Delete</string>
     <string name="filtersMenuText">Filters</string>
     <string name="noLoggedDataMessage">No logged data</string>
+    <string name="okButtonText">OK</string>
+    <string name="manageInputsMenuText">Manage inputs</string>
+    <string name="invertSelectedMenuText">Invert selected</string>
 </resources>

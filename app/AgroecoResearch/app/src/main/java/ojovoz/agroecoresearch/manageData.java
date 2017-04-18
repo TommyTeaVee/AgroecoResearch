@@ -13,7 +13,6 @@ import android.widget.CheckBox;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -25,21 +24,35 @@ public class manageData extends AppCompatActivity {
 
     public int userId;
     public int userRole;
+    public String update;
 
     public agroecoHelper agroHelper;
+
+    public ArrayList<CheckBox> checkboxes;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_data);
 
+        agroHelper = new agroecoHelper(this, "crops,fields,treatments,activities,measurements,log");
+
         userId = getIntent().getExtras().getInt("userId");
         userRole = getIntent().getExtras().getInt("userRole");
+        update = getIntent().getExtras().getString("update");
 
-        agroHelper = new agroecoHelper(this, "crops,fields,treatments,activities,measurements,log");
+        if(update.equals("activity")){
+            int logId = getIntent().getExtras().getInt("logId");
+            String aD = getIntent().getExtras().getString("activityDate");
+            Float aV = getIntent().getExtras().getFloat("activityValue");
+            String aC = getIntent().getExtras().getString("activityComments");
+            agroHelper.updateLogActivityEntry(logId, aD, aV, aC);
+        }
 
         TextView tt = (TextView)findViewById(R.id.logTableTitle);
         tt.setText(R.string.logTableTitle);
+
+        checkboxes = new ArrayList<>();
 
         fillTable();
     }
@@ -50,6 +63,8 @@ public class manageData extends AppCompatActivity {
         menu.add(0, 0, 0, R.string.sendMenuText);
         menu.add(1, 1, 1, R.string.deleteMenuText);
         menu.add(2, 2, 2, R.string.filtersMenuText);
+        menu.add(3, 3, 3, R.string.manageInputsMenuText);
+        menu.add(4, 4, 4, R.string.invertSelectedMenuText);
         return true;
     }
 
@@ -65,6 +80,12 @@ public class manageData extends AppCompatActivity {
             case 2:
                 //filters
                 break;
+            case 3:
+                //inputs
+                break;
+            case 4:
+                invertSelectedCheckboxes();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -76,6 +97,14 @@ public class manageData extends AppCompatActivity {
         i.putExtra("userRole",userRole);
         startActivity(i);
         finish();
+    }
+
+    public void invertSelectedCheckboxes(){
+        Iterator<CheckBox> iterator = checkboxes.iterator();
+        while(iterator.hasNext()) {
+            CheckBox cb = iterator.next();
+            cb.setChecked(!cb.isChecked());
+        }
     }
 
     public void fillTable(){
@@ -102,18 +131,20 @@ public class manageData extends AppCompatActivity {
             if(logElement.logActivityId>=0){
                 itemName=agroHelper.getActivityNameFromId(logElement.logActivityId);
             }
-            String tvText=agroHelper.dateToString(logElement.logDate)+", "+agroHelper.getFieldNameFromId(logElement.logFieldId)+": "+itemName;
+            String tvText=agroHelper.dateToString(logElement.logDate)+", "+agroHelper.getFieldNameFromId(logElement.logFieldId)+"\n"+itemName;
 
             CheckBox cb = new CheckBox(manageData.this);
             cb.setButtonDrawable(R.drawable.custom_checkbox);
             cb.setId(logElement.logId);
             cb.setPadding(10,10,10,10);
             cb.setChecked(true);
+            checkboxes.add(cb);
             trow.addView(cb,lp);
 
             TextView tv = new TextView(manageData.this);
             tv.setId(logElement.logId);
-            tv.setTextColor(ContextCompat.getColor(this,R.color.colorBlack));
+            tv.setTextColor(ContextCompat.getColor(this,R.color.colorPrimary));
+            tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f);
             tv.setText(tvText);
             tv.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
             tv.setPadding(0,10,0,10);
@@ -184,10 +215,11 @@ public class manageData extends AppCompatActivity {
             Intent i = new Intent(context, enterActivity.class);
             i.putExtra("userId", userId);
             i.putExtra("userRole", userRole);
+            i.putExtra("logId",logItem.logId);
             i.putExtra("fieldId", logItem.logFieldId);
             i.putExtra("plot", logItem.logPlotNumber);
             i.putExtra("activity",logItem.logActivityId);
-            i.putExtra("edit", false);
+            i.putExtra("update", "activity");
             i.putExtra("title",activityTitle);
             i.putExtra("units",agroHelper.getActivityMeasurementUnitsFromId(logItem.logActivityId));
             i.putExtra("date",agroHelper.dateToString(logItem.logDate));

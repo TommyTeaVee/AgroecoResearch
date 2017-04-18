@@ -448,29 +448,71 @@ public class agroecoHelper {
             oLog l = iterator.next();
             if(l.logId==id){
                 ret=l;
+                break;
             }
         }
         return ret;
     }
 
-    public void updateActivityDaysAgo(int id, int pN, int fId, String d){
-        //TODO: if fieldId = -1, update all plots
-        boolean acFound=false;
-        Iterator<oActivityCalendar> iteratorAC = activitiesCalendar.iterator();
-        while (iteratorAC.hasNext()) {
-            oActivityCalendar aC = iteratorAC.next();
-            if(id==aC.activityId && pN==aC.plotN && fId==aC.fieldId && d.equals(aC.date)){
-                acFound=true;
+    public void updateLogActivityEntry(int logId, String aD, Float aV, String aC){
+        Iterator<oLog> iterator = log.iterator();
+        while(iterator.hasNext()){
+            oLog l = iterator.next();
+            if(l.logId==logId){
+                l.logDate=stringToDate(aD);
+                l.logNumberValue=aV;
+                l.logComments=aC;
+                updateActivityDaysAgo(l.logActivityId,l.logPlotNumber,l.logFieldId,aD);
+                sortLog();
+                writeLog();
                 break;
             }
         }
-        if(!acFound){
-            oActivityCalendar aC = new oActivityCalendar();
-            aC.activityId=id;
-            aC.plotN=pN;
-            aC.fieldId=fId;
-            aC.date=d;
-            activitiesCalendar.add(aC);
+    }
+
+    public void updateActivityDaysAgo(int id, int pN, int fId, String d){
+        if(pN==-1){
+            oField f = getFieldFromId(fId);
+            int nPlots = f.plots.size();
+            for(int i=-1; i<nPlots; i++){
+                boolean acFound=false;
+                Iterator<oActivityCalendar> iteratorAC = activitiesCalendar.iterator();
+                while (iteratorAC.hasNext()) {
+                    oActivityCalendar aC = iteratorAC.next();
+                    if(aC.fieldId==fId && aC.plotN==i && aC.activityId==id){
+                        aC.date=d;
+                        acFound=true;
+                        break;
+                    }
+                }
+                if(!acFound){
+                    oActivityCalendar aC = new oActivityCalendar();
+                    aC.activityId = id;
+                    aC.plotN = i;
+                    aC.fieldId = fId;
+                    aC.date = d;
+                    activitiesCalendar.add(aC);
+                }
+            }
+        } else {
+            boolean acFound = false;
+            Iterator<oActivityCalendar> iteratorAC = activitiesCalendar.iterator();
+            while (iteratorAC.hasNext()) {
+                oActivityCalendar aC = iteratorAC.next();
+                if (id == aC.activityId && pN == aC.plotN && fId == aC.fieldId) {
+                    acFound = true;
+                    aC.date = d;
+                    break;
+                }
+            }
+            if (!acFound) {
+                oActivityCalendar aC = new oActivityCalendar();
+                aC.activityId = id;
+                aC.plotN = pN;
+                aC.fieldId = fId;
+                aC.date = d;
+                activitiesCalendar.add(aC);
+            }
         }
         writeActivitiesCalendarFile();
     }
