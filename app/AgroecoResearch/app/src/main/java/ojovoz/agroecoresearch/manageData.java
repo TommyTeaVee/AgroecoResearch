@@ -40,6 +40,7 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
 
     private Context context;
     private ProgressDialog pd;
+    boolean bSentSuccessful;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -156,6 +157,7 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
                             pd.setCancelable(false);
                             pd.setIndeterminate(true);
                             pd.show();
+                            bSentSuccessful=false;
                         }
 
                         @Override
@@ -168,7 +170,9 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
                                 m.setSubject("pA439urcjLVk6szA");
                                 m.setBody(body);
                                 try {
-                                    m.send();
+                                    if(m.send()){
+                                        bSentSuccessful=true;
+                                    }
                                 } catch (Exception e) {
                                     Toast.makeText(context, R.string.unableToSendMessage, Toast.LENGTH_SHORT).show();
                                     if (pd != null) {
@@ -186,7 +190,9 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
                             if (pd!=null) {
                                 pd.dismiss();
                             }
-                            cleanUp(finalSelected,allSelected);
+                            if(bSentSuccessful) {
+                                cleanUp(finalSelected, allSelected, false);
+                            }
                         }
                     };
                     task.execute((Void[])null);
@@ -219,7 +225,7 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
             logoutDialog.setPositiveButton(R.string.okButtonText, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    doDelete(finalSelected);
+                    doDelete(finalSelected, true);
                 }
             });
             logoutDialog.create();
@@ -229,13 +235,13 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
         }
     }
 
-    public void doDelete(String selected){
-        agroHelper.deleteLogEntries(selected);
+    public void doDelete(String selected, boolean deleteFromCalendar){
+        agroHelper.deleteLogEntries(selected,deleteFromCalendar);
         fillTable();
     }
 
-    public void cleanUp(String selected, boolean allSelected){
-        agroHelper.deleteLogEntries(selected);
+    public void cleanUp(String selected, boolean allSelected, boolean deleteFromCalendar){
+        agroHelper.deleteLogEntries(selected,deleteFromCalendar);
         if(allSelected){
             final Context context = this;
             Intent i = new Intent(context, mainMenu.class);

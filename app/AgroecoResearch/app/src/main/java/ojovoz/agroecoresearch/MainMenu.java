@@ -72,23 +72,23 @@ public class mainMenu extends AppCompatActivity {
                         layout.addView(b, params);
                         break;
                     case 1:
-                        b.setText(R.string.registerInputButton);
-                        b.setOnClickListener(new View.OnClickListener() {
-
-                            @Override
-                            public void onClick(View v) {
-                                addInput();
-                            }
-                        });
-                        layout.addView(b, params);
-                        break;
-                    case 2:
                         b.setText(R.string.registerMeasurementButtonText);
                         b.setOnClickListener(new View.OnClickListener() {
 
                             @Override
                             public void onClick(View v) {
                                 addMeasurement();
+                            }
+                        });
+                        layout.addView(b, params);
+                        break;
+                    case 2:
+                        b.setText(R.string.registerInputButton);
+                        b.setOnClickListener(new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View v) {
+                                addInput();
                             }
                         });
                         layout.addView(b, params);

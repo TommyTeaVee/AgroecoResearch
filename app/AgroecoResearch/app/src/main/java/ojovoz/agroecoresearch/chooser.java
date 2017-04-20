@@ -119,11 +119,30 @@ public class chooser extends AppCompatActivity {
     public void fillTable(){
         TableLayout chooserTable = (TableLayout) findViewById(R.id.chooserTable);
         chooserTable.removeAllViews();
+        String category="";
         if(task.equals("activity")){
             activities = agroHelper.getActivities(plot,field);
             Iterator<oActivity> iterator = activities.iterator();
             int n=0;
             while (iterator.hasNext()) {
+                oActivity activity = iterator.next();
+
+                if(!activity.activityCategory.equals(category)){
+                    final TableRow trow = new TableRow(chooser.this);
+                    TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f);
+                    lp.setMargins(4,4,4,4);
+                    trow.setBackgroundColor(ContextCompat.getColor(this,R.color.colorPrimary));
+                    TextView tv = new TextView(chooser.this);
+                    tv.setTextColor(ContextCompat.getColor(this,R.color.colorWhite));
+                    tv.setText(activity.activityCategory);
+                    tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP,20f);
+                    tv.setPadding(4,4,4,4);
+                    trow.addView(tv,lp);
+                    trow.setGravity(Gravity.CENTER_VERTICAL);
+                    chooserTable.addView(trow, lp);
+                    category=activity.activityCategory;
+                }
+
                 final TableRow trow = new TableRow(chooser.this);
                 TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f);
                 lp.setMargins(4,4,4,4);
@@ -134,7 +153,7 @@ public class chooser extends AppCompatActivity {
                     trow.setBackgroundColor(ContextCompat.getColor(this,R.color.colorWhite));
                 }
 
-                oActivity activity = iterator.next();
+
                 String daysAgo = "";
                 String nDays = agroHelper.getActivityDaysAgo(activity.activityId,plotN,fieldId);
 
@@ -199,6 +218,24 @@ public class chooser extends AppCompatActivity {
             Iterator<oMeasurement> iterator = measurements.iterator();
             int n=0;
             while (iterator.hasNext()) {
+                oMeasurement measurement = iterator.next();
+
+                if(!measurement.measurementSubCategory.equals(category)){
+                    final TableRow trow = new TableRow(chooser.this);
+                    TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f);
+                    lp.setMargins(4,4,4,4);
+                    trow.setBackgroundColor(ContextCompat.getColor(this,R.color.colorPrimary));
+                    TextView tv = new TextView(chooser.this);
+                    tv.setTextColor(ContextCompat.getColor(this,R.color.colorWhite));
+                    tv.setText(measurement.measurementSubCategory);
+                    tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP,20f);
+                    tv.setPadding(4,4,4,4);
+                    trow.addView(tv,lp);
+                    trow.setGravity(Gravity.CENTER_VERTICAL);
+                    chooserTable.addView(trow, lp);
+                    category=measurement.measurementSubCategory;
+                }
+
                 final TableRow trow = new TableRow(chooser.this);
                 TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f);
                 lp.setMargins(4,4,4,4);
@@ -209,7 +246,6 @@ public class chooser extends AppCompatActivity {
                     trow.setBackgroundColor(ContextCompat.getColor(this,R.color.colorWhite));
                 }
 
-                oMeasurement measurement = iterator.next();
                 String daysAgo = "";
                 String nDays = agroHelper.getMeasurementDaysAgo(measurement.measurementId,plotN,fieldId);
 

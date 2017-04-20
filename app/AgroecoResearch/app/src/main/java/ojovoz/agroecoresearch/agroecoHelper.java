@@ -595,7 +595,7 @@ public class agroecoHelper {
         }
     }
 
-    public void deleteLogEntries(String e){
+    public void deleteLogEntries(String e, boolean deleteFromCalendar){
         String[] entries = e.split(",");
         for(int i=0; i<entries.length; i++){
             int id=Integer.parseInt(entries[i]);
@@ -604,7 +604,7 @@ public class agroecoHelper {
             while(iterator.hasNext()) {
                 oLog l = iterator.next();
                 if(l.logId==id){
-                    if(l.logActivityId>=0){
+                    if(l.logActivityId>=0 && deleteFromCalendar){
                         deleteActivityFromCalendar(l.logActivityId,l.logPlotNumber,l.logFieldId);
                     }
                     log.remove(n);
