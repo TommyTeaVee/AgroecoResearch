@@ -177,6 +177,11 @@ public class enterActivity extends AppCompatActivity {
             EditText comments = (EditText)findViewById(R.id.activityComments);
             String commentsText = String.valueOf(comments.getText());
 
+            if(!commentsText.isEmpty()){
+                commentsText = commentsText.replaceAll(";"," ");
+                commentsText = commentsText.replaceAll("\\|"," ");
+            }
+
             if(update.equals("")) {
                 Intent i = new Intent(this, chooser.class);
                 i.putExtra("userId", userId);

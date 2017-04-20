@@ -28,6 +28,8 @@ public class chooseFieldPlot extends AppCompatActivity {
     public int userRole;
     public String task;
 
+    private preferenceManager prefs;
+
     public agroecoHelper agroHelper;
 
     ArrayList<oField> fields;
@@ -41,10 +43,15 @@ public class chooseFieldPlot extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_field_plot);
 
+        prefs = new preferenceManager(this);
+
         userId = getIntent().getExtras().getInt("userId");
         userRole = getIntent().getExtras().getInt("userRole");
         task = getIntent().getExtras().getString("task");
         int fieldId = getIntent().getExtras().getInt("field");
+        if(!(fieldId>=0)){
+            fieldId = Integer.parseInt(prefs.getPreference("field"));
+        }
 
         CharSequence title = getTitle() + " " + task;
         setTitle(title);
@@ -110,6 +117,7 @@ public class chooseFieldPlot extends AppCompatActivity {
                 String msg="";
                 if(i>=0) {
                     field = fields.get(i);
+                    prefs.savePreference("field",Integer.toString(field.fieldId));
                     Button fieldListView = (Button) findViewById(R.id.chooseFieldButton);
                     fieldListView.setText(field.fieldName + " r" + field.fieldReplicationN);
                     msg=getString(R.string.choosePlotPrompt);
@@ -259,7 +267,7 @@ public class chooseFieldPlot extends AppCompatActivity {
         Intent i = new Intent(context, chooser.class);
         i.putExtra("userId",userId);
         i.putExtra("userRole",userRole);
-        i.putExtra("task","activity");
+        i.putExtra("task",task);
         i.putExtra("field",field.fieldId);
         i.putExtra("plot",n);
 
@@ -272,7 +280,7 @@ public class chooseFieldPlot extends AppCompatActivity {
         Intent i = new Intent(context, chooser.class);
         i.putExtra("userId",userId);
         i.putExtra("userRole",userRole);
-        i.putExtra("task","activity");
+        i.putExtra("task",task);
         i.putExtra("field",field.fieldId);
         i.putExtra("plot",-1);
 

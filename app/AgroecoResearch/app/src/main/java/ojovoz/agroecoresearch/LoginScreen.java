@@ -42,6 +42,7 @@ public class loginScreen extends AppCompatActivity implements httpConnection.Asy
         if (server.equals("")) {
             defineServer("");
         }
+        prefs.savePreference("field","-1");
     }
 
     public void defineServer(String current) {
@@ -115,10 +116,14 @@ public class loginScreen extends AppCompatActivity implements httpConnection.Asy
             tv.setText(R.string.invalidUserMessage);
         } else {
             parts=output.split(",");
-            if(parts.length==2){
+            if(parts.length==6){
                 userId=Integer.parseInt(parts[0].toString());
                 userRole=Integer.parseInt(parts[1].toString());
                 prefs.updateUserPrefs("users","*"+ uAS + "," + uPS + "*," + userId + "," + userRole);
+                prefs.savePreference("mail",(String)parts[2]);
+                prefs.savePreference("password",(String)parts[3]);
+                prefs.savePreference("smtpServer",(String)parts[4]);
+                prefs.savePreference("smtpPort",(String)parts[5]);
                 launchMainMenu();
             } else {
                 tv.setText(R.string.invalidUserMessage);

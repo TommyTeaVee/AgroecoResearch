@@ -59,5 +59,12 @@
     <string name="noLoggedDataMessage">No logged data</string>
     <string name="okButtonText">OK</string>
     <string name="manageInputsMenuText">Manage inputs</string>
-    <string name="invertSelectedMenuText">Invert selected</string>
+    <string name="invertSelectedMenuText">Invert selection</string>
+    <string name="noEntriesSelectedText">No entries selected</string>
+    <string name="deleteAlertTitle">Delete</string>
+    <string name="deleteAlertString">Delete selected entries?</string>
+    <string name="sendingDataMessage">Sending data</string>
+    <string name="pleaseWaitMessage">Please wait...</string>
+    <string name="invalidParametersMessage">Invalid parameters. Please log in again.</string>
+    <string name="unableToSendMessage">Unable to send. Please try again.</string>
 </resources>

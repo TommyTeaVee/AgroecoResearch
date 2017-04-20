@@ -1,5 +1,7 @@
 package ojovoz.agroecoresearch;
 
+import java.util.ArrayList;
+
 /**
  * Created by Eugenio on 31/03/2017.
  */
@@ -14,17 +16,11 @@ public class oMeasurement {
     public float measurementMax;
     public String measurementUnits;
     public int measurementPeriodicity;
+    public ArrayList<oCrop> measurementAppliesToCrops;
+    public ArrayList<oTreatment> measurementAppliesToTreatments;
 
-    oMeasurement(int id, String name, String category, String subcategory, int type, String categories, float min, float max, String units, int periodicity){
-        measurementId=id;
-        measurementName=name;
-        measurementCategory=category;
-        measurementSubCategory=subcategory;
-        measurementType=type;
-        measurementCategories=categories;
-        measurementMin=min;
-        measurementMax=max;
-        measurementUnits=units;
-        measurementPeriodicity=periodicity;
+    oMeasurement(){
+        measurementAppliesToCrops = new ArrayList<>();
+        measurementAppliesToTreatments = new ArrayList<>();
     }
 }

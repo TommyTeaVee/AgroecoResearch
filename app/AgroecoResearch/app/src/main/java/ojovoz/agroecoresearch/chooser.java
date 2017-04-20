@@ -32,6 +32,7 @@ public class chooser extends AppCompatActivity {
 
     public oCrop primaryCrop = new oCrop();
     public ArrayList<oActivity> activities;
+    public ArrayList<oMeasurement> measurements;
 
     public agroecoHelper agroHelper;
 
@@ -48,6 +49,8 @@ public class chooser extends AppCompatActivity {
 
         if(task.equals("activity")) {
             agroHelper = new agroecoHelper(this, "crops,fields,treatments,activities");
+        } else if(task.equals("measurement")){
+            agroHelper = new agroecoHelper(this, "crops,fields,treatments,measurements");
         }
 
         fieldId = getIntent().getExtras().getInt("field");
@@ -147,6 +150,81 @@ public class chooser extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             chooseItem(v.getId(), v);
+                        }
+
+                    });
+                }
+                trow.addView(tv,lp);
+                trow.setGravity(Gravity.CENTER_VERTICAL);
+                chooserTable.addView(trow, lp);
+
+                final TableRow trowBelow = new TableRow(chooser.this);
+                TableRow.LayoutParams lpBelow = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f);
+                lpBelow.setMargins(4,0,4,0);
+
+                if(n%2==0){
+                    trowBelow.setBackgroundColor(ContextCompat.getColor(this,R.color.lightGray));
+                } else {
+                    trowBelow.setBackgroundColor(ContextCompat.getColor(this,R.color.colorWhite));
+                }
+
+                TextView tvBelow = new TextView(chooser.this);
+                tvBelow.setTextColor(ContextCompat.getColor(this,R.color.colorBlack));
+
+                if(nDays.equals("-1")){
+                    daysAgo = getString(R.string.neverText);
+                } else if (nDays.equals("0")) {
+                    daysAgo = getString(R.string.todayText);
+                } else if (nDays.equals("1")){
+                    daysAgo = getString(R.string.yesterdayText);
+                } else {
+                    if(isNumeric(nDays)) {
+                        daysAgo = nDays + " " + getString(R.string.daysAgoText);
+                    } else {
+                        daysAgo = nDays;
+                    }
+                }
+                tvBelow.setText(getString(R.string.lastText)+" : "+daysAgo);
+
+                tvBelow.setTextSize(TypedValue.COMPLEX_UNIT_DIP,15f);
+                tvBelow.setPadding(4,0,4,0);
+                trowBelow.addView(tvBelow,lpBelow);
+                trowBelow.setGravity(Gravity.CENTER_VERTICAL);
+                chooserTable.addView(trowBelow, lpBelow);
+
+                n++;
+            }
+        } else if(task.equals("measurement")){
+            measurements = agroHelper.getMeasurements(plot,field);
+            Iterator<oMeasurement> iterator = measurements.iterator();
+            int n=0;
+            while (iterator.hasNext()) {
+                final TableRow trow = new TableRow(chooser.this);
+                TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f);
+                lp.setMargins(4,4,4,4);
+
+                if(n%2==0){
+                    trow.setBackgroundColor(ContextCompat.getColor(this,R.color.lightGray));
+                } else {
+                    trow.setBackgroundColor(ContextCompat.getColor(this,R.color.colorWhite));
+                }
+
+                oMeasurement measurement = iterator.next();
+                String daysAgo = "";
+                String nDays = agroHelper.getMeasurementDaysAgo(measurement.measurementId,plotN,fieldId);
+
+                TextView tv = new TextView(chooser.this);
+                tv.setId(n);
+                tv.setTextColor(ContextCompat.getColor(this,R.color.colorPrimary));
+                tv.setText(measurement.measurementName);
+                tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP,20f);
+                tv.setPadding(4,4,4,4);
+                if(!nDays.equals("0")) {
+                    tv.setOnClickListener(new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View v) {
+                            //chooseItem(v.getId(), v);
                         }
 
                     });

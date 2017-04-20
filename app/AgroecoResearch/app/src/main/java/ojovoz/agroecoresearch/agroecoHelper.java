@@ -1,8 +1,6 @@
 package ojovoz.agroecoresearch;
 
 import android.content.Context;
-import android.util.Log;
-import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -34,6 +32,8 @@ public class agroecoHelper {
     ArrayList<oField> fields;
     ArrayList<oActivity> activities;
     ArrayList<oActivityCalendar> activitiesCalendar;
+    ArrayList<oMeasurement> measurements;
+    ArrayList<oMeasurementCalendar> measurementsCalendar;
 
     ArrayList<oLog> log;
 
@@ -50,6 +50,9 @@ public class agroecoHelper {
         }
         if(catalogsNeeded.contains("activities")) {
             createActivities();
+        }
+        if(catalogsNeeded.contains("measurements")) {
+            createMeasurements();
         }
         if(catalogsNeeded.contains("log")) {
             createLog();
@@ -114,6 +117,53 @@ public class agroecoHelper {
         }
     }
 
+    public void createMeasurements(){
+        measurements = new ArrayList<>();
+        measurementsCalendar = new ArrayList<>();
+        List<String[]> measurementsCSV = readCSVFile("measurements");
+        List<String[]> measurementsAppliedCSV = readCSVFile("measurements_applied");
+        String measurementsCalendarFile = readFromFile("measurements_calendar");
+        if(measurementsCSV!=null) {
+            Iterator<String[]> iterator = measurementsCSV.iterator();
+            while (iterator.hasNext()) {
+                String[] record = iterator.next();
+                oMeasurement measurement = new oMeasurement();
+                measurement.measurementId = Integer.parseInt(record[0]);
+                measurement.measurementName = record[1];
+                measurement.measurementCategory = record[2];
+                measurement.measurementSubCategory = record[3];
+                measurement.measurementType = Integer.parseInt(record[4]);
+                measurement.measurementMin = Float.parseFloat(record[5]);
+                measurement.measurementMax = Float.parseFloat(record[6]);
+                measurement.measurementUnits = record[7];
+                measurement.measurementCategories = record[8];
+                measurement.measurementPeriodicity = Integer.parseInt(record[9]);
+                measurements.add(measurement);
+            }
+
+            if (measurementsAppliedCSV != null) {
+                Iterator<String[]> iteratorApplied = measurementsAppliedCSV.iterator();
+                while (iteratorApplied.hasNext()) {
+                    String[] record = iteratorApplied.next();
+                    addCropTreatmentToMeasurement(Integer.parseInt(record[0]), record[1], record[2]);
+                }
+            }
+
+            if(!measurementsCalendarFile.isEmpty()){
+                String[] measurementsCalendarLines = measurementsCalendarFile.split(";");
+                for(int i=0;i<measurementsCalendarLines.length;i++){
+                    oMeasurementCalendar mC = new oMeasurementCalendar();
+                    String[] measurementsCalendarParts = measurementsCalendarLines[i].split(",");
+                    mC.measurementId=Integer.parseInt(measurementsCalendarParts[0]);
+                    mC.plotN=Integer.parseInt(measurementsCalendarParts[1]);
+                    mC.fieldId=Integer.parseInt(measurementsCalendarParts[2]);
+                    mC.date=measurementsCalendarParts[3];
+                    measurementsCalendar.add(mC);
+                }
+            }
+        }
+    }
+
     public void addCropTreatmentToActivity(int aId, String cId, String tId){
         Iterator<oActivity> iterator = activities.iterator();
         while (iterator.hasNext()) {
@@ -126,6 +176,24 @@ public class agroecoHelper {
                 if(!tId.isEmpty()){
                     oTreatment aT = getTreatmentFromId(Integer.parseInt(tId));
                     activity.activityAppliesToTreatments.add(aT);
+                }
+                break;
+            }
+        }
+    }
+
+    public void addCropTreatmentToMeasurement(int mId, String cId, String tId){
+        Iterator<oMeasurement> iterator = measurements.iterator();
+        while (iterator.hasNext()) {
+            oMeasurement measurement = iterator.next();
+            if(measurement.measurementId==mId){
+                if(!cId.isEmpty()){
+                    oCrop mC = getCropFromId(Integer.parseInt(cId));
+                    measurement.measurementAppliesToCrops.add(mC);
+                }
+                if(!tId.isEmpty()){
+                    oTreatment mT = getTreatmentFromId(Integer.parseInt(tId));
+                    measurement.measurementAppliesToTreatments.add(mT);
                 }
                 break;
             }
@@ -182,6 +250,7 @@ public class agroecoHelper {
                 tLog.logCost = Float.parseFloat(logItemParts[11]);
                 tLog.logComments = logItemParts[12];
                 tLog.logId = Integer.parseInt(logItemParts[13]);
+                tLog.logSampleNumber = Integer.parseInt(logItemParts[14]);
                 log.add(tLog);
             }
         }
@@ -380,6 +449,65 @@ public class agroecoHelper {
         return ret;
     }
 
+    public ArrayList<oMeasurement> getMeasurements(oPlot plot, oField field){
+        ArrayList<oMeasurement> ret = new ArrayList<>();
+        if(plot!=null) {
+            Iterator<oMeasurement> iterator = measurements.iterator();
+            while (iterator.hasNext()) {
+                oMeasurement measurement = iterator.next();
+                if (measurement.measurementAppliesToCrops.size() == 0 && measurement.measurementAppliesToTreatments.size() == 0) {
+                    ret.add(measurement);
+                } else {
+                    oCrop plotCrop = plot.primaryCrop;
+                    Iterator<oCrop> iteratorCrop = measurement.measurementAppliesToCrops.iterator();
+                    while (iteratorCrop.hasNext()) {
+                        oCrop aC = iteratorCrop.next();
+                        if (aC.cropId == plotCrop.cropId) {
+                            if (!ret.contains(measurement)) {
+                                ret.add(measurement);
+                            }
+                        }
+                    }
+
+                    Iterator<oTreatment> iteratorTreatment = measurement.measurementAppliesToTreatments.iterator();
+                    while (iteratorTreatment.hasNext()) {
+                        oTreatment aT = iteratorTreatment.next();
+                        if ((plot.intercroppingCrop != null && aT.treatmentCategory.equals("Intercropping"))
+                                || (plot.hasSoilManagement && aT.treatmentCategory.equals("Soil management"))
+                                || (plot.hasPestControl && aT.treatmentCategory.equals("Pest control"))) {
+                            if (!ret.contains(measurement)) {
+                                ret.add(measurement);
+                            }
+                        }
+                    }
+                }
+            }
+        } else if(field!=null){
+            Iterator<oMeasurement> iterator = measurements.iterator();
+            while (iterator.hasNext()) {
+                oMeasurement measurement = iterator.next();
+                if (measurement.measurementAppliesToTreatments.size() == 0) {
+                    ret.add(measurement);
+                } else {
+                    Iterator<oTreatment> iteratorTreatment = measurement.measurementAppliesToTreatments.iterator();
+                    while (iteratorTreatment.hasNext()) {
+                        oTreatment aT = iteratorTreatment.next();
+                        if((field.hasIntercropping && aT.treatmentCategory.equals("Intercropping"))
+                                || (field.hasSoilManagement && aT.treatmentCategory.equals("Soil management"))
+                                || (field.hasPestControl && aT.treatmentCategory.equals("Pest control"))) {
+                            if(!ret.contains(measurement)) {
+                                ret.add(measurement);
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            ret=measurements;
+        }
+        return ret;
+    }
+
     public int getDaysAgo(Date d){
         Calendar thisDate = Calendar.getInstance();
         thisDate.setTime(new Date());
@@ -420,9 +548,6 @@ public class agroecoHelper {
         newEntry.logActivityId = activityId;
         newEntry.logDate = stringToDate(date);
         newEntry.logNumberValue = numberValue;
-        if(!comments.isEmpty()){
-            comments = comments.replaceAll("\\;\\|"," ");
-        }
         newEntry.logComments = comments;
         log.add(newEntry);
         sortLog();
@@ -466,6 +591,79 @@ public class agroecoHelper {
                 sortLog();
                 writeLog();
                 break;
+            }
+        }
+    }
+
+    public void deleteLogEntries(String e){
+        String[] entries = e.split(",");
+        for(int i=0; i<entries.length; i++){
+            int id=Integer.parseInt(entries[i]);
+            Iterator<oLog> iterator = log.iterator();
+            int n=0;
+            while(iterator.hasNext()) {
+                oLog l = iterator.next();
+                if(l.logId==id){
+                    if(l.logActivityId>=0){
+                        deleteActivityFromCalendar(l.logActivityId,l.logPlotNumber,l.logFieldId);
+                    }
+                    log.remove(n);
+                    break;
+                }
+                n++;
+            }
+        }
+        writeActivitiesCalendarFile();
+        sortLog();
+        writeLog();
+    }
+
+    public String getSelectedLogItemsAsString(String selected){
+        String ret="";
+        String[] entries = selected.split(",");
+        for(int i=0; i<entries.length; i++){
+            int id=Integer.parseInt(entries[i]);
+            Iterator<oLog> iterator = log.iterator();
+            while(iterator.hasNext()) {
+                oLog l = iterator.next();
+                if(l.logId==id){
+                    ret+=Integer.toString(l.logFieldId)+";"+Integer.toString(l.logPlotNumber)+";"+Integer.toString(l.logUserId)+";"+Integer.toString(l.logCropId)
+                            +";"+Integer.toString(l.logTreatmentId)+";"+Integer.toString(l.logMeasurementId)+";"+Integer.toString(l.logActivityId)
+                            +";"+dateToString(l.logDate)+";"+Float.toString(l.logNumberValue)+";"+l.logTextValue+";"+Integer.toString(l.loglabourTime)
+                            +";"+Float.toString(l.logCost)+";"+l.logComments+";"+Integer.toString(l.logId)+";"+Integer.toString(l.logSampleNumber)+"|";
+                    break;
+                }
+            }
+        }
+        return ret;
+    }
+
+    public void deleteActivityFromCalendar(int id, int pN, int fId) {
+        if(pN==-1){
+            oField f = getFieldFromId(fId);
+            int nPlots = f.plots.size();
+            for(int i=-1; i<nPlots; i++) {
+                Iterator<oActivityCalendar> iteratorAC = activitiesCalendar.iterator();
+                int n = 0;
+                while (iteratorAC.hasNext()) {
+                    oActivityCalendar aC = iteratorAC.next();
+                    if (aC.activityId == id && aC.plotN == i && aC.fieldId == fId) {
+                        activitiesCalendar.remove(n);
+                        break;
+                    }
+                    n++;
+                }
+            }
+        } else {
+            Iterator<oActivityCalendar> iteratorAC = activitiesCalendar.iterator();
+            int n = 0;
+            while (iteratorAC.hasNext()) {
+                oActivityCalendar aC = iteratorAC.next();
+                if (aC.activityId == id && aC.plotN == pN && aC.fieldId == fId) {
+                    activitiesCalendar.remove(n);
+                    break;
+                }
+                n++;
             }
         }
     }
@@ -526,6 +724,24 @@ public class agroecoHelper {
                 int daysAgo = getDaysAgo(stringToDate(aC.date));
                 if(daysAgo>15){
                     ret=aC.date;
+                } else {
+                    ret=Integer.toString(daysAgo);
+                }
+                break;
+            }
+        }
+        return ret;
+    }
+
+    public String getMeasurementDaysAgo(int measurementId, int plotN, int fieldId){
+        String ret="-1";
+        Iterator<oMeasurementCalendar> iteratorMC = measurementsCalendar.iterator();
+        while (iteratorMC.hasNext()) {
+            oMeasurementCalendar mC = iteratorMC.next();
+            if(measurementId==mC.measurementId && plotN==mC.plotN && fieldId==mC.fieldId){
+                int daysAgo = getDaysAgo(stringToDate(mC.date));
+                if(daysAgo>15){
+                    ret=mC.date;
                 } else {
                     ret=Integer.toString(daysAgo);
                 }
@@ -636,7 +852,7 @@ public class agroecoHelper {
             data+=Integer.toString(l.logFieldId)+";"+Integer.toString(l.logPlotNumber)+";"+Integer.toString(l.logUserId)+";"+Integer.toString(l.logCropId)
                     +";"+Integer.toString(l.logTreatmentId)+";"+Integer.toString(l.logMeasurementId)+";"+Integer.toString(l.logActivityId)
                     +";"+dateToString(l.logDate)+";"+Float.toString(l.logNumberValue)+";"+l.logTextValue+";"+Integer.toString(l.loglabourTime)
-                    +";"+Float.toString(l.logCost)+";"+l.logComments+";"+Integer.toString(l.logId)+"|";
+                    +";"+Float.toString(l.logCost)+";"+l.logComments+";"+Integer.toString(l.logId)+";"+Integer.toString(l.logSampleNumber)+"|";
         }
         writeToFile(data,"log");
     }

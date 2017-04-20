@@ -11,6 +11,7 @@ public class oLog {
     public int logPlotNumber;
     public int logUserId;
     public int logCropId;
+    public int logSampleNumber;
     public int logTreatmentId;
     public int logMeasurementId;
     public int logActivityId;

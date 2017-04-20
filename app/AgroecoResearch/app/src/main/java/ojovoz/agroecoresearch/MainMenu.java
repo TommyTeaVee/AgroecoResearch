@@ -163,7 +163,14 @@ public class mainMenu extends AppCompatActivity {
     }
 
     public void addMeasurement(){
-
+        final Context context = this;
+        Intent i = new Intent(context, chooseFieldPlot.class);
+        i.putExtra("userId",userId);
+        i.putExtra("userRole",userRole);
+        i.putExtra("task","measurement");
+        i.putExtra("field",-1);
+        startActivity(i);
+        finish();
     }
 
     public void manageData(){
