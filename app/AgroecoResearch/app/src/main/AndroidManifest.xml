@@ -62,6 +62,12 @@
             android:screenOrientation="portrait"
             android:launchMode="singleTask">
         </activity>
+        <activity
+            android:label="@string/enterMeasurementTitle"
+            android:name=".enterMeasurement"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask">
+        </activity>
     </application>
 
 </manifest>

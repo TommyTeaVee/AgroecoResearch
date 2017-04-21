@@ -67,4 +67,5 @@
     <string name="pleaseWaitMessage">Please wait...</string>
     <string name="invalidParametersMessage">Invalid parameters. Please log in again.</string>
     <string name="unableToSendMessage">Unable to send. Please try again.</string>
+    <string name="enterMeasurementTitle">Measurement</string>
 </resources>

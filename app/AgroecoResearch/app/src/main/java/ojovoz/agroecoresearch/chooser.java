@@ -260,7 +260,7 @@ public class chooser extends AppCompatActivity {
 
                         @Override
                         public void onClick(View v) {
-                            //chooseItem(v.getId(), v);
+                            chooseItem(v.getId(), v);
                         }
 
                     });
@@ -356,6 +356,57 @@ public class chooser extends AppCompatActivity {
 
             i.putExtra("title",activityTitle);
             i.putExtra("units",activities.get(id).activityMeasurementUnits);
+
+            startActivity(i);
+            finish();
+        } else if(task.equals("measurement")){
+            Intent i = new Intent(context, enterMeasurement.class);
+            i.putExtra("userId", userId);
+            i.putExtra("userRole", userRole);
+            i.putExtra("task", task);
+            i.putExtra("field", fieldId);
+            i.putExtra("plot", plotN);
+            i.putExtra("measurement", measurements.get(id).measurementId);
+            i.putExtra("update","");
+
+            String treatmentsTitle = "";
+            if(plotN>=0) {
+                plot = field.plots.get(plotN);
+                primaryCrop = plot.primaryCrop;
+
+                if (plot.intercroppingCrop != null) {
+                    treatmentsTitle = "\nIntercropping";
+                }
+                if (plot.hasSoilManagement) {
+                    if (treatmentsTitle.isEmpty()) {
+                        treatmentsTitle = "\nSoil management";
+                    } else {
+                        treatmentsTitle += ", Soil management";
+                    }
+                }
+                if (plot.hasPestControl) {
+                    if (treatmentsTitle.isEmpty()) {
+                        treatmentsTitle = "\nPest control";
+                    } else {
+                        treatmentsTitle += ", Pest control";
+                    }
+                }
+            }
+
+            String measurementTitle="";
+
+            if(plotN>=0) {
+                measurementTitle = "Field: " + field.fieldName + " R" + Integer.toString(field.fieldReplicationN) + "\nPlot " + Integer.toString(plotN + 1) + ": " + primaryCrop.cropName + " (" + primaryCrop.cropVariety + ")" + treatmentsTitle + "\nActivity: " + measurements.get(id).measurementName;
+            } else {
+                measurementTitle = "Field: " + field.fieldName + " R" + Integer.toString(field.fieldReplicationN) + "\nActivity: " + measurements.get(id).measurementName;
+            }
+
+            i.putExtra("title",measurementTitle);
+            i.putExtra("units",measurements.get(id).measurementUnits);
+            i.putExtra("type",measurements.get(id).measurementType);
+            i.putExtra("min",measurements.get(id).measurementMin);
+            i.putExtra("max",measurements.get(id).measurementMax);
+            i.putExtra("categories",measurements.get(id).measurementCategories);
 
             startActivity(i);
             finish();
