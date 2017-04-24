@@ -401,9 +401,9 @@ public class chooser extends AppCompatActivity {
             String measurementTitle="";
 
             if(plotN>=0) {
-                measurementTitle = "Field: " + field.fieldName + " R" + Integer.toString(field.fieldReplicationN) + "\nPlot " + Integer.toString(plotN + 1) + ": " + primaryCrop.cropName + " (" + primaryCrop.cropVariety + ")" + treatmentsTitle + "\nActivity: " + measurements.get(id).measurementName;
+                measurementTitle = "Field: " + field.fieldName + " R" + Integer.toString(field.fieldReplicationN) + "\nPlot " + Integer.toString(plotN + 1) + ": " + primaryCrop.cropName + " (" + primaryCrop.cropVariety + ")" + treatmentsTitle + "\nMeasurement: " + measurements.get(id).measurementName;
             } else {
-                measurementTitle = "Field: " + field.fieldName + " R" + Integer.toString(field.fieldReplicationN) + "\nActivity: " + measurements.get(id).measurementName;
+                measurementTitle = "Field: " + field.fieldName + " R" + Integer.toString(field.fieldReplicationN) + "\nMeasurement: " + measurements.get(id).measurementName;
             }
 
             i.putExtra("title",measurementTitle);

@@ -395,7 +395,7 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
             if(logItem.logPlotNumber>=0) {
                 measurementTitle = "Field: " + lf.fieldName + " R" + Integer.toString(lf.fieldReplicationN) + "\nPlot " + Integer.toString(logItem.logPlotNumber + 1) + ": " + primaryCrop.cropName + " (" + primaryCrop.cropVariety + ")" + treatmentsTitle + "\nMeasurement: " + agroHelper.getMeasurementNameFromId(logItem.logMeasurementId);
             } else {
-                measurementTitle = "Field: " + lf.fieldName + " R" + Integer.toString(lf.fieldReplicationN) + "\nMeasurement: " + agroHelper.getActivityNameFromId(logItem.logMeasurementId);
+                measurementTitle = "Field: " + lf.fieldName + " R" + Integer.toString(lf.fieldReplicationN) + "\nMeasurement: " + agroHelper.getMeasurementNameFromId(logItem.logMeasurementId);
             }
 
             oMeasurement m = agroHelper.getMeasurementFromId(logItem.logMeasurementId);

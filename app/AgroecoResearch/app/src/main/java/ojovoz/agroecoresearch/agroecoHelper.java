@@ -633,6 +633,8 @@ public class agroecoHelper {
     }
 
     public void deleteLogEntries(String e, boolean deleteFromCalendar){
+        boolean bWriteActivitiesCalendar=false;
+        boolean bWriteMeasurementsCalendar=false;
         String[] entries = e.split(",");
         for(int i=0; i<entries.length; i++){
             int id=Integer.parseInt(entries[i]);
@@ -641,8 +643,12 @@ public class agroecoHelper {
             while(iterator.hasNext()) {
                 oLog l = iterator.next();
                 if(l.logId==id){
-                    if(l.logActivityId>=0 && deleteFromCalendar){
+                    if(l.logActivityId>0 && deleteFromCalendar){
                         deleteActivityFromCalendar(l.logActivityId,l.logPlotNumber,l.logFieldId);
+                        bWriteActivitiesCalendar=true;
+                    } else if(l.logMeasurementId>0 && deleteFromCalendar){
+                        deleteMeasurementFromCalendar(l.logMeasurementId,l.logPlotNumber,l.logFieldId);
+                        bWriteMeasurementsCalendar=true;
                     }
                     log.remove(n);
                     break;
@@ -650,7 +656,8 @@ public class agroecoHelper {
                 n++;
             }
         }
-        writeActivitiesCalendarFile();
+        if(bWriteActivitiesCalendar) { writeActivitiesCalendarFile(); }
+        if(bWriteMeasurementsCalendar) { writeMeasurementsCalendarFile(); }
         sortLog();
         writeLog();
     }
@@ -698,6 +705,36 @@ public class agroecoHelper {
                 oActivityCalendar aC = iteratorAC.next();
                 if (aC.activityId == id && aC.plotN == pN && aC.fieldId == fId) {
                     activitiesCalendar.remove(n);
+                    break;
+                }
+                n++;
+            }
+        }
+    }
+
+    public void deleteMeasurementFromCalendar(int id, int pN, int fId) {
+        if(pN==-1){
+            oField f = getFieldFromId(fId);
+            int nPlots = f.plots.size();
+            for(int i=-1; i<nPlots; i++) {
+                Iterator<oMeasurementCalendar> iteratorM = measurementsCalendar.iterator();
+                int n = 0;
+                while (iteratorM.hasNext()) {
+                    oMeasurementCalendar mC = iteratorM.next();
+                    if (mC.measurementId == id && mC.plotN == i && mC.fieldId == fId) {
+                        measurementsCalendar.remove(n);
+                        break;
+                    }
+                    n++;
+                }
+            }
+        } else {
+            Iterator<oMeasurementCalendar> iteratorM = measurementsCalendar.iterator();
+            int n = 0;
+            while (iteratorM.hasNext()) {
+                oMeasurementCalendar mC = iteratorM.next();
+                if (mC.measurementId == id && mC.plotN == pN && mC.fieldId == fId) {
+                    measurementsCalendar.remove(n);
                     break;
                 }
                 n++;
