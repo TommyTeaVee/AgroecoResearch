@@ -64,6 +64,14 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
             Float aV = getIntent().getExtras().getFloat("activityValue");
             String aC = getIntent().getExtras().getString("activityComments");
             agroHelper.updateLogActivityEntry(logId, aD, aV, aC);
+        } else if(update.equals("measurement")){
+            int logId = getIntent().getExtras().getInt("logId");
+            int mS = getIntent().getExtras().getInt("measurementSample");
+            String mD = getIntent().getExtras().getString("measurementDate");
+            Float mV = getIntent().getExtras().getFloat("measurementValue");
+            String mC = getIntent().getExtras().getString("measurementCategory");
+            String mCC = getIntent().getExtras().getString("measurementComments");
+            agroHelper.updateLogMeasurementEntry(logId, mS, mD, mV, mC, mCC);
         }
 
         TextView tt = (TextView)findViewById(R.id.logTableTitle);
@@ -277,8 +285,10 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
             }
 
             String itemName="";
-            if(logElement.logActivityId>=0){
+            if(logElement.logActivityId>0){
                 itemName=agroHelper.getActivityNameFromId(logElement.logActivityId);
+            } else if(logElement.logMeasurementId>0){
+                itemName=agroHelper.getMeasurementNameFromId(logElement.logMeasurementId);
             }
             String tvText=agroHelper.dateToString(logElement.logDate)+", "+agroHelper.getFieldNameFromId(logElement.logFieldId)+"\n"+itemName;
 
@@ -325,32 +335,33 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
         oLog logItem = agroHelper.getLogItemFromId(id);
         oCrop primaryCrop=null;
 
-        if(logItem.logActivityId>=0) {
-            oField lf = agroHelper.getFieldFromId(logItem.logFieldId);
+        oField lf = agroHelper.getFieldFromId(logItem.logFieldId);
 
-            String treatmentsTitle = "";
-            if(logItem.logPlotNumber>=0) {
-                oPlot plot = lf.plots.get(logItem.logPlotNumber);
-                primaryCrop = plot.primaryCrop;
+        String treatmentsTitle = "";
+        if(logItem.logPlotNumber>=0) {
+            oPlot plot = lf.plots.get(logItem.logPlotNumber);
+            primaryCrop = plot.primaryCrop;
 
-                if (plot.intercroppingCrop != null) {
-                    treatmentsTitle = "\nIntercropping";
-                }
-                if (plot.hasSoilManagement) {
-                    if (treatmentsTitle.isEmpty()) {
-                        treatmentsTitle = "\nSoil management";
-                    } else {
-                        treatmentsTitle += ", Soil management";
-                    }
-                }
-                if (plot.hasPestControl) {
-                    if (treatmentsTitle.isEmpty()) {
-                        treatmentsTitle = "\nPest control";
-                    } else {
-                        treatmentsTitle += ", Pest control";
-                    }
+            if (plot.intercroppingCrop != null) {
+                treatmentsTitle = "\nIntercropping";
+            }
+            if (plot.hasSoilManagement) {
+                if (treatmentsTitle.isEmpty()) {
+                    treatmentsTitle = "\nSoil management";
+                } else {
+                    treatmentsTitle += ", Soil management";
                 }
             }
+            if (plot.hasPestControl) {
+                if (treatmentsTitle.isEmpty()) {
+                    treatmentsTitle = "\nPest control";
+                } else {
+                    treatmentsTitle += ", Pest control";
+                }
+            }
+        }
+
+        if(logItem.logActivityId>0) {
 
             String activityTitle="";
 
@@ -374,6 +385,41 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
             i.putExtra("date",agroHelper.dateToString(logItem.logDate));
             i.putExtra("activityValue",logItem.logNumberValue);
             i.putExtra("activityComments",logItem.logComments);
+            startActivity(i);
+            finish();
+
+        } else if(logItem.logMeasurementId>0) {
+
+            String measurementTitle="";
+
+            if(logItem.logPlotNumber>=0) {
+                measurementTitle = "Field: " + lf.fieldName + " R" + Integer.toString(lf.fieldReplicationN) + "\nPlot " + Integer.toString(logItem.logPlotNumber + 1) + ": " + primaryCrop.cropName + " (" + primaryCrop.cropVariety + ")" + treatmentsTitle + "\nMeasurement: " + agroHelper.getMeasurementNameFromId(logItem.logMeasurementId);
+            } else {
+                measurementTitle = "Field: " + lf.fieldName + " R" + Integer.toString(lf.fieldReplicationN) + "\nMeasurement: " + agroHelper.getActivityNameFromId(logItem.logMeasurementId);
+            }
+
+            oMeasurement m = agroHelper.getMeasurementFromId(logItem.logMeasurementId);
+
+            final Context context = this;
+            Intent i = new Intent(context, enterMeasurement.class);
+            i.putExtra("userId", userId);
+            i.putExtra("userRole", userRole);
+            i.putExtra("logId",logItem.logId);
+            i.putExtra("fieldId", logItem.logFieldId);
+            i.putExtra("plot", logItem.logPlotNumber);
+            i.putExtra("measurement",logItem.logMeasurementId);
+            i.putExtra("type",m.measurementType);
+            i.putExtra("update", "measurement");
+            i.putExtra("title",measurementTitle);
+            i.putExtra("sample",logItem.logSampleNumber);
+            i.putExtra("units",m.measurementUnits);
+            i.putExtra("min",m.measurementMin);
+            i.putExtra("max",m.measurementMax);
+            i.putExtra("categories",m.measurementCategories);
+            i.putExtra("date",agroHelper.dateToString(logItem.logDate));
+            i.putExtra("measurementValue",logItem.logNumberValue);
+            i.putExtra("measurementCategory",logItem.logTextValue);
+            i.putExtra("measurementComments",logItem.logComments);
             startActivity(i);
             finish();
         }

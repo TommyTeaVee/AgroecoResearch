@@ -554,6 +554,25 @@ public class agroecoHelper {
         writeLog();
     }
 
+    public void addMeasurementToLog(int fieldId, int plotN, int userId, int measurementId, int sampleN, String date, float numberValue, String category, String comments){
+        updateMeasurementDaysAgo(measurementId, plotN, fieldId, date);
+        createLog();
+        oLog newEntry = new oLog();
+        newEntry.logId = getNewLogId();
+        newEntry.logFieldId = fieldId;
+        newEntry.logPlotNumber = plotN;
+        newEntry.logUserId = userId;
+        newEntry.logMeasurementId = measurementId;
+        newEntry.logSampleNumber = sampleN;
+        newEntry.logDate = stringToDate(date);
+        newEntry.logNumberValue = numberValue;
+        newEntry.logTextValue = category;
+        newEntry.logComments = comments;
+        log.add(newEntry);
+        sortLog();
+        writeLog();
+    }
+
     public int getNewLogId(){
         int ret=-1;
         Iterator<oLog> iterator = log.iterator();
@@ -588,6 +607,24 @@ public class agroecoHelper {
                 l.logNumberValue=aV;
                 l.logComments=aC;
                 updateActivityDaysAgo(l.logActivityId,l.logPlotNumber,l.logFieldId,aD);
+                sortLog();
+                writeLog();
+                break;
+            }
+        }
+    }
+
+    public void updateLogMeasurementEntry(int logId, int mS, String mD, Float mV, String mC, String mCC){
+        Iterator<oLog> iterator = log.iterator();
+        while(iterator.hasNext()){
+            oLog l = iterator.next();
+            if(l.logId==logId){
+                l.logSampleNumber = mS;
+                l.logDate=stringToDate(mD);
+                l.logNumberValue=mV;
+                l.logTextValue=mC;
+                l.logComments=mCC;
+                updateMeasurementDaysAgo(l.logMeasurementId,l.logPlotNumber,l.logFieldId,mD);
                 sortLog();
                 writeLog();
                 break;
@@ -715,6 +752,53 @@ public class agroecoHelper {
         writeActivitiesCalendarFile();
     }
 
+    public void updateMeasurementDaysAgo(int id, int pN, int fId, String d){
+        if(pN==-1){
+            oField f = getFieldFromId(fId);
+            int nPlots = f.plots.size();
+            for(int i=-1; i<nPlots; i++){
+                boolean mFound=false;
+                Iterator<oMeasurementCalendar> iteratorM = measurementsCalendar.iterator();
+                while (iteratorM.hasNext()) {
+                    oMeasurementCalendar mC = iteratorM.next();
+                    if(mC.fieldId==fId && mC.plotN==i && mC.measurementId==id){
+                        mC.date=d;
+                        mFound=true;
+                        break;
+                    }
+                }
+                if(!mFound){
+                    oMeasurementCalendar mC = new oMeasurementCalendar();
+                    mC.measurementId = id;
+                    mC.plotN = i;
+                    mC.fieldId = fId;
+                    mC.date = d;
+                    measurementsCalendar.add(mC);
+                }
+            }
+        } else {
+            boolean mFound = false;
+            Iterator<oMeasurementCalendar> iteratorM = measurementsCalendar.iterator();
+            while (iteratorM.hasNext()) {
+                oMeasurementCalendar mC = iteratorM.next();
+                if (id == mC.measurementId && pN == mC.plotN && fId == mC.fieldId) {
+                    mFound = true;
+                    mC.date = d;
+                    break;
+                }
+            }
+            if (!mFound) {
+                oMeasurementCalendar mC = new oMeasurementCalendar();
+                mC.measurementId = id;
+                mC.plotN = pN;
+                mC.fieldId = fId;
+                mC.date = d;
+                measurementsCalendar.add(mC);
+            }
+        }
+        writeMeasurementsCalendarFile();
+    }
+
     public String getActivityDaysAgo(int activityId, int plotN, int fieldId){
         String ret="-1";
         Iterator<oActivityCalendar> iteratorAC = activitiesCalendar.iterator();
@@ -764,6 +848,32 @@ public class agroecoHelper {
         return ret;
     }
 
+    public oMeasurement getMeasurementFromId(int id){
+        oMeasurement ret = new oMeasurement();
+        Iterator<oMeasurement> iterator = measurements.iterator();
+        while(iterator.hasNext()){
+            oMeasurement m = iterator.next();
+            if(m.measurementId==id){
+                ret=m;
+                break;
+            }
+        }
+        return ret;
+    }
+
+    public String getMeasurementNameFromId(int id){
+        String ret="";
+        Iterator<oMeasurement> iterator = measurements.iterator();
+        while(iterator.hasNext()){
+            oMeasurement m = iterator.next();
+            if(m.measurementId==id){
+                ret=m.measurementName;
+                break;
+            }
+        }
+        return ret;
+    }
+
     public String getActivityMeasurementUnitsFromId(int id){
         String ret="";
         Iterator<oActivity> iterator = activities.iterator();
@@ -785,6 +895,16 @@ public class agroecoHelper {
             data+=Integer.toString(aC.activityId)+","+Integer.toString(aC.plotN)+","+Integer.toString(aC.fieldId)+","+aC.date+";";
         }
         writeToFile(data,"activities_calendar");
+    }
+
+    public void writeMeasurementsCalendarFile(){
+        String data="";
+        Iterator<oMeasurementCalendar> iteratorM = measurementsCalendar.iterator();
+        while (iteratorM.hasNext()) {
+            oMeasurementCalendar mC = iteratorM.next();
+            data+=Integer.toString(mC.measurementId)+","+Integer.toString(mC.plotN)+","+Integer.toString(mC.fieldId)+","+mC.date+";";
+        }
+        writeToFile(data,"measurements_calendar");
     }
 
     public List<String[]> readCSVFile(String filename){

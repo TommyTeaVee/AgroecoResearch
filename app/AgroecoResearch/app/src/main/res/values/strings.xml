@@ -68,4 +68,8 @@
     <string name="invalidParametersMessage">Invalid parameters. Please log in again.</string>
     <string name="unableToSendMessage">Unable to send. Please try again.</string>
     <string name="enterMeasurementTitle">Measurement</string>
+    <string name="enterSampleNumberText">Sample number</string>
+    <string name="enterQualitativeValueText">Choose value</string>
+    <string name="valueOutOfRangeText">Value is out of range</string>
+    <string name="enterValidCategoryText">Please enter a valid category</string>
 </resources>

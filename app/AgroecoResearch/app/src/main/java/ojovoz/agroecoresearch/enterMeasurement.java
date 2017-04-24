@@ -1,21 +1,21 @@
 package ojovoz.agroecoresearch;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+import android.widget.ListAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,6 +42,8 @@ public class enterMeasurement extends AppCompatActivity {
     public float min;
     public float max;
     ArrayList<CharSequence> categories;
+    CharSequence categoriesArray[];
+    public String measurementCategory="";
 
     public Date measurementDate;
 
@@ -71,6 +73,7 @@ public class enterMeasurement extends AppCompatActivity {
         for(int i=0; i<categoriesParts.length; i++){
             categories.add(categoriesParts[i]);
         }
+        categoriesArray=categories.toArray(new CharSequence[categories.size()]);
 
         TextView tt = (TextView)findViewById(R.id.fieldPlotText);
         tt.setText(measurementTitle);
@@ -85,6 +88,20 @@ public class enterMeasurement extends AppCompatActivity {
             vt.setVisibility(View.GONE);
             EditText ve = (EditText)findViewById(R.id.measurementValue);
             ve.setVisibility(View.GONE);
+
+            Button cb = (Button)findViewById(R.id.measurementCategory);
+            cb.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    switch (v.getId()) {
+                        case R.id.measurementCategory:
+                            showMeasurementCategories();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            });
         } else if(measurementUnits.equals("date")){
             Button cb = (Button)findViewById(R.id.measurementCategory);
             cb.setVisibility(View.GONE);
@@ -97,9 +114,24 @@ public class enterMeasurement extends AppCompatActivity {
         if(update.equals("measurement")){
             logId = getIntent().getExtras().getInt("logId");
 
+            EditText se = (EditText)findViewById(R.id.sampleNumber);
+            se.setText(String.valueOf(getIntent().getExtras().getInt("sample")));
+
+            if(type==1 && !measurementUnits.equals("date")){
+                EditText ve = (EditText)findViewById(R.id.measurementValue);
+                ve.setText(String.valueOf(getIntent().getExtras().getFloat("measurementValue")));
+            } else if (type==0 && !measurementUnits.equals("date")){
+                Button cb = (Button)findViewById(R.id.measurementCategory);
+                cb.setText(getIntent().getExtras().getString("measurementCategory"));
+                measurementCategory = getIntent().getExtras().getString("measurementCategory");
+            }
+
             Button db = (Button)findViewById(R.id.dateButton);
             db.setText(getIntent().getExtras().getString("date"));
             measurementDate = stringToDate(getIntent().getExtras().getString("date"));
+
+            EditText mc = (EditText)findViewById(R.id.measurementComments);
+            mc.setText(getIntent().getExtras().getString("measurementComments"));
 
             Button rb = (Button)findViewById(R.id.okButton);
             rb.setText(R.string.editButtonText);
@@ -137,6 +169,31 @@ public class enterMeasurement extends AppCompatActivity {
             startActivity(i);
             finish();
         }
+    }
+
+    public void showMeasurementCategories(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setNegativeButton(R.string.cancelButtonText, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        final ListAdapter adapter = new ArrayAdapter<>(this,R.layout.checked_list_template,categoriesArray);
+        builder.setSingleChoiceItems(adapter,-1,new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if(i>=0) {
+                    Button fieldListView = (Button) findViewById(R.id.measurementCategory);
+                    fieldListView.setText(categoriesArray[i]);
+                    measurementCategory=(String)categoriesArray[i];
+                }
+                dialogInterface.dismiss();
+
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     public void displayDatePicker(){
@@ -198,6 +255,80 @@ public class enterMeasurement extends AppCompatActivity {
     }
 
     public void registerMeasurement(View v){
+        float valueNumber = 0.0f;
+        int sampleN=0;
+        boolean bProceed = true;
+        EditText sample = (EditText)findViewById(R.id.sampleNumber);
+        String sampleValue = String.valueOf(sample.getText());
+        if(isNumeric(sampleValue) || sampleValue.isEmpty()){
+            if(!sampleValue.isEmpty()){
+                sampleN = Integer.parseInt(sampleValue);
+            }
+            if(type==1 && !measurementUnits.equals("date")){
+                EditText value = (EditText)findViewById(R.id.measurementValue);
+                String valueText = String.valueOf(value.getText());
+                if(isNumeric(valueText)){
+                    valueNumber = Float.parseFloat(valueText);
+                    if(valueNumber<min || valueNumber>max){
+                        Toast.makeText(this, R.string.valueOutOfRangeText, Toast.LENGTH_SHORT).show();
+                        value.requestFocus();
+                        bProceed = false;
+                    }
+                } else {
+                    Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
+                    value.requestFocus();
+                    bProceed=false;
+                }
+            } else if(type==0 && !measurementUnits.equals("date")){
+                if(measurementCategory.equals("")){
+                    Toast.makeText(this, R.string.enterValidCategoryText, Toast.LENGTH_SHORT).show();
+                    bProceed=false;
+                }
+            }
 
+            EditText comments = (EditText)findViewById(R.id.measurementComments);
+            String commentsText = String.valueOf(comments.getText());
+
+            if(!commentsText.isEmpty()){
+                commentsText = commentsText.replaceAll(";"," ");
+                commentsText = commentsText.replaceAll("\\|"," ");
+            }
+
+            if(update.equals("") && bProceed) {
+                Intent i = new Intent(this, chooser.class);
+                i.putExtra("userId", userId);
+                i.putExtra("userRole", userRole);
+                i.putExtra("task", task);
+                i.putExtra("field", fieldId);
+                i.putExtra("plot", plotN);
+                i.putExtra("newMeasurement", true);
+                i.putExtra("measurement", measurementId);
+                i.putExtra("measurementSample",sampleN);
+                i.putExtra("measurementDate", dateToString(measurementDate));
+                i.putExtra("measurementValue", valueNumber);
+                i.putExtra("measurementCategory", measurementCategory);
+                i.putExtra("measurementComments", commentsText);
+                startActivity(i);
+                finish();
+            } else if(bProceed){
+                Intent i = new Intent(this, manageData.class);
+                i.putExtra("userId", userId);
+                i.putExtra("userRole", userRole);
+                i.putExtra("task", task);
+                i.putExtra("logId",logId);
+                i.putExtra("update", "measurement");
+                i.putExtra("measurement", measurementId);
+                i.putExtra("measurementSample",sampleN);
+                i.putExtra("measurementDate", dateToString(measurementDate));
+                i.putExtra("measurementValue", valueNumber);
+                i.putExtra("measurementCategory", measurementCategory);
+                i.putExtra("measurementComments", commentsText);
+                startActivity(i);
+                finish();
+            }
+        } else {
+            Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
+            sample.requestFocus();
+        }
     }
 }
