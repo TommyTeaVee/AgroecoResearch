@@ -68,6 +68,24 @@
             android:screenOrientation="portrait"
             android:launchMode="singleTask">
         </activity>
+        <activity
+            android:label="@string/chooserTitle"
+            android:name=".inputChooser"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask">
+        </activity>
+        <activity
+            android:label="@string/enterCropInputTitle"
+            android:name=".enterCropInput"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask">
+        </activity>
+        <activity
+            android:label="@string/enterTreatmentInputTitle"
+            android:name=".enterTreatmentInput"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask">
+        </activity>
     </application>
 
 </manifest>

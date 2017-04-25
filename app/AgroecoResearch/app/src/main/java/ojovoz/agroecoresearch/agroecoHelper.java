@@ -14,6 +14,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -921,6 +923,49 @@ public class agroecoHelper {
                 break;
             }
         }
+        return ret;
+    }
+
+    public ArrayList<oCrop> getCropsFromFieldId(int id){
+        ArrayList<oCrop> ret = new ArrayList<>();
+        oField f = getFieldFromId(id);
+        Iterator<oPlot> iterator = f.plots.iterator();
+        while(iterator.hasNext()){
+            oPlot p = iterator.next();
+            oCrop pc = p.primaryCrop;
+            if(!ret.contains(pc)){
+                ret.add(pc);
+            }
+            if(p.intercroppingCrop!=null) {
+                oCrop ic = p.intercroppingCrop;
+                if (!ret.contains(ic)) {
+                    ret.add(ic);
+                }
+            }
+        }
+        Collections.sort(ret, new Comparator<oCrop>() {
+            @Override
+            public int compare(oCrop c1, oCrop c2) {
+                return c1.cropName.compareTo(c2.cropName);
+            }
+        });
+        return ret;
+    }
+
+    public ArrayList<oCrop> getPlotCropsFromFieldId(int id, int pN){
+        ArrayList<oCrop> ret = new ArrayList<>();
+        oField f = getFieldFromId(id);
+        oPlot p = f.plots.get(pN);
+        ret.add(p.primaryCrop);
+        if(p.intercroppingCrop!=null){
+            ret.add(p.intercroppingCrop);
+        }
+        Collections.sort(ret, new Comparator<oCrop>() {
+            @Override
+            public int compare(oCrop c1, oCrop c2) {
+                return c1.cropName.compareTo(c2.cropName);
+            }
+        });
         return ret;
     }
 

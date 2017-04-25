@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Agroeco Research</string>
+    <string name="app_name" translatable="false">AgroEco R</string>
     <string name="userAliasLabel">User name</string>
     <string name="loginButtonText">Log in</string>
     <string name="loginScreenTitle">Agroeco Research</string>
@@ -72,4 +72,16 @@
     <string name="enterQualitativeValueText">Choose value</string>
     <string name="valueOutOfRangeText">Value is out of range</string>
     <string name="enterValidCategoryText">Please enter a valid category</string>
+    <string name="cropsTableRowText">Crops</string>
+    <string name="treatmentsTableRowText">Treatments</string>
+    <string name="enterCropAgeText">Age (days)</string>
+    <string name="enterCropOriginText">Origin</string>
+    <string name="enterCropCostText">Cost (local currency)</string>
+    <string name="enterCropQuantityText">Quantity</string>
+    <string name="enterCropInputTitle">Crop input</string>
+    <string name="enterTreatmentMaterialText">Material used</string>
+    <string name="enterTreatmentQuantityText">Material quantity</string>
+    <string name="enterTreatmentPreparationMethodText">Preparation method</string>
+    <string name="enterTreatmentCostText">Cost (local currency)</string>
+    <string name="enterTreatmentInputTitle">Treatment input</string>
 </resources>

@@ -264,27 +264,53 @@ public class chooseFieldPlot extends AppCompatActivity {
         b.setBackgroundColor(ContextCompat.getColor(this,R.color.colorPrimaryDark));
 
         final Context context = this;
-        Intent i = new Intent(context, chooser.class);
-        i.putExtra("userId",userId);
-        i.putExtra("userRole",userRole);
-        i.putExtra("task",task);
-        i.putExtra("field",field.fieldId);
-        i.putExtra("plot",n);
 
-        startActivity(i);
-        finish();
+        if(task.equals("activity") || task.equals("measurement")) {
+            Intent i = new Intent(context, chooser.class);
+            i.putExtra("userId", userId);
+            i.putExtra("userRole", userRole);
+            i.putExtra("task", task);
+            i.putExtra("field", field.fieldId);
+            i.putExtra("plot", n);
+
+            startActivity(i);
+            finish();
+        } else if(task.equals("input")){
+            Intent i = new Intent(context, inputChooser.class);
+            i.putExtra("userId", userId);
+            i.putExtra("userRole", userRole);
+            i.putExtra("task", task);
+            i.putExtra("field", field.fieldId);
+            i.putExtra("plot", n);
+
+            startActivity(i);
+            finish();
+        }
     }
 
     public void chooseEntireField(View v){
         final Context context = this;
-        Intent i = new Intent(context, chooser.class);
-        i.putExtra("userId",userId);
-        i.putExtra("userRole",userRole);
-        i.putExtra("task",task);
-        i.putExtra("field",field.fieldId);
-        i.putExtra("plot",-1);
 
-        startActivity(i);
-        finish();
+        if(task.equals("activity") || task.equals("measurement")) {
+            Intent i = new Intent(context, chooser.class);
+            i.putExtra("userId", userId);
+            i.putExtra("userRole", userRole);
+            i.putExtra("task", task);
+            i.putExtra("field", field.fieldId);
+            i.putExtra("plot", -1);
+
+            startActivity(i);
+            finish();
+        } else if(task.equals("input")){
+            Intent i = new Intent(context, inputChooser.class);
+            i.putExtra("userId", userId);
+            i.putExtra("userRole", userRole);
+            i.putExtra("task", task);
+            i.putExtra("field", field.fieldId);
+            i.putExtra("plot", -1);
+
+            startActivity(i);
+            finish();
+        }
     }
 }
