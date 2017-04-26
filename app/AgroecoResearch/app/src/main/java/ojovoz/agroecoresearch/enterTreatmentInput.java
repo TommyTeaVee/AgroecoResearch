@@ -9,7 +9,9 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -36,7 +38,7 @@ public class enterTreatmentInput extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_enter_crop_input);
+        setContentView(R.layout.activity_enter_treatment_input);
 
         userId = getIntent().getExtras().getInt("userId");
         userRole = getIntent().getExtras().getInt("userRole");
@@ -124,5 +126,86 @@ public class enterTreatmentInput extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         sdf.setTimeZone(TimeZone.getDefault());
         return sdf.format(d);
+    }
+
+    public boolean isNumeric(String str) {
+        return str.matches("-?\\d+(\\.\\d+)?");
+    }
+
+    public void registerTreatment(View v) {
+        EditText quantity = (EditText) findViewById(R.id.treatmentQuantity);
+        String quantityValue = String.valueOf(quantity.getText());
+        if (isNumeric(quantityValue)) {
+            float quantityNumber = Float.parseFloat(quantityValue);
+
+            EditText cost = (EditText) findViewById(R.id.treatmentCost);
+            String costValue = String.valueOf(cost.getText());
+            if (isNumeric(costValue)) {
+
+                float costNumber = Float.parseFloat(costValue);
+
+                EditText material = (EditText) findViewById(R.id.treatmentMaterial);
+                String materialText = String.valueOf(material.getText());
+                if (!materialText.isEmpty()) {
+                    materialText = materialText.replaceAll(";", " ");
+                    materialText = materialText.replaceAll("\\|", " ");
+                }
+
+                EditText method = (EditText) findViewById(R.id.treatmentPreparationMethod);
+                String methodText = String.valueOf(method.getText());
+                if (!methodText.isEmpty()) {
+                    methodText = methodText.replaceAll(";", " ");
+                    methodText = methodText.replaceAll("\\|", " ");
+                }
+
+                EditText comments = (EditText) findViewById(R.id.inputComments);
+                String commentsText = String.valueOf(comments.getText());
+                if (!commentsText.isEmpty()) {
+                    commentsText = commentsText.replaceAll(";", " ");
+                    commentsText = commentsText.replaceAll("\\|", " ");
+                }
+
+                if (update.equals("")) {
+                    Intent i = new Intent(this, inputChooser.class);
+                    i.putExtra("userId", userId);
+                    i.putExtra("userRole", userRole);
+                    i.putExtra("task", task);
+                    i.putExtra("field", fieldId);
+                    i.putExtra("plot", plotN);
+                    i.putExtra("newTreatmentInput", true);
+                    i.putExtra("treatment", treatmentId);
+                    i.putExtra("treatmentInputDate", dateToString(treatmentInputDate));
+                    i.putExtra("treatmentInputMaterial", materialText);
+                    i.putExtra("treatmentInputQuantity", quantityNumber);
+                    i.putExtra("treatmentInputMethod", methodText);
+                    i.putExtra("treatmentInputCost", costNumber);
+                    i.putExtra("treatmentInputComments", commentsText);
+                    startActivity(i);
+                    finish();
+                } else {
+                    Intent i = new Intent(this, manageData.class);
+                    i.putExtra("userId", userId);
+                    i.putExtra("userRole", userRole);
+                    i.putExtra("task", task);
+                    i.putExtra("inputLogId", inputLogId);
+                    i.putExtra("update", "treatmentInput");
+                    i.putExtra("treatment", treatmentId);
+                    i.putExtra("treatmentInputDate", dateToString(treatmentInputDate));
+                    i.putExtra("treatmentInputMaterial", materialText);
+                    i.putExtra("treatmentInputQuantity", quantityNumber);
+                    i.putExtra("treatmentInputMethod", methodText);
+                    i.putExtra("treatmentInputCost", costNumber);
+                    i.putExtra("treatmentInputComments", commentsText);
+                    startActivity(i);
+                    finish();
+                }
+            } else {
+                Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
+                cost.requestFocus();
+            }
+        } else {
+            Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
+            quantity.requestFocus();
+        }
     }
 }

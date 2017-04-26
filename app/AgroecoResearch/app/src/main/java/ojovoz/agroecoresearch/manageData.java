@@ -85,9 +85,7 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
         super.onCreateOptionsMenu(menu);
         menu.add(0, 0, 0, R.string.sendMenuText);
         menu.add(1, 1, 1, R.string.deleteMenuText);
-        menu.add(2, 2, 2, R.string.filtersMenuText);
-        menu.add(3, 3, 3, R.string.manageInputsMenuText);
-        menu.add(4, 4, 4, R.string.invertSelectedMenuText);
+        menu.add(2, 2, 2, R.string.invertSelectedMenuText);
         return true;
     }
 
@@ -101,12 +99,6 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
                 deleteSelectedEntries();
                 break;
             case 2:
-                //filters
-                break;
-            case 3:
-                //inputs
-                break;
-            case 4:
                 invertSelectedCheckboxes();
                 break;
         }
@@ -268,7 +260,6 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
         logTable.removeAllViews();
 
         ArrayList<oLog> filteredLog = agroHelper.log;
-        //TODO: apply filters
 
         int n=0;
         Iterator<oLog> logIterator = filteredLog.iterator();
@@ -322,6 +313,7 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
 
             n++;
         }
+        // TODO: add input entries
         if(n==0){
             TextView tt = (TextView)findViewById(R.id.logTableTitle);
             tt.setText(R.string.noLoggedDataMessage);

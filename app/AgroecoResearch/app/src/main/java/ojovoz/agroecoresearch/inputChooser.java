@@ -33,6 +33,7 @@ public class inputChooser extends AppCompatActivity {
 
     public agroecoHelper agroHelper;
     public ArrayList<oCrop> crops;
+    public ArrayList<oTreatment> treatments;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +43,7 @@ public class inputChooser extends AppCompatActivity {
         userRole = getIntent().getExtras().getInt("userRole");
         task = getIntent().getExtras().getString("task");
 
-        agroHelper = new agroecoHelper(this, "crops,fields,treatments");
+        agroHelper = new agroecoHelper(this, "crops,fields,treatments,input_log");
 
         fieldId = getIntent().getExtras().getInt("field");
         field = agroHelper.getFieldFromId(fieldId);
@@ -67,6 +68,18 @@ public class inputChooser extends AppCompatActivity {
 
         CharSequence title = getTitle() + " " + task + ": " + field.fieldName + " R" + Integer.toString(field.fieldReplicationN);
         setTitle(title);
+
+        if(getIntent().getExtras().getBoolean("newCropInput")){
+            agroHelper.addCropToInputLog(fieldId, plotN, userId, getIntent().getExtras().getInt("crop"),
+                    getIntent().getExtras().getString("cropInputDate"), getIntent().getExtras().getInt("cropInputAge"),
+                    getIntent().getExtras().getString("cropInputOrigin"), getIntent().getExtras().getFloat("cropInputQuantity"),
+                    getIntent().getExtras().getFloat("cropInputCost"), getIntent().getExtras().getString("cropInputComments"));
+        } else if(getIntent().getExtras().getBoolean("newTreatmentInput")){
+            agroHelper.addTreatmentToInputLog(fieldId, plotN, userId, getIntent().getExtras().getInt("treatment"),
+                    getIntent().getExtras().getString("treatmentInputDate"), getIntent().getExtras().getString("treatmentInputMaterial"),
+                    getIntent().getExtras().getFloat("treatmentInputQuantity"), getIntent().getExtras().getString("treatmentInputMethod"),
+                    getIntent().getExtras().getFloat("treatmentInputCost"), getIntent().getExtras().getString("treatmentInputComments"));
+        }
 
         fillTable();
     }
@@ -121,95 +134,168 @@ public class inputChooser extends AppCompatActivity {
                 trowCrop.setBackgroundColor(ContextCompat.getColor(this, R.color.colorWhite));
             }
 
+            String nDays = agroHelper.getCropInputDaysAgo(crop.cropId,plotN,fieldId);
+
             TextView tvCrop = new TextView(inputChooser.this);
             tvCrop.setId(n);
             tvCrop.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
             tvCrop.setText(cropName);
             tvCrop.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f);
             tvCrop.setPadding(4, 4, 4, 4);
-            tvCrop.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    chooseCrop(v.getId(), v);
-                }
+            if(!nDays.equals("0")) {
+                tvCrop.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        chooseCrop(v.getId(), v);
+                    }
 
-            });
+                });
+            }
 
             trowCrop.addView(tvCrop, lpCrop);
             trowCrop.setGravity(Gravity.CENTER_VERTICAL);
             chooserTable.addView(trowCrop, lpCrop);
 
+            final TableRow trowBelow = new TableRow(inputChooser.this);
+            TableRow.LayoutParams lpBelow = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f);
+            lpBelow.setMargins(4,0,4,0);
+
+            if(n%2==0){
+                trowBelow.setBackgroundColor(ContextCompat.getColor(this,R.color.lightGray));
+            } else {
+                trowBelow.setBackgroundColor(ContextCompat.getColor(this,R.color.colorWhite));
+            }
+
+            TextView tvBelow = new TextView(inputChooser.this);
+            tvBelow.setTextColor(ContextCompat.getColor(this,R.color.colorBlack));
+
+            String daysAgo="";
+
+            if(nDays.equals("-1")){
+                daysAgo = getString(R.string.neverText);
+            } else if (nDays.equals("0")) {
+                daysAgo = getString(R.string.todayText);
+            } else if (nDays.equals("1")){
+                daysAgo = getString(R.string.yesterdayText);
+            } else {
+                if(isNumeric(nDays)) {
+                    daysAgo = nDays + " " + getString(R.string.daysAgoText);
+                } else {
+                    daysAgo = nDays;
+                }
+            }
+            tvBelow.setText(getString(R.string.lastText)+" : "+daysAgo);
+
+            tvBelow.setTextSize(TypedValue.COMPLEX_UNIT_DIP,15f);
+            tvBelow.setPadding(4,0,4,0);
+            trowBelow.addView(tvBelow,lpBelow);
+            trowBelow.setGravity(Gravity.CENTER_VERTICAL);
+            chooserTable.addView(trowBelow, lpBelow);
+
             n++;
         }
 
-        if(((field.hasSoilManagement || field.hasPestControl) && plotN<0) || ((plotHasSoilManagement || plotHasPestControl) && plotN>=0)){
-            final TableRow trowHeaderTreatments = new TableRow(inputChooser.this);
-            TableRow.LayoutParams lpHeaderTreatments = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f);
-            lpHeaderTreatments.setMargins(4, 4, 4, 4);
-            trowHeaderTreatments.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
-            TextView tv2 = new TextView(inputChooser.this);
-            tv2.setTextColor(ContextCompat.getColor(this, R.color.colorWhite));
-            tv2.setText(R.string.treatmentsTableRowText);
-            tv2.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f);
-            tv2.setPadding(4, 4, 4, 4);
-            trowHeaderTreatments.addView(tv2, lpHeaderTreatments);
-            trowHeaderTreatments.setGravity(Gravity.CENTER_VERTICAL);
-            chooserTable.addView(trowHeaderTreatments, lpHeaderTreatments);
+        if(((field.hasSoilManagement || field.hasPestControl) && plotN<0) || ((plotHasSoilManagement || plotHasPestControl) && plotN>=0)) {
 
-            int nTreatments=0;
-            if((plotHasPestControl && plotN>=0) || (field.hasPestControl && plotN<0)) {
-                //TODO: get treatments where category = Pest control
-                final TableRow trowTreatment = new TableRow(inputChooser.this);
-                TableRow.LayoutParams lpTreatment = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f);
-                lpTreatment.setMargins(4, 4, 4, 4);
-                trowTreatment.setBackgroundColor(ContextCompat.getColor(this, R.color.lightGray));
-                TextView tvTreatment = new TextView(inputChooser.this);
-                tvTreatment.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
-                tvTreatment.setText("Pest control");
-                tvTreatment.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f);
-                tvTreatment.setPadding(4, 4, 4, 4);
-                tvTreatment.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        chooseTreatment(v.getId(), v);
-                    }
-
-                });
-
-                trowTreatment.addView(tvTreatment, lpTreatment);
-                trowTreatment.setGravity(Gravity.CENTER_VERTICAL);
-                chooserTable.addView(trowTreatment, lpTreatment);
-                nTreatments=1;
+            if (plotN >= 0) {
+                treatments = agroHelper.getInputTreatmentsFromPlotFieldId(fieldId, plotN);
+            } else {
+                treatments = agroHelper.getInputTreatmentsFromFieldId(fieldId);
             }
-
-            if((plotHasSoilManagement && plotN>=0) || (field.hasSoilManagement && plotN<0)) {
-                //TODO: get treatments where category = Soil management
+            Iterator<oTreatment> iteratorT = treatments.iterator();
+            n = 0;
+            String category = "";
+            while (iteratorT.hasNext()) {
+                oTreatment t = iteratorT.next();
+                if (!t.treatmentCategory.equals(category)) {
+                    final TableRow trowCategoryTreatments = new TableRow(inputChooser.this);
+                    TableRow.LayoutParams lpCategoryTreatments = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f);
+                    lpCategoryTreatments.setMargins(4, 4, 4, 4);
+                    trowCategoryTreatments.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
+                    TextView tvCategory = new TextView(inputChooser.this);
+                    tvCategory.setTextColor(ContextCompat.getColor(this, R.color.colorWhite));
+                    tvCategory.setText(t.treatmentCategory);
+                    tvCategory.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f);
+                    tvCategory.setPadding(4, 4, 4, 4);
+                    trowCategoryTreatments.addView(tvCategory, lpCategoryTreatments);
+                    trowCategoryTreatments.setGravity(Gravity.CENTER_VERTICAL);
+                    chooserTable.addView(trowCategoryTreatments, lpCategoryTreatments);
+                    category = t.treatmentCategory;
+                }
                 final TableRow trowTreatment = new TableRow(inputChooser.this);
                 TableRow.LayoutParams lpTreatment = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f);
                 lpTreatment.setMargins(4, 4, 4, 4);
-                if(nTreatments==0) {
+                if(n%2==0){
                     trowTreatment.setBackgroundColor(ContextCompat.getColor(this, R.color.lightGray));
                 } else {
                     trowTreatment.setBackgroundColor(ContextCompat.getColor(this, R.color.colorWhite));
                 }
+
+                String nDays = agroHelper.getTreatmentInputDaysAgo(t.treatmentId,plotN,fieldId);
+
                 TextView tvTreatment = new TextView(inputChooser.this);
+                tvTreatment.setId(n);
                 tvTreatment.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
-                tvTreatment.setText("Soil management");
+                tvTreatment.setText(t.treatmentName);
                 tvTreatment.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f);
                 tvTreatment.setPadding(4, 4, 4, 4);
-                tvTreatment.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        chooseTreatment(v.getId(), v);
-                    }
+                if(!nDays.equals("0")) {
+                    tvTreatment.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            chooseTreatment(v.getId(), v);
+                        }
 
-                });
+                    });
+                }
 
                 trowTreatment.addView(tvTreatment, lpTreatment);
                 trowTreatment.setGravity(Gravity.CENTER_VERTICAL);
                 chooserTable.addView(trowTreatment, lpTreatment);
+
+                final TableRow trowBelow = new TableRow(inputChooser.this);
+                TableRow.LayoutParams lpBelow = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f);
+                lpBelow.setMargins(4,0,4,0);
+
+                if(n%2==0){
+                    trowBelow.setBackgroundColor(ContextCompat.getColor(this,R.color.lightGray));
+                } else {
+                    trowBelow.setBackgroundColor(ContextCompat.getColor(this,R.color.colorWhite));
+                }
+
+                TextView tvBelow = new TextView(inputChooser.this);
+                tvBelow.setTextColor(ContextCompat.getColor(this,R.color.colorBlack));
+
+                String daysAgo="";
+
+                if(nDays.equals("-1")){
+                    daysAgo = getString(R.string.neverText);
+                } else if (nDays.equals("0")) {
+                    daysAgo = getString(R.string.todayText);
+                } else if (nDays.equals("1")){
+                    daysAgo = getString(R.string.yesterdayText);
+                } else {
+                    if(isNumeric(nDays)) {
+                        daysAgo = nDays + " " + getString(R.string.daysAgoText);
+                    } else {
+                        daysAgo = nDays;
+                    }
+                }
+                tvBelow.setText(getString(R.string.lastText)+" : "+daysAgo);
+
+                tvBelow.setTextSize(TypedValue.COMPLEX_UNIT_DIP,15f);
+                tvBelow.setPadding(4,0,4,0);
+                trowBelow.addView(tvBelow,lpBelow);
+                trowBelow.setGravity(Gravity.CENTER_VERTICAL);
+                chooserTable.addView(trowBelow, lpBelow);
+
+                n++;
             }
         }
+    }
+
+    public boolean isNumeric(String str) {
+        return str.matches("-?\\d+(\\.\\d+)?");
     }
 
     public void chooseCrop(int id, View v){
@@ -239,6 +325,28 @@ public class inputChooser extends AppCompatActivity {
     }
 
     public void chooseTreatment(int id, View v){
+        TextView tv = (TextView)v;
+        tv.setBackgroundColor(ContextCompat.getColor(this,R.color.colorPrimaryDark));
+        final Context context = this;
+        Intent i = new Intent(context, enterTreatmentInput.class);
+        i.putExtra("userId", userId);
+        i.putExtra("userRole", userRole);
+        i.putExtra("task", task);
+        i.putExtra("field", fieldId);
+        i.putExtra("plot", plotN);
+        i.putExtra("treatmentId", treatments.get(id).treatmentId);
+        i.putExtra("update","");
 
+        String inputTitle="";
+
+        if(plotN>=0) {
+            inputTitle = "Field: " + field.fieldName + " R" + Integer.toString(field.fieldReplicationN) + "\nPlot " + Integer.toString(plotN + 1) + ": " + treatments.get(id).treatmentName;
+        } else {
+            inputTitle = "Field: " + field.fieldName + " R" + Integer.toString(field.fieldReplicationN) + ": " + treatments.get(id).treatmentName;
+        }
+
+        i.putExtra("title",inputTitle);
+        startActivity(i);
+        finish();
     }
 }

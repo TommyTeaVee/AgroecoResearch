@@ -9,7 +9,9 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -124,5 +126,91 @@ public class enterCropInput extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         sdf.setTimeZone(TimeZone.getDefault());
         return sdf.format(d);
+    }
+
+    public boolean isNumeric(String str) {
+        return str.matches("-?\\d+(\\.\\d+)?");
+    }
+
+    public void registerCrop(View v) {
+        EditText age = (EditText) findViewById(R.id.cropAge);
+        String ageValue = String.valueOf(age.getText());
+        if (isNumeric(ageValue)) {
+            int ageNumber = Integer.parseInt(ageValue);
+
+            EditText quantity = (EditText) findViewById(R.id.cropQuantity);
+            String quantityValue = String.valueOf(quantity.getText());
+            if (isNumeric(quantityValue)) {
+
+                float quantityNumber = Float.parseFloat(quantityValue);
+
+                EditText cost = (EditText) findViewById(R.id.cropCost);
+                String costValue = String.valueOf(cost.getText());
+                if (isNumeric(costValue)) {
+
+                    float costNumber = Float.parseFloat(costValue);
+
+                    EditText origin = (EditText) findViewById(R.id.cropOrigin);
+                    String originText = String.valueOf(origin.getText());
+
+                    if (!originText.isEmpty()) {
+                        originText = originText.replaceAll(";", " ");
+                        originText = originText.replaceAll("\\|", " ");
+                    }
+
+                    EditText comments = (EditText) findViewById(R.id.inputComments);
+                    String commentsText = String.valueOf(comments.getText());
+
+                    if (!commentsText.isEmpty()) {
+                        commentsText = commentsText.replaceAll(";", " ");
+                        commentsText = commentsText.replaceAll("\\|", " ");
+                    }
+
+                    if (update.equals("")) {
+                        Intent i = new Intent(this, inputChooser.class);
+                        i.putExtra("userId", userId);
+                        i.putExtra("userRole", userRole);
+                        i.putExtra("task", task);
+                        i.putExtra("field", fieldId);
+                        i.putExtra("plot", plotN);
+                        i.putExtra("newCropInput", true);
+                        i.putExtra("crop", cropId);
+                        i.putExtra("cropInputDate", dateToString(cropInputDate));
+                        i.putExtra("cropInputAge", ageNumber);
+                        i.putExtra("cropInputOrigin", originText);
+                        i.putExtra("cropInputQuantity", quantityNumber);
+                        i.putExtra("cropInputCost", costNumber);
+                        i.putExtra("cropInputComments", commentsText);
+                        startActivity(i);
+                        finish();
+                    } else {
+                        Intent i = new Intent(this, manageData.class);
+                        i.putExtra("userId", userId);
+                        i.putExtra("userRole", userRole);
+                        i.putExtra("task", task);
+                        i.putExtra("inputLogId", inputLogId);
+                        i.putExtra("update", "cropInput");
+                        i.putExtra("crop", cropId);
+                        i.putExtra("cropInputDate", dateToString(cropInputDate));
+                        i.putExtra("cropInputAge", ageNumber);
+                        i.putExtra("cropInputOrigin", originText);
+                        i.putExtra("cropInputQuantity", quantityNumber);
+                        i.putExtra("cropInputCost", costNumber);
+                        i.putExtra("cropInputComments", commentsText);
+                        startActivity(i);
+                        finish();
+                    }
+                } else {
+                    Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
+                    cost.requestFocus();
+                }
+            } else {
+                Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
+                quantity.requestFocus();
+            }
+        } else {
+            Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
+            age.requestFocus();
+        }
     }
 }
