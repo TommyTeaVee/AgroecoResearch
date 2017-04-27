@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -53,7 +54,29 @@ public class enterCropInput extends AppCompatActivity {
         tt.setText(inputTitle);
 
         if(update.equals("crop")){
+            inputLogId = getIntent().getExtras().getInt("inputLogId");
 
+            Button ob = (Button)findViewById(R.id.okButton);
+            ob.setText(R.string.editButtonText);
+
+            Button db = (Button)findViewById(R.id.dateButton);
+            db.setText(getIntent().getExtras().getString("cropInputDate"));
+            cropInputDate = stringToDate(getIntent().getExtras().getString("cropInputDate"));
+
+            EditText age = (EditText) findViewById(R.id.cropAge);
+            age.setText(Integer.toString(getIntent().getExtras().getInt("cropInputAge")));
+
+            EditText quantity = (EditText) findViewById(R.id.cropQuantity);
+            quantity.setText(Float.toString(getIntent().getExtras().getFloat("cropInputQuantity")));
+
+            EditText cost = (EditText) findViewById(R.id.cropCost);
+            cost.setText(Float.toString(getIntent().getExtras().getFloat("cropInputCost")));
+
+            EditText origin = (EditText) findViewById(R.id.cropOrigin);
+            origin.setText(getIntent().getExtras().getString("cropInputOrigin"));
+
+            EditText comments = (EditText) findViewById(R.id.inputComments);
+            comments.setText(getIntent().getExtras().getString("cropInputComments"));
         } else {
             cropInputDate = new Date();
         }
@@ -82,8 +105,25 @@ public class enterCropInput extends AppCompatActivity {
             startActivity(i);
             finish();
         } else {
+            Intent i = new Intent(context, manageData.class);
+            i.putExtra("userId", userId);
+            i.putExtra("userRole", userRole);
+            i.putExtra("update","");
+            startActivity(i);
+            finish();
+        }
+    }
+
+    public Date stringToDate(String d){
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setTimeZone(TimeZone.getDefault());
+        try {
+            date = sdf.parse(d);
+        } catch (ParseException e) {
 
         }
+        return date;
     }
 
     public void displayDatePicker(){

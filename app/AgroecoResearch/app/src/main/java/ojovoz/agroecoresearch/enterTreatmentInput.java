@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -53,7 +54,29 @@ public class enterTreatmentInput extends AppCompatActivity {
         tt.setText(inputTitle);
 
         if(update.equals("treatment")){
+            inputLogId = getIntent().getExtras().getInt("inputLogId");
 
+            Button ob = (Button)findViewById(R.id.okButton);
+            ob.setText(R.string.editButtonText);
+
+            Button db = (Button)findViewById(R.id.dateButton);
+            db.setText(getIntent().getExtras().getString("treatmentInputDate"));
+            treatmentInputDate = stringToDate(getIntent().getExtras().getString("treatmentInputDate"));
+
+            EditText quantity = (EditText) findViewById(R.id.treatmentQuantity);
+            quantity.setText(Float.toString(getIntent().getExtras().getFloat("treatmentInputQuantity")));
+
+            EditText cost = (EditText) findViewById(R.id.treatmentCost);
+            cost.setText(Float.toString(getIntent().getExtras().getFloat("treatmentInputCost")));
+
+            EditText material = (EditText) findViewById(R.id.treatmentMaterial);
+            material.setText(getIntent().getExtras().getString("treatmentInputMaterial"));
+
+            EditText method = (EditText) findViewById(R.id.treatmentPreparationMethod);
+            method.setText(getIntent().getExtras().getString("treatmentInputMethod"));
+
+            EditText comments = (EditText) findViewById(R.id.inputComments);
+            comments.setText(getIntent().getExtras().getString("treatmentInputComments"));
         } else {
             treatmentInputDate = new Date();
         }
@@ -82,8 +105,25 @@ public class enterTreatmentInput extends AppCompatActivity {
             startActivity(i);
             finish();
         } else {
+            Intent i = new Intent(context, manageData.class);
+            i.putExtra("userId", userId);
+            i.putExtra("userRole", userRole);
+            i.putExtra("update","");
+            startActivity(i);
+            finish();
+        }
+    }
+
+    public Date stringToDate(String d){
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setTimeZone(TimeZone.getDefault());
+        try {
+            date = sdf.parse(d);
+        } catch (ParseException e) {
 
         }
+        return date;
     }
 
     public void displayDatePicker(){

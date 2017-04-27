@@ -52,7 +52,7 @@
     <string name="lastText">Last</string>
     <string name="yesterdayText">Yesterday</string>
     <string name="manageDataTitle">Manage data</string>
-    <string name="logTableTitle">Activities and measurements</string>
+    <string name="logTableTitle">Logged data</string>
     <string name="sendMenuText">Send</string>
     <string name="deleteMenuText">Delete</string>
     <string name="filtersMenuText">Filters</string>
@@ -84,4 +84,6 @@
     <string name="enterTreatmentPreparationMethodText">Preparation method</string>
     <string name="enterTreatmentCostText">Cost (local currency)</string>
     <string name="enterTreatmentInputTitle">Treatment input</string>
+    <string name="activitiesMeasurementsTableTitle">Activities and measurements</string>
+    <string name="inputsTableTitle">Inputs</string>
 </resources>
