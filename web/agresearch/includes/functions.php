@@ -162,4 +162,156 @@ function recalculateConfig($config){
 	$ret=implode(";",$elements);
 	return $ret;
 }
+
+//mail
+
+function decodeISO88591($string) {               
+	$string=str_replace("=?iso-8859-1?q?","",$string);
+  	$string=str_replace("=?iso-8859-1?Q?","",$string);
+  	$string=str_replace("?=","",$string);
+
+  	$charHex=array("0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F");
+       
+	for($z=0;$z<sizeof($charHex);$z++) {
+		for($i=0;$i<sizeof($charHex);$i++) {
+      		$string=str_replace(("=".($charHex[$z].$charHex[$i])),chr(hexdec($charHex[$z].$charHex[$i])),$string);
+    	}
+  	}
+  	return($string);
+}
+
+function parse($structure) {
+	$type = array("text", "multipart", "message", "application", "audio", "image", "video", "other");
+	$encoding = array("7bit", "8bit", "binary", "base64", "quoted-printable", "other");
+	$ret = array();
+	$parts = $structure->parts;
+	for($x=0; $x<sizeof($parts); $x++) {
+		$ret[$x]["pid"] = ($x+1);	
+		$this_part = $parts[$x];
+		if ($this_part->type == "") { $this_part->type = 0; }
+		$ret[$x]["type"] = $type[$this_part->type] . "/" . strtolower($this_part->subtype);	
+		if ($this_part->encoding == "") { $this_part->encoding = 0; }
+		$ret[$x]["encoding"] = $encoding[$this_part->encoding];	
+		$ret[$x]["size"] = strtolower($this_part->bytes);	
+		if ($this_part->ifdisposition) {
+			$ret[$x]["disposition"] = strtolower($this_part->disposition);	
+			if (strtolower($this_part->disposition) == "attachment" || strtolower($this_part->disposition) == "inline") {
+				$params = $this_part->dparameters;
+				if (is_null($params)) {
+					$params = $this_part->parameters;
+				}
+				if (!is_null($params)) {
+					foreach ($params as $p) {
+						if($p->attribute == "FILENAME" || $p->attribute == "NAME") {
+							$ret[$x]["name"] = $p->value;	
+							break;			
+						}
+					}
+				}
+			}
+		} 
+	}
+	return $ret;
+}
+
+function decodeSubject($s) {
+	$ret=$s;
+	$elements=imap_mime_header_decode($s);
+	if (sizeof($elements)>0) {
+		if($elements[0]->charset=="utf-8") {
+			$ret=utf8_decode($elements[0]->text);
+		} else if ($elements[0]->charset="ISO-8859-1") {
+			$ret=decodeISO88591($elements[0]->text);
+		}
+	}
+	return $ret;
+}
+
+function checkMessages($mail_server, $mail_user, $mail_password, $dbh){
+	if ($inbox = imap_open ($mail_server, $mail_user, $mail_password)) {
+		$total = imap_num_msg($inbox);
+		for($x=1; $x<=$total; $x++) {
+			$headers = imap_header($inbox, $x);
+			$structure = imap_fetchstructure($inbox, $x);
+			$sections = parse($structure);
+			if (isset($headers->subject)) {
+				$subject = decodeSubject($headers->subject);
+			} else {
+				$subject = "";
+			}
+			if ($subject=="xxx" && is_array($sections) && sizeof($sections)>0) {
+				for($y=0; $y<sizeof($sections); $y++) {	
+					$type = $sections[$y]["type"];
+					$encoding = $sections[$y]["encoding"];
+					$pid = $sections[$y]["pid"];
+					$attachment = imap_fetchbody($inbox,$x,$pid);
+					if ($type=="text/plain" || $type=="text/html") {
+						if ($encoding == "base64") {
+							$text = trim(utf8_decode(imap_base64($attachment)));
+						} else {
+							$text = trim(utf8_decode(decodeISO88591($attachment)));
+						}
+						$what_log=explode("*",$text);
+						$ma_log_entry=explode("|",$what_log[0]);
+						for($i=0;$i<sizeof($ma_log_entry);$i++){
+							$ma_log_entry_part=explode(";",$ma_log_entry[$i]);
+							if(sizeof($ma_log_entry_part)==15){
+								$field_id=$ma_log_entry_part[0];
+								$plot_number=$ma_log_entry_part[1];
+								$user_id=$ma_log_entry_part[2];
+								$crop_id=$ma_log_entry_part[3];
+								$treatment_id=$ma_log_entry_part[4];
+								$measurement_id=$ma_log_entry_part[5];
+								$activity_id=$ma_log_entry_part[6];
+								$date=$ma_log_entry_part[7];
+								$number_value=$ma_log_entry_part[8];
+								$text_value=$ma_log_entry_part[9];
+								$labour_time=$ma_log_entry_part[10];
+								$cost=$ma_log_entry_part[11];
+								$comments=$ma_log_entry_part[12];
+								$log_id=$ma_log_entry_part[13];
+								$sample_number=$ma_log_entry_part[14];
+							
+								$query="INSERT INTO log (field_id, plot_number, user_id, crop_id, sample_number, treatment_id, measurement_id, activity_id, log_date, log_value_number, log_value_text, labour_time, cost, log_comments) VALUES ($field_id, $plot_number, $user_id, $crop_id, $sample_number, $treatment_id, $measurement_id, $activity_id, '$date', $number_value, '$text_value', $labour_time, $cost, '$comments')";
+								$result = mysqli_query($dbh,$query);
+							}
+						}
+						
+						$i_log_entry=explode("|",$what_log[1]);
+						for($i=0;$i<sizeof($i_log_entry);$i++){
+							$i_log_entry_part=explode(";",$i_log_entry[$i]);
+							if(sizeof($i_log_entry_part)==14){
+								$log_id=$i_log_entry_part[0];
+								$field_id=$i_log_entry_part[1];
+								$plot_number=$i_log_entry_part[2];
+								$user_id=$i_log_entry_part[3];
+								$crop_id=$i_log_entry_part[4];
+								$treatment_id=$i_log_entry_part[5];
+								$date=$i_log_entry_part[6];
+								$age=$i_log_entry_part[7];
+								$origin=$i_log_entry_part[8];
+								if($origin=="null") { $origin=""; }
+								$quantity=$i_log_entry_part[9];
+								$cost=$i_log_entry_part[10];
+								$material=$i_log_entry_part[11];
+								if($material=="null") { $material=""; }
+								$method=$i_log_entry_part[12];
+								if($method=="null") { $method=""; }
+								$comments=$i_log_entry_part[13];
+								if($comments=="null") { $comments=""; }
+							
+								$query="INSERT INTO input_log (input_log_date, field_id, plot_number, user_id, crop_id, treatment_id, input_age, input_origin, input_quantity, input_cost, input_treatment_material, input_treatment_preparation_method, input_comments) VALUES ('$date', $field_id, $plot_number, $user_id, $crop_id, $treatment_id, $age, '$origin', $quantity, $cost, '$material', '$method', '$comments')";
+								$result = mysqli_query($dbh,$query);
+							}
+						}
+						
+					}
+				}
+				$sections=NULL;
+			}
+			imap_delete($inbox,$x);
+		}
+		imap_close($inbox, CL_EXPUNGE);
+	}
+}
 ?>
