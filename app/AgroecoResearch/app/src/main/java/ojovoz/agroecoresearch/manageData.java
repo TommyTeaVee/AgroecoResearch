@@ -177,11 +177,16 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
 
                 if(!mail.equals("") && !password.equals("") && !smtpServer.equals("") && !smtpPort.equals("")) {
 
-                    final boolean allSelectedLog = (nSelectedLog==checkboxesLog.size());
-                    final boolean allSelectedInputLog = (nSelectedInputLog==checkboxesInputLog.size());
+                    final boolean allSelectedLog = (nSelectedLog==checkboxesLog.size() && checkboxesLog.size()>0);
+                    final boolean allSelectedInputLog = (nSelectedInputLog==checkboxesInputLog.size() && checkboxesInputLog.size()>0);
 
-                    final String body = agroHelper.getSelectedLogItemsAsString(selectedLog) + "*"
-                            + agroHelper.getSelectedInputLogItemsAsString(selectedInputLog);
+                    String firstPart="";
+                    String secondPart="";
+
+                    if(!selectedLog.equals("")) { firstPart=agroHelper.getSelectedLogItemsAsString(selectedLog); }
+                    if(!selectedInputLog.equals("")) { secondPart=agroHelper.getSelectedInputLogItemsAsString(selectedInputLog); }
+
+                    final String body = firstPart + "*" + secondPart;
                     final String finalSelectedLog = selectedLog;
                     final String finalSelectedInputLog = selectedInputLog;
                     AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {

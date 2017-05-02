@@ -61,6 +61,11 @@ public class settings extends AppCompatActivity implements httpConnection.AsyncR
                 }
                 settings.this.server = input;
                 prefs.savePreference("server", input);
+                prefs.savePreference("users","");
+                prefs.savePreference("mail","");
+                prefs.savePreference("password","");
+                prefs.savePreference("smtpServer","");
+                prefs.savePreference("smtpPort","");
                 return true;
             }
         };
