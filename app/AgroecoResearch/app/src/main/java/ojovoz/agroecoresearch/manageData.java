@@ -330,15 +330,14 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
 
             final TableRow trowAM = new TableRow(manageData.this);
             TableRow.LayoutParams lpAM = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f);
-            lpAM.setMargins(10, 10, 0, 10);
+            lpAM.setMargins(10, 0, 0, 0);
             trowAM.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
 
             TextView tvAM = new TextView(manageData.this);
             tvAM.setTextColor(ContextCompat.getColor(this, R.color.colorWhite));
-            tvAM.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f);
+            tvAM.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f);
             tvAM.setText(R.string.activitiesMeasurementsTableTitle);
             tvAM.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            tvAM.setPadding(0, 10, 0, 10);
 
             TableRow.LayoutParams lpAC = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f);
             lpAC.setMargins(10, 10, 0, 10);
@@ -410,15 +409,14 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
 
             final TableRow trowI = new TableRow(manageData.this);
             TableRow.LayoutParams lpI = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f);
-            lpI.setMargins(10, 10, 0, 10);
+            lpI.setMargins(10, 0, 0, 0);
             trowI.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
 
             TextView tvI = new TextView(manageData.this);
             tvI.setTextColor(ContextCompat.getColor(this, R.color.colorWhite));
-            tvI.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f);
+            tvI.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f);
             tvI.setText(R.string.inputsTableTitle);
             tvI.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            tvI.setPadding(0, 10, 0, 10);
 
             TableRow.LayoutParams lpIC = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f);
             lpIC.setMargins(10, 10, 0, 10);
@@ -445,9 +443,9 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
 
                 String itemName = "";
                 if (inputLogElement.inputLogCropId > 0) {
-                    itemName = "Input: " + agroHelper.getCropNameFromId(inputLogElement.inputLogCropId);
+                    itemName = agroHelper.getCropNameFromId(inputLogElement.inputLogCropId);
                 } else if (inputLogElement.inputLogTreatmentId > 0) {
-                    itemName = "Input: " + agroHelper.getTreatmentNameFromId(inputLogElement.inputLogTreatmentId);
+                    itemName = agroHelper.getTreatmentNameFromId(inputLogElement.inputLogTreatmentId);
                 }
                 String tvText = agroHelper.dateToString(inputLogElement.inputLogDate) + ", " + agroHelper.getFieldNameFromId(inputLogElement.inputLogFieldId) + "\n" + itemName;
 

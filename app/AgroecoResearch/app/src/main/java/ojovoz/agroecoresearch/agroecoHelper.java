@@ -1529,6 +1529,8 @@ public class agroecoHelper {
                 r.close();
             } catch (IOException e) {
 
+            } finally {
+                return ret;
             }
         }
 
@@ -1569,8 +1571,9 @@ public class agroecoHelper {
 
         } catch (IOException e) {
 
+        } finally {
+            return ret;
         }
-        return ret;
     }
 
     private void writeLog(){
