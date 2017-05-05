@@ -1525,8 +1525,6 @@ public class agroecoHelper {
                 FileReader r = new FileReader(file);
                 CSVReader reader = new CSVReader(r, ',', '"');
                 ret = reader.readAll();
-                reader.close();
-                r.close();
             } catch (IOException e) {
 
             } finally {

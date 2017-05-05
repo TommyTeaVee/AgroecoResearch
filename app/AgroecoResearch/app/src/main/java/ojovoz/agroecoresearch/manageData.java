@@ -369,7 +369,14 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
                 } else if (logElement.logMeasurementId > 0) {
                     itemName = agroHelper.getMeasurementNameFromId(logElement.logMeasurementId);
                 }
-                String tvText = agroHelper.dateToString(logElement.logDate) + ", " + agroHelper.getFieldNameFromId(logElement.logFieldId) + "\n" + itemName;
+
+                String plotNumber = "";
+                if(logElement.logPlotNumber>=0){
+                    plotNumber = "-plot " + Integer.toString(logElement.logPlotNumber+1);
+                }
+
+                String tvText = agroHelper.dateToString(logElement.logDate) + " " + agroHelper.getFieldNameFromId(logElement.logFieldId)
+                        + plotNumber + "\n" + itemName;
 
                 CheckBox cb = new CheckBox(manageData.this);
                 cb.setButtonDrawable(R.drawable.custom_checkbox);
@@ -382,7 +389,7 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
                 TextView tv = new TextView(manageData.this);
                 tv.setId(logElement.logId);
                 tv.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
-                tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f);
+                tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17f);
                 tv.setText(tvText);
                 tv.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
                 tv.setPadding(0, 10, 0, 10);
@@ -447,7 +454,14 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
                 } else if (inputLogElement.inputLogTreatmentId > 0) {
                     itemName = agroHelper.getTreatmentNameFromId(inputLogElement.inputLogTreatmentId);
                 }
-                String tvText = agroHelper.dateToString(inputLogElement.inputLogDate) + ", " + agroHelper.getFieldNameFromId(inputLogElement.inputLogFieldId) + "\n" + itemName;
+
+                String plotNumber = "";
+                if(inputLogElement.inputLogPlotNumber>=0){
+                    plotNumber = "-plot " + Integer.toString(inputLogElement.inputLogPlotNumber+1);
+                }
+
+                String tvText = agroHelper.dateToString(inputLogElement.inputLogDate) + " " + agroHelper.getFieldNameFromId(inputLogElement.inputLogFieldId)
+                        + plotNumber + "\n" + itemName;
 
                 CheckBox cb = new CheckBox(manageData.this);
                 cb.setButtonDrawable(R.drawable.custom_checkbox);
@@ -460,7 +474,7 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
                 TextView tv = new TextView(manageData.this);
                 tv.setId(inputLogElement.inputLogId);
                 tv.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
-                tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f);
+                tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17f);
                 tv.setText(tvText);
                 tv.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
                 tv.setPadding(0, 10, 0, 10);
