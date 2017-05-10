@@ -163,6 +163,134 @@ function recalculateConfig($config){
 	return $ret;
 }
 
+function getTotalItems($dbh,$log_field_filter,$input_log_field_filter,$log_date_filter,$input_log_date_filter,$activity_filter,$measurement_filter,$crop_filter,$treatment_filter){
+	
+	$n=0;
+	$m=0;
+	$only_log=false;
+	$only_input=false;
+	
+	$where="";
+	if($log_field_filter!=" "){
+		$log_field_filter=substr($log_field_filter,5);
+		$where=" WHERE ".$log_field_filter;
+	}
+	if($log_date_filter!=" "){
+		$log_date_filter=substr($log_date_filter,5);
+		if($where==""){
+			$where=" WHERE ".$log_date_filter;
+		} else {
+			$where.=" AND ".$log_date_filter;
+		}
+	}
+	if($activity_filter>0){
+		$only_log=true;
+		$activity_filter="activity_id=".$activity_filter;
+		if($where==""){
+			$where=" WHERE ".$activity_filter;
+		} else {
+			$where.=" AND ".$activity_filter;
+		}
+	} else if($measurement_filter>0){
+		$only_log=true;
+		$measurement_filter="measurement_id=".$measurement_filter;
+		if($where==""){
+			$where=" WHERE ".$measurement_filter;
+		} else {
+			$where.=" AND ".$measurement_filter;
+		}
+	}
+	$query="SELECT COUNT(log_id) FROM log".$where;
+	$result = mysqli_query($dbh,$query);
+	if($row = mysqli_fetch_array($result,MYSQL_NUM)){
+		$n=$row[0];
+	} else {
+		$n=0;
+	}
+	
+	$where="";
+	if($input_log_field_filter!=" "){
+		$input_log_field_filter=substr($input_log_field_filter,5);
+		$where=" WHERE ".$input_log_field_filter;
+	}
+	if($input_log_date_filter!=" "){
+		$input_log_date_filter=substr($input_log_date_filter,5);
+		if($where==""){
+			$where=" WHERE ".$input_log_date_filter;
+		} else {
+			$where.=" AND ".$input_log_date_filter;
+		}
+	}
+	if($crop_filter>0){
+		$only_input=true;
+		$crop_filter="crop_id=".$crop_filter;
+		if($where==""){
+			$where=" WHERE ".$crop_filter;
+		} else {
+			$where.=" AND ".$crop_filter;
+		}
+	} else if($treatment_filter>0){
+		$only_input=true;
+		$treatment_filter="treatment_id=".$treatment_filter;
+		if($where==""){
+			$where=" WHERE ".$treatment_filter;
+		} else {
+			$where.=" AND ".$treatment_filter;
+		}
+	}
+	$query="SELECT COUNT(input_log_id) FROM input_log".$where;
+	$result = mysqli_query($dbh,$query);
+	if($row = mysqli_fetch_array($result,MYSQL_NUM)){
+		$m=$row[0];
+	}
+	
+	if($only_log){
+		$ret=$n;
+	} else if($only_input){
+		$ret=$m;
+	} else {
+		$ret=$m+$n;
+	}
+	
+	return $ret;
+}
+
+function getFields($dbh){
+	$ret=array();
+	$query="SELECT field_id, field_name, field_replication_number FROM field ORDER BY field_name, field_replication_number";
+	$result = mysqli_query($dbh,$query);
+	$i=0;
+	while($row = mysqli_fetch_array($result,MYSQL_NUM)){
+		$ret[$i]=$row;
+		$i++;
+	}
+	return $ret;
+}
+
+function getActivities($dbh){
+	$ret=array();
+	$query="SELECT activity_id, activity_name FROM activity ORDER BY activity_name";
+	$result = mysqli_query($dbh,$query);
+	$i=0;
+	while($row = mysqli_fetch_array($result,MYSQL_NUM)){
+		$ret[$i]=$row;
+		$i++;
+	}
+	return $ret;
+}
+
+function getMeasurements($dbh){
+	$ret=array();
+	$query="SELECT measurement_id, measurement_name FROM measurement ORDER BY measurement_name";
+	$result = mysqli_query($dbh,$query);
+	$i=0;
+	while($row = mysqli_fetch_array($result,MYSQL_NUM)){
+		$ret[$i]=$row;
+		$i++;
+	}
+	return $ret;
+}
+
 //mail
 
 function decodeISO88591($string) {               

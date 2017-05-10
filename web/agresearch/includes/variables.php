@@ -17,5 +17,5 @@ $smtp_server="xxx";
 $smtp_server_port="xxx";
 $mail_server="xxx";
 
-$max_log_items_per_page=15;
+$max_log_items_per_page=20;
 ?>
