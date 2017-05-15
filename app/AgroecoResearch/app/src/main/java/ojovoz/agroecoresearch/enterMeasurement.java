@@ -73,10 +73,14 @@ public class enterMeasurement extends AppCompatActivity {
         for(int i=0; i<categoriesParts.length; i++){
             categories.add(categoriesParts[i]);
         }
+        categories.add(getString(R.string.otherListTest));
         categoriesArray=categories.toArray(new CharSequence[categories.size()]);
 
         TextView tt = (TextView)findViewById(R.id.fieldPlotText);
         tt.setText(measurementTitle);
+
+        EditText tOther = (EditText)findViewById(R.id.measurementOtherTextValue);
+        tOther.setVisibility(View.GONE);
 
         if(type==1 && !measurementUnits.equals("date")){
             Button cb = (Button)findViewById(R.id.measurementCategory);
@@ -122,8 +126,15 @@ public class enterMeasurement extends AppCompatActivity {
                 ve.setText(String.valueOf(getIntent().getExtras().getFloat("measurementValue")));
             } else if (type==0 && !measurementUnits.equals("date")){
                 Button cb = (Button)findViewById(R.id.measurementCategory);
-                cb.setText(getIntent().getExtras().getString("measurementCategory"));
                 measurementCategory = getIntent().getExtras().getString("measurementCategory");
+                if(!categories.contains(measurementCategory)){
+                    EditText tOtherEdit = (EditText)findViewById(R.id.measurementOtherTextValue);
+                    tOtherEdit.setVisibility(View.VISIBLE);
+                    tOtherEdit.setText(measurementCategory);
+                    cb.setText(getString(R.string.otherButtonText));
+                } else {
+                    cb.setText(getIntent().getExtras().getString("measurementCategory"));
+                }
             }
 
             Button db = (Button)findViewById(R.id.dateButton);
@@ -185,8 +196,17 @@ public class enterMeasurement extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 if(i>=0) {
                     Button fieldListView = (Button) findViewById(R.id.measurementCategory);
-                    fieldListView.setText(categoriesArray[i]);
                     measurementCategory=(String)categoriesArray[i];
+                    if(measurementCategory.equals(getString(R.string.otherListTest))){
+                        fieldListView.setText(R.string.otherButtonText);
+                        EditText tOther = (EditText)findViewById(R.id.measurementOtherTextValue);
+                        tOther.setVisibility(View.VISIBLE);
+                    } else {
+                        fieldListView.setText(categoriesArray[i]);
+                        EditText tOther = (EditText)findViewById(R.id.measurementOtherTextValue);
+                        tOther.setVisibility(View.GONE);
+                    }
+
                 }
                 dialogInterface.dismiss();
 
@@ -283,6 +303,15 @@ public class enterMeasurement extends AppCompatActivity {
                 if(measurementCategory.equals("")){
                     Toast.makeText(this, R.string.enterValidCategoryText, Toast.LENGTH_SHORT).show();
                     bProceed=false;
+                }
+            }
+
+            if(measurementCategory.equals(getString(R.string.otherListTest))){
+                EditText tOther = (EditText)findViewById(R.id.measurementOtherTextValue);
+                measurementCategory = String.valueOf(tOther.getText());
+                if(!measurementCategory.isEmpty()){
+                    measurementCategory = measurementCategory.replaceAll(";"," ");
+                    measurementCategory = measurementCategory.replaceAll("\\|"," ");
                 }
             }
 

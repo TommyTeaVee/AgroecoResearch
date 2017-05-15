@@ -99,9 +99,11 @@ public class loginScreen extends AppCompatActivity implements httpConnection.Asy
             //this code for test purposes only
             //delete following block
             //begin
+
             userId=1;
             userRole=2;
             launchMainMenu();
+
             //end
         }
     }

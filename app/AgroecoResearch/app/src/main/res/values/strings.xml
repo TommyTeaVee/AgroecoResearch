@@ -86,4 +86,6 @@
     <string name="enterTreatmentInputTitle">Treatment input</string>
     <string name="activitiesMeasurementsTableTitle">Activities and measurements</string>
     <string name="inputsTableTitle">Inputs</string>
+    <string name="otherListTest">Other ...</string>
+    <string name="otherButtonText">Other (enter below)</string>
 </resources>

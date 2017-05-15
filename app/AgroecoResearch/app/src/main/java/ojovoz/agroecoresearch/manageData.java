@@ -209,7 +209,7 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
                                 String[] toArr = {mail};
                                 m.setTo(toArr);
                                 m.setFrom(mail);
-                                m.setSubject("xxx");
+                                m.setSubject("pA439urcjLVk6szA");
                                 m.setBody(body);
                                 try {
                                     if(m.send()){

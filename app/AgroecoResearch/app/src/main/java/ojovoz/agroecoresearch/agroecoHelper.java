@@ -152,7 +152,7 @@ public class agroecoHelper {
                 Iterator<String[]> iteratorApplied = measurementsAppliedCSV.iterator();
                 while (iteratorApplied.hasNext()) {
                     String[] record = iteratorApplied.next();
-                    addCropTreatmentToMeasurement(Integer.parseInt(record[0]), record[1], record[2]);
+                    addCropTreatmentToMeasurement(Integer.parseInt(record[1]), record[2], record[3]);
                 }
             }
 
