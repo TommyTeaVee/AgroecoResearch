@@ -56,8 +56,8 @@ public class enterActivity extends AppCompatActivity {
         TextView tt = (TextView)findViewById(R.id.fieldPlotText);
         tt.setText(activityTitle);
 
-        TextView tv = (TextView)findViewById(R.id.enterValueText);
-        tv.setText(tv.getText()+" ("+activityMeasurementUnits+")");
+        EditText et = (EditText)findViewById(R.id.activityUnits);
+        et.setText(activityMeasurementUnits);
 
         if(update.equals("activity")){
             logId = getIntent().getExtras().getInt("logId");
@@ -174,6 +174,14 @@ public class enterActivity extends AppCompatActivity {
         if(isNumeric(valueText)){
             float valueNumber = Float.parseFloat(valueText);
 
+            EditText units = (EditText)findViewById(R.id.activityUnits);
+            String unitsText = String.valueOf(units.getText());
+
+            if(!unitsText.isEmpty()){
+                unitsText = unitsText.replaceAll(";"," ");
+                unitsText = unitsText.replaceAll("\\|"," ");
+            }
+
             EditText comments = (EditText)findViewById(R.id.activityComments);
             String commentsText = String.valueOf(comments.getText());
 
@@ -193,6 +201,7 @@ public class enterActivity extends AppCompatActivity {
                 i.putExtra("activity", activityId);
                 i.putExtra("activityDate", dateToString(activityDate));
                 i.putExtra("activityValue", valueNumber);
+                i.putExtra("activityUnits", unitsText);
                 i.putExtra("activityComments", commentsText);
                 startActivity(i);
                 finish();
@@ -206,6 +215,7 @@ public class enterActivity extends AppCompatActivity {
                 i.putExtra("activity", activityId);
                 i.putExtra("activityDate", dateToString(activityDate));
                 i.putExtra("activityValue", valueNumber);
+                i.putExtra("activityUnits", unitsText);
                 i.putExtra("activityComments", commentsText);
                 startActivity(i);
                 finish();

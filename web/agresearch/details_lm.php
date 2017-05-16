@@ -9,7 +9,7 @@ session_start();
 if(isset($_SESSION['admin']) && $_SESSION['admin']==true && isset($_GET['id'])){
 	
 	$id=$_GET['id'];
-	$query="SELECT log_id, log_date, field_name, field_replication_number, plot_number, measurement_name, measurement_units, measurement_type, log_value_number, log_value_text, log_comments FROM log, field, measurement WHERE log_id=$id AND field.field_id = log.field_id AND measurement.measurement_id = log.measurement_id";
+	$query="SELECT log_id, log_date, field_name, field_replication_number, plot_number, measurement_name, log_value_units, measurement_type, log_value_number, log_value_text, log_comments FROM log, field, measurement WHERE log_id=$id AND field.field_id = log.field_id AND measurement.measurement_id = log.measurement_id";
 	$result = mysqli_query($dbh,$query);
 	$row = mysqli_fetch_array($result,MYSQL_NUM);
 	

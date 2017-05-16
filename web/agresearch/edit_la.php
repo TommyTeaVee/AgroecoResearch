@@ -14,9 +14,10 @@ if(isset($_POST['edit'])){
 	$yyyy=$_POST['yyyy'];
 	$date=$yyyy."-".$mm."-".$dd;
 	$value=floatval($_POST['value']);
+	$units=$_POST['units'];
 	$comments=$_POST['comments'];
 	
-	$query="UPDATE log SET log_date='$date', log_value_number=$value, log_comments='$comments' WHERE log_id=$id";
+	$query="UPDATE log SET log_date='$date', log_value_number=$value, log_value_units='$units', log_comments='$comments' WHERE log_id=$id";
 	$result = mysqli_query($dbh,$query);
 	echo "<script type='text/javascript'>";
 	echo "window.opener.location.reload(false);";
@@ -26,7 +27,7 @@ if(isset($_POST['edit'])){
 } else if(isset($_SESSION['admin']) && $_SESSION['admin']==true && isset($_GET['id'])){
 	
 	$id=$_GET['id'];
-	$query="SELECT log_id, log_date, field_name, field_replication_number, plot_number, activity_name, activity_measurement_units, log_value_number, log_comments FROM log, field, activity WHERE log_id=$id AND field.field_id = log.field_id AND activity.activity_id = log.activity_id";
+	$query="SELECT log_id, log_date, field_name, field_replication_number, plot_number, activity_name, log_value_units, log_value_number, log_comments FROM log, field, activity WHERE log_id=$id AND field.field_id = log.field_id AND activity.activity_id = log.activity_id";
 	$result = mysqli_query($dbh,$query);
 	$row = mysqli_fetch_array($result,MYSQL_NUM);
 	
@@ -118,7 +119,8 @@ if(isset($_POST['edit'])){
     <input class="w3-input w3-border-teal w3-text-green" type="text" name="yyyy" value="<?php echo($yy); ?>" onkeypress="return isNumberKey(event)">
   </div>
 </div>
-<b>Value (<?php echo($row[6]); ?>):</b> <input class="w3-input w3-border-green w3-text-green" name="value" type="text" value="<?php echo($row[7]); ?>" onkeypress="return isNumberKey(event)">
+<b>Value:</b> <input class="w3-input w3-border-green w3-text-green" name="value" type="text" value="<?php echo($row[7]); ?>" onkeypress="return isNumberKey(event)">
+<b>Units:</b> <input class="w3-input w3-border-green w3-text-green" name="units" type="text" value="<?php echo($row[6]); ?>">
 <b>Comments:</b> <input class="w3-input w3-border-green w3-text-green" name="comments" type="text" value="<?php echo($row[8]); ?>"><br>
 </div>
 </p>

@@ -383,7 +383,7 @@ function checkMessages($mail_server, $mail_user, $mail_password, $dbh){
 						$ma_log_entry=explode("|",$what_log[0]);
 						for($i=0;$i<sizeof($ma_log_entry);$i++){
 							$ma_log_entry_part=explode(";",$ma_log_entry[$i]);
-							if(sizeof($ma_log_entry_part)==15){
+							if(sizeof($ma_log_entry_part)==16){
 								$field_id=$ma_log_entry_part[0];
 								$plot_number=$ma_log_entry_part[1];
 								$user_id=$ma_log_entry_part[2];
@@ -393,14 +393,15 @@ function checkMessages($mail_server, $mail_user, $mail_password, $dbh){
 								$activity_id=$ma_log_entry_part[6];
 								$date=$ma_log_entry_part[7];
 								$number_value=$ma_log_entry_part[8];
-								$text_value=$ma_log_entry_part[9];
-								$labour_time=$ma_log_entry_part[10];
-								$cost=$ma_log_entry_part[11];
-								$comments=$ma_log_entry_part[12];
-								$log_id=$ma_log_entry_part[13];
-								$sample_number=$ma_log_entry_part[14];
+								$units=$ma_log_entry_part[9];
+								$text_value=$ma_log_entry_part[10];
+								$labour_time=$ma_log_entry_part[11];
+								$cost=$ma_log_entry_part[12];
+								$comments=$ma_log_entry_part[13];
+								$log_id=$ma_log_entry_part[14];
+								$sample_number=$ma_log_entry_part[15];
 							
-								$query="INSERT INTO log (field_id, plot_number, user_id, crop_id, sample_number, treatment_id, measurement_id, activity_id, log_date, log_value_number, log_value_text, labour_time, cost, log_comments) VALUES ($field_id, $plot_number, $user_id, $crop_id, $sample_number, $treatment_id, $measurement_id, $activity_id, '$date', $number_value, '$text_value', $labour_time, $cost, '$comments')";
+								$query="INSERT INTO log (field_id, plot_number, user_id, crop_id, sample_number, treatment_id, measurement_id, activity_id, log_date, log_value_number, log_value_units, log_value_text, labour_time, cost, log_comments) VALUES ($field_id, $plot_number, $user_id, $crop_id, $sample_number, $treatment_id, $measurement_id, $activity_id, '$date', $number_value, '$units', '$text_value', $labour_time, $cost, '$comments')";
 								$result = mysqli_query($dbh,$query);
 							}
 						}

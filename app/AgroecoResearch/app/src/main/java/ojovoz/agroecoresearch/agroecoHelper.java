@@ -252,12 +252,13 @@ public class agroecoHelper {
                 tLog.logActivityId = Integer.parseInt(logItemParts[6]);
                 tLog.logDate = stringToDate(logItemParts[7]);
                 tLog.logNumberValue = Float.parseFloat(logItemParts[8]);
-                tLog.logTextValue = logItemParts[9];
-                tLog.loglabourTime = Integer.parseInt(logItemParts[10]);
-                tLog.logCost = Float.parseFloat(logItemParts[11]);
-                tLog.logComments = logItemParts[12];
-                tLog.logId = Integer.parseInt(logItemParts[13]);
-                tLog.logSampleNumber = Integer.parseInt(logItemParts[14]);
+                tLog.logValueUnits = logItemParts[9];
+                tLog.logTextValue = logItemParts[10];
+                tLog.loglabourTime = Integer.parseInt(logItemParts[11]);
+                tLog.logCost = Float.parseFloat(logItemParts[12]);
+                tLog.logComments = logItemParts[13];
+                tLog.logId = Integer.parseInt(logItemParts[14]);
+                tLog.logSampleNumber = Integer.parseInt(logItemParts[15]);
                 log.add(tLog);
             }
         }
@@ -607,7 +608,7 @@ public class agroecoHelper {
         return sdf.format(d);
     }
 
-    public void addActivityToLog(int fieldId, int plotN, int userId, int activityId, String date, float numberValue, String comments){
+    public void addActivityToLog(int fieldId, int plotN, int userId, int activityId, String date, float numberValue, String units, String comments){
         updateActivityDaysAgo(activityId, plotN, fieldId, date);
         createLog();
         oLog newEntry = new oLog();
@@ -618,6 +619,7 @@ public class agroecoHelper {
         newEntry.logActivityId = activityId;
         newEntry.logDate = stringToDate(date);
         newEntry.logNumberValue = numberValue;
+        newEntry.logValueUnits = units;
         newEntry.logComments = comments;
         log.add(newEntry);
         sortLog();
@@ -664,7 +666,7 @@ public class agroecoHelper {
         writeInputLog();
     }
 
-    public void addMeasurementToLog(int fieldId, int plotN, int userId, int measurementId, int sampleN, String date, float numberValue, String category, String comments){
+    public void addMeasurementToLog(int fieldId, int plotN, int userId, int measurementId, int sampleN, String date, float numberValue, String units, String category, String comments){
         updateMeasurementDaysAgo(measurementId, plotN, fieldId, date);
         createLog();
         oLog newEntry = new oLog();
@@ -676,6 +678,7 @@ public class agroecoHelper {
         newEntry.logSampleNumber = sampleN;
         newEntry.logDate = stringToDate(date);
         newEntry.logNumberValue = numberValue;
+        newEntry.logValueUnits = units;
         newEntry.logTextValue = category;
         newEntry.logComments = comments;
         log.add(newEntry);
@@ -733,13 +736,14 @@ public class agroecoHelper {
         return ret;
     }
 
-    public void updateLogActivityEntry(int logId, String aD, Float aV, String aC){
+    public void updateLogActivityEntry(int logId, String aD, Float aV, String aU, String aC){
         Iterator<oLog> iterator = log.iterator();
         while(iterator.hasNext()){
             oLog l = iterator.next();
             if(l.logId==logId){
                 l.logDate=stringToDate(aD);
                 l.logNumberValue=aV;
+                l.logValueUnits=aU;
                 l.logComments=aC;
                 updateActivityDaysAgo(l.logActivityId,l.logPlotNumber,l.logFieldId,aD);
                 sortLog();
@@ -787,7 +791,7 @@ public class agroecoHelper {
         }
     }
 
-    public void updateLogMeasurementEntry(int logId, int mS, String mD, Float mV, String mC, String mCC){
+    public void updateLogMeasurementEntry(int logId, int mS, String mD, Float mV, String mU, String mC, String mCC){
         Iterator<oLog> iterator = log.iterator();
         while(iterator.hasNext()){
             oLog l = iterator.next();
@@ -795,6 +799,7 @@ public class agroecoHelper {
                 l.logSampleNumber = mS;
                 l.logDate=stringToDate(mD);
                 l.logNumberValue=mV;
+                l.logValueUnits=mU;
                 l.logTextValue=mC;
                 l.logComments=mCC;
                 updateMeasurementDaysAgo(l.logMeasurementId,l.logPlotNumber,l.logFieldId,mD);
@@ -874,7 +879,7 @@ public class agroecoHelper {
                 if(l.logId==id){
                     ret+=Integer.toString(l.logFieldId)+";"+Integer.toString(l.logPlotNumber)+";"+Integer.toString(l.logUserId)+";"+Integer.toString(l.logCropId)
                             +";"+Integer.toString(l.logTreatmentId)+";"+Integer.toString(l.logMeasurementId)+";"+Integer.toString(l.logActivityId)
-                            +";"+dateToString(l.logDate)+";"+Float.toString(l.logNumberValue)+";"+l.logTextValue+";"+Integer.toString(l.loglabourTime)
+                            +";"+dateToString(l.logDate)+";"+Float.toString(l.logNumberValue)+";"+l.logValueUnits+";"+l.logTextValue+";"+Integer.toString(l.loglabourTime)
                             +";"+Float.toString(l.logCost)+";"+l.logComments+";"+Integer.toString(l.logId)+";"+Integer.toString(l.logSampleNumber)+"|";
                     break;
                 }
@@ -1581,7 +1586,7 @@ public class agroecoHelper {
             oLog l = iterator.next();
             data+=Integer.toString(l.logFieldId)+";"+Integer.toString(l.logPlotNumber)+";"+Integer.toString(l.logUserId)+";"+Integer.toString(l.logCropId)
                     +";"+Integer.toString(l.logTreatmentId)+";"+Integer.toString(l.logMeasurementId)+";"+Integer.toString(l.logActivityId)
-                    +";"+dateToString(l.logDate)+";"+Float.toString(l.logNumberValue)+";"+l.logTextValue+";"+Integer.toString(l.loglabourTime)
+                    +";"+dateToString(l.logDate)+";"+Float.toString(l.logNumberValue)+";"+l.logValueUnits+ ";"+l.logTextValue+";"+Integer.toString(l.loglabourTime)
                     +";"+Float.toString(l.logCost)+";"+l.logComments+";"+Integer.toString(l.logId)+";"+Integer.toString(l.logSampleNumber)+"|";
         }
         writeToFile(data,"log");

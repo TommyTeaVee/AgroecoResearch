@@ -21,7 +21,8 @@ if(isset($_POST['edit'])){
 		$query="UPDATE log SET log_date='$date', log_value_text='$value', log_comments='$comments' WHERE log_id=$id";
 	} else {
 		$value=floatval($_POST['value']);
-		$query="UPDATE log SET log_date='$date', log_value_number=$value, log_comments='$comments' WHERE log_id=$id";
+		$units=$_POST['units'];
+		$query="UPDATE log SET log_date='$date', log_value_number=$value, log_value_units='$units', log_comments='$comments' WHERE log_id=$id";
 	}
 	
 	$result = mysqli_query($dbh,$query);
@@ -33,7 +34,7 @@ if(isset($_POST['edit'])){
 } else if(isset($_SESSION['admin']) && $_SESSION['admin']==true && isset($_GET['id'])){
 	
 	$id=$_GET['id'];
-	$query="SELECT log_id, log_date, field_name, field_replication_number, plot_number, measurement_name, measurement_type, measurement_units, measurement_categories, log_value_number, log_value_text, log_comments FROM log, field, measurement WHERE log_id=$id AND field.field_id = log.field_id AND measurement.measurement_id = log.measurement_id";
+	$query="SELECT log_id, log_date, field_name, field_replication_number, plot_number, measurement_name, measurement_type, log_value_units, measurement_categories, log_value_number, log_value_text, log_comments FROM log, field, measurement WHERE log_id=$id AND field.field_id = log.field_id AND measurement.measurement_id = log.measurement_id";
 	$result = mysqli_query($dbh,$query);
 	$row = mysqli_fetch_array($result,MYSQL_NUM);
 	
@@ -143,7 +144,8 @@ if(isset($_POST['edit'])){
 <?php	
 } else {
 ?>
-<b>Value (<?php echo($row[7]); ?>):</b> <input class="w3-input w3-border-green w3-text-green" name="value" type="text" value="<?php echo($row[9]); ?>" onkeypress="return isNumberKey(event)">
+<b>Value:</b> <input class="w3-input w3-border-green w3-text-green" name="value" type="text" value="<?php echo($row[9]); ?>" onkeypress="return isNumberKey(event)">
+<b>Units:</b> <input class="w3-input w3-border-green w3-text-green" name="units" type="text" value="<?php echo($row[7]); ?>">
 <?php	
 }
 ?>

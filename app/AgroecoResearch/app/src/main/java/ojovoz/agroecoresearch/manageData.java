@@ -63,16 +63,18 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
             int logId = getIntent().getExtras().getInt("logId");
             String aD = getIntent().getExtras().getString("activityDate");
             Float aV = getIntent().getExtras().getFloat("activityValue");
+            String aU = getIntent().getExtras().getString("activityUnits");
             String aC = getIntent().getExtras().getString("activityComments");
-            agroHelper.updateLogActivityEntry(logId, aD, aV, aC);
+            agroHelper.updateLogActivityEntry(logId, aD, aV, aU, aC);
         } else if(update.equals("measurement")){
             int logId = getIntent().getExtras().getInt("logId");
             int mS = getIntent().getExtras().getInt("measurementSample");
             String mD = getIntent().getExtras().getString("measurementDate");
             Float mV = getIntent().getExtras().getFloat("measurementValue");
+            String mU = getIntent().getExtras().getString("measurementUnits");
             String mC = getIntent().getExtras().getString("measurementCategory");
             String mCC = getIntent().getExtras().getString("measurementComments");
-            agroHelper.updateLogMeasurementEntry(logId, mS, mD, mV, mC, mCC);
+            agroHelper.updateLogMeasurementEntry(logId, mS, mD, mV, mU, mC, mCC);
         } else if(update.equals("cropInput")){
             int inputLogId = getIntent().getExtras().getInt("inputLogId");
             String cD = getIntent().getExtras().getString("cropInputDate");
@@ -615,7 +617,7 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
             i.putExtra("activity",logItem.logActivityId);
             i.putExtra("update", "activity");
             i.putExtra("title",activityTitle);
-            i.putExtra("units",agroHelper.getActivityMeasurementUnitsFromId(logItem.logActivityId));
+            i.putExtra("units",logItem.logValueUnits);
             i.putExtra("date",agroHelper.dateToString(logItem.logDate));
             i.putExtra("activityValue",logItem.logNumberValue);
             i.putExtra("activityComments",logItem.logComments);
@@ -646,12 +648,12 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
             i.putExtra("update", "measurement");
             i.putExtra("title",measurementTitle);
             i.putExtra("sample",logItem.logSampleNumber);
-            i.putExtra("units",m.measurementUnits);
             i.putExtra("min",m.measurementMin);
             i.putExtra("max",m.measurementMax);
             i.putExtra("categories",m.measurementCategories);
             i.putExtra("date",agroHelper.dateToString(logItem.logDate));
             i.putExtra("measurementValue",logItem.logNumberValue);
+            i.putExtra("units",logItem.logValueUnits);
             i.putExtra("measurementCategory",logItem.logTextValue);
             i.putExtra("measurementComments",logItem.logComments);
             startActivity(i);

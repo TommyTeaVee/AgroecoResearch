@@ -88,4 +88,5 @@
     <string name="inputsTableTitle">Inputs</string>
     <string name="otherListTest">Other ...</string>
     <string name="otherButtonText">Other (enter below)</string>
+    <string name="enterUnitsText">Units</string>
 </resources>

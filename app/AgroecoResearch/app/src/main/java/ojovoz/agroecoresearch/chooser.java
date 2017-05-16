@@ -95,12 +95,12 @@ public class chooser extends AppCompatActivity {
         if(getIntent().getExtras().getBoolean("newActivity")){
             agroHelper.addActivityToLog(fieldId, plotN, userId, getIntent().getExtras().getInt("activity"),
                     getIntent().getExtras().getString("activityDate"), getIntent().getExtras().getFloat("activityValue"),
-                    getIntent().getExtras().getString("activityComments"));
+                    getIntent().getExtras().getString("activityUnits"), getIntent().getExtras().getString("activityComments"));
         } else if(getIntent().getExtras().getBoolean("newMeasurement")){
             agroHelper.addMeasurementToLog(fieldId, plotN, userId, getIntent().getExtras().getInt("measurement"),
                     getIntent().getExtras().getInt("measurementSample"), getIntent().getExtras().getString("measurementDate"),
-                    getIntent().getExtras().getFloat("measurementValue"), getIntent().getExtras().getString("measurementCategory"),
-                    getIntent().getExtras().getString("measurementComments"));
+                    getIntent().getExtras().getFloat("measurementValue"), getIntent().getExtras().getString("measurementUnits"),
+                    getIntent().getExtras().getString("measurementCategory"), getIntent().getExtras().getString("measurementComments"));
         }
 
         fillTable();

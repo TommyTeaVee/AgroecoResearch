@@ -85,13 +85,17 @@ public class enterMeasurement extends AppCompatActivity {
         if(type==1 && !measurementUnits.equals("date")){
             Button cb = (Button)findViewById(R.id.measurementCategory);
             cb.setVisibility(View.GONE);
-            TextView tv = (TextView)findViewById(R.id.enterValueText);
-            tv.setText(tv.getText()+" ("+measurementUnits+")");
+            EditText et = (EditText)findViewById(R.id.measurementUnits);
+            et.setText(measurementUnits);
         } else if(type==0 && !measurementUnits.equals("date")){
             TextView vt = (TextView)findViewById(R.id.enterValueText);
             vt.setVisibility(View.GONE);
             EditText ve = (EditText)findViewById(R.id.measurementValue);
             ve.setVisibility(View.GONE);
+            TextView ut = (TextView)findViewById(R.id.enterUnitsText);
+            ut.setVisibility(View.GONE);
+            EditText ue = (EditText)findViewById(R.id.measurementUnits);
+            ue.setVisibility(View.GONE);
 
             Button cb = (Button)findViewById(R.id.measurementCategory);
             cb.setOnClickListener(new View.OnClickListener() {
@@ -113,6 +117,10 @@ public class enterMeasurement extends AppCompatActivity {
             vt.setVisibility(View.GONE);
             EditText ve = (EditText)findViewById(R.id.measurementValue);
             ve.setVisibility(View.GONE);
+            TextView ut = (TextView)findViewById(R.id.enterUnitsText);
+            ut.setVisibility(View.GONE);
+            EditText ue = (EditText)findViewById(R.id.measurementUnits);
+            ue.setVisibility(View.GONE);
         }
 
         if(update.equals("measurement")){
@@ -276,6 +284,7 @@ public class enterMeasurement extends AppCompatActivity {
 
     public void registerMeasurement(View v){
         float valueNumber = 0.0f;
+        String units="";
         int sampleN=0;
         boolean bProceed = true;
         EditText sample = (EditText)findViewById(R.id.sampleNumber);
@@ -293,6 +302,13 @@ public class enterMeasurement extends AppCompatActivity {
                         Toast.makeText(this, R.string.valueOutOfRangeText, Toast.LENGTH_SHORT).show();
                         value.requestFocus();
                         bProceed = false;
+                    } else {
+                        EditText unitsText = (EditText)findViewById(R.id.measurementUnits);
+                        units = String.valueOf(unitsText.getText());
+                        if(!units.isEmpty()){
+                            units = units.replaceAll(";"," ");
+                            units = units.replaceAll("\\|"," ");
+                        }
                     }
                 } else {
                     Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
@@ -335,6 +351,7 @@ public class enterMeasurement extends AppCompatActivity {
                 i.putExtra("measurementSample",sampleN);
                 i.putExtra("measurementDate", dateToString(measurementDate));
                 i.putExtra("measurementValue", valueNumber);
+                i.putExtra("measurementUnits", units);
                 i.putExtra("measurementCategory", measurementCategory);
                 i.putExtra("measurementComments", commentsText);
                 startActivity(i);
@@ -350,6 +367,7 @@ public class enterMeasurement extends AppCompatActivity {
                 i.putExtra("measurementSample",sampleN);
                 i.putExtra("measurementDate", dateToString(measurementDate));
                 i.putExtra("measurementValue", valueNumber);
+                i.putExtra("measurementUnits", units);
                 i.putExtra("measurementCategory", measurementCategory);
                 i.putExtra("measurementComments", commentsText);
                 startActivity(i);

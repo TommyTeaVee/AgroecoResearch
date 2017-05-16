@@ -17,6 +17,7 @@ public class oLog {
     public int logActivityId;
     public Date logDate;
     public float logNumberValue;
+    public String logValueUnits="";
     public String logTextValue="";
     public int loglabourTime;
     public float logCost;
