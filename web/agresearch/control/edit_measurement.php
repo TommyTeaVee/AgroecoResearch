@@ -42,7 +42,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 			$measurement_categories="";
 		}
 		$measurement_periodicity=$_POST['measurement_periodicity'];
-		$query="UPDATE measurement SET measurement_name='$measurement_name', measurement_category='$measurement_category', measurement_subcategory='$measurement_subcategory', measurement_type=$measurement_type, measurement_range_min=$measurement_range_min, measurement_range_max=$measurement_range_max, measurement_units='$measurement_units', measurement_categories='$measurement_categories', measurement_periodicity=$measurement_periodicity WHERE measurement_id=$measurement_id";
+		if(isset($_POST['measurement_has_sample_number'])){
+			$measurement_has_sample_number=$_POST['measurement_has_sample_number'];
+		} else {
+			$measurement_has_sample_number=0;
+		}
+		$measurement_common_complex=$_POST['measurement_common_complex'];
+		$measurement_description=normalize($_POST['measurement_description']);
+		$query="UPDATE measurement SET measurement_name='$measurement_name', measurement_category='$measurement_category', measurement_subcategory='$measurement_subcategory', measurement_type=$measurement_type, measurement_range_min=$measurement_range_min, measurement_range_max=$measurement_range_max, measurement_units='$measurement_units', measurement_categories='$measurement_categories', measurement_periodicity=$measurement_periodicity, measurement_has_sample_number=$measurement_has_sample_number, measurement_common_complex=$measurement_common_complex, measurement_description='$measurement_description' WHERE measurement_id=$measurement_id";
 		$result = mysqli_query($dbh,$query);
 		header("Location: measurements.php");
 	} else if(isset($_POST['cancel'])){
@@ -50,7 +57,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 	}
 } else if(isset($_SESSION['admin']) && $_SESSION['admin']==true) {
 	$measurement_id=$_GET['id'];
-	$query="SELECT measurement_name, measurement_category, measurement_subcategory, measurement_type, measurement_range_min, measurement_range_max, measurement_units, measurement_categories, measurement_periodicity FROM measurement WHERE measurement_id=$measurement_id";
+	$query="SELECT measurement_name, measurement_category, measurement_subcategory, measurement_type, measurement_range_min, measurement_range_max, measurement_units, measurement_categories, measurement_periodicity, measurement_has_sample_number, measurement_common_complex, measurement_description FROM measurement WHERE measurement_id=$measurement_id";
 	$result = mysqli_query($dbh,$query);
 	if($row = mysqli_fetch_array($result,MYSQL_NUM)){
 		$measurement_name=$row[0];
@@ -62,6 +69,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 		$measurement_units=$row[6];
 		$measurement_categories=$row[7];
 		$measurement_periodicity=$row[8];
+		$measurement_has_sample_number=$row[9];
+		$measurement_common_complex=$row[10];
+		$measurement_description=stripslashes($row[11]);
 	}
 	$measurement_categories_catalog=getMeasurementCategories($dbh);
 	$measurement_subcategories_catalog=getMeasurementSubcategories($dbh);
@@ -154,6 +164,15 @@ for($i=0;$i<sizeof($measurement_subcategories_catalog);$i++){
 </script> 
 <p><label class="w3-text-green">Periodicity in days: (Enter '0' if variable)</label>
 <input class="w3-input w3-border-green w3-text-green" name="measurement_periodicity" type="text" maxlength="10" value="<?php echo($measurement_periodicity); ?>"></p>
+<p><label class="w3-validate w3-text-green">Needs sample number</label>
+<input class="w3-check" type="checkbox" value="1" name="measurement_has_sample_number" id="measurement_has_sample_number" <?php if($measurement_has_sample_number==1) echo('checked'); ?>></p>
+<p><select class="w3-select w3-text-green" name="measurement_common_complex" id="measurement_common_complex">
+  <option value="0" <?php echo($measurement_common_complex == 0 ? 'selected' : ''); ?>>Common measurement</option>
+  <option value="1" <?php echo($measurement_common_complex == 1 ? 'selected' : ''); ?>>Complex measurement</option>
+</select></p>
+<p>      
+<label class="w3-text-green">Measurement description:</label>
+<input class="w3-input w3-border-green w3-text-green" name="measurement_description" type="text" value="<?php echo("$measurement_description"); ?>"></p>
 <br><button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="edit_measurement" name="edit_measurement">Edit measurement</button> <button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="cancel" name="cancel">Cancel</button></form><br>
 <br><br></div>
 </body>

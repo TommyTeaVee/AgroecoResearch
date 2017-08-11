@@ -34,6 +34,20 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 	$columns=$grid[1];
 	$cropsNI=getCrops($dbh,0);
 	$cropsI=getCrops($dbh,1);
+	
+	$cell_color=getTreatmentColors($dbh);
+	
+	function getCropSymbol($id,$crops){
+		$ret="C";
+		for($i=0;$i<sizeof($crops);$i++){
+			$parts=explode(",",$crops[$i]);
+			if($id==$parts[0]){
+				$ret=$parts[2];
+				break;
+			}
+		}
+		return $ret;
+	}
 ?>
 
 <!DOCTYPE html>
@@ -49,10 +63,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 			$parts=explode(",",$cropsNI[$i]);
 			$id=$parts[0];
 			$name=$parts[1];
+			$symbol=$parts[2];
 			if($js_crops_ni==""){
-				$js_crops_ni='"'.$id.','.$name.'"';
+				$js_crops_ni='"'.$id.','.$name.','.$symbol.'"';
 			} else {
-				$js_crops_ni.=',"'.$id.','.$name.'"';
+				$js_crops_ni.=',"'.$id.','.$name.','.$symbol.'"';
 			}
 		}
 		$js_crops_i="";
@@ -61,9 +76,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 			$id=$parts[0];
 			$name=$parts[1];
 			if($js_crops_i==""){
-				$js_crops_i='"'.$id.','.$name.'"';
+				$js_crops_i='"'.$id.','.$name.','.$symbol.'"';
 			} else {
-				$js_crops_i.=',"'.$id.','.$name.'"';
+				$js_crops_i.=',"'.$id.','.$name.','.$symbol.'"';
 			}
 		}
 	?>
@@ -91,7 +106,6 @@ $p=2;
 $n=0;
 $c=0;
 $crops=array();
-$last_crop=-1;
 $used_colors=array();
 for($i=1;$i<=$rows;$i++){
 	echo("<tr>");
@@ -110,17 +124,8 @@ for($i=1;$i<=$rows;$i++){
 			$used_colors[$c]=$color;
 			$c++;
 		}
-		if($last_crop==-1 || $last_crop!=$plot[0]){
-			$crops[$n]=$plot[0];
-			$last_crop=$plot[0];
-			$n++;
-		} 
-		if($general[0]==1){
-			$content="C";
-		} else {
-			$crop_number=array_search($plot[0],$crops)+1;
-			$content="C".$crop_number;
-		}
+		
+		$content=getCropSymbol($plot[0],$cropsNI);
 		if($plot[1]!=0){
 			$content.="+L";
 		}
@@ -136,13 +141,13 @@ for($i=1;$i<=$rows;$i++){
 for($i=0;$i<sizeof($used_colors);$i++){
 	echo("<tr>");
 	echo('<td class="'.$used_colors[$i].'" style="width:10%; padding:3px; border: 3px solid white;">&nbsp;</td>');
-	if($used_colors[$i]=="w3-khaki"){
-		$legend="No treatment";
-	} else if($used_colors[$i]=="w3-yellow") {
+	if($used_colors[$i]==$cell_color[0]){
+		$legend="Control treatment";
+	} else if($used_colors[$i]==$cell_color[1]) {
 		$legend="Soil management";
-	} else if($used_colors[$i]=="w3-lime") {
+	} else if($used_colors[$i]==$cell_color[2]) {
 		$legend="Pest control";
-	} else if($used_colors[$i]=="w3-light-green") {
+	} else if($used_colors[$i]==$cell_color[3]) {
 		$legend="Soil management AND Pest control";
 	}
 	echo('<td class="w3-text-black" style="padding:3px; border: 3px solid white;">'.$legend.'</td>');
@@ -182,17 +187,17 @@ for($i=0;$i<sizeof($used_colors);$i++){
 	
 		document.getElementById('cell'+plotN.toString()).className=cellClass;
 		
-		var index=0;
+		var symbol="C";
 		var i;
 		for(i=0;i<cropsNI.length;i++){
 			parts=cropsNI[i].split(",");
 			id=parts[0];
 			if(configParts[0]==id){
-				index=i+1;
+				symbol=parts[2];
 				break;
 			}
 		}
-		var content='C'+index;
+		var content=symbol;
 		if(configParts[1]>0){
 			content+='+L';
 		}

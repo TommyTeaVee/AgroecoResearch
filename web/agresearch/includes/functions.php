@@ -30,16 +30,16 @@ function getUserRole($dbh,$user_id){
 function getCrops($dbh,$int){
 	$ret=array();
 	if($int==1){
-		$query="SELECT crop_id, CONCAT(crop_name,' (',crop_variety_name,')') AS name FROM crop WHERE crop_used_for_intercropping=1 ORDER BY name";
+		$query="SELECT crop_id, CONCAT(crop_name,' (',crop_variety_name,')') AS name, crop_symbol FROM crop WHERE crop_used_for_intercropping=1 ORDER BY name";
 	} else if ($int==0) {
-		$query="SELECT crop_id, CONCAT(crop_name,' (',crop_variety_name,')') AS name FROM crop WHERE crop_used_for_intercropping=0 ORDER BY name";
+		$query="SELECT crop_id, CONCAT(crop_name,' (',crop_variety_name,')') AS name, crop_symbol FROM crop WHERE crop_used_for_intercropping=0 ORDER BY name";
 	} else {
-		$query="SELECT crop_id, CONCAT(crop_name,' (',crop_variety_name,')') AS name FROM crop ORDER BY name";
+		$query="SELECT crop_id, CONCAT(crop_name,' (',crop_variety_name,')') AS name, crop_symbol FROM crop ORDER BY name";
 	}
 	$result = mysqli_query($dbh,$query);
 	$i=0;
 	while($row = mysqli_fetch_array($result,MYSQL_NUM)){
-		$ret[$i]=$row[0].",".$row[1];
+		$ret[$i]=$row[0].",".$row[1].",".$row[2];
 		$i++;
 	}
 	return $ret;
@@ -291,6 +291,18 @@ function getMeasurements($dbh){
 	return $ret;
 }
 
+function getTreatmentColors($dbh){
+	$ret=array();
+	$query="SELECT treatment_color_id, color FROM treatment_color ORDER BY treatment_color_id";
+	$result = mysqli_query($dbh,$query);
+	$i=0;
+	while($row = mysqli_fetch_array($result,MYSQL_NUM)){
+		$ret[$i]=$row[1];
+		$i++;
+	}
+	return $ret;
+}
+
 //mail
 
 function decodeISO88591($string) {               
@@ -367,7 +379,7 @@ function checkMessages($mail_server, $mail_user, $mail_password, $dbh){
 			} else {
 				$subject = "";
 			}
-			if ($subject=="xxx" && is_array($sections) && sizeof($sections)>0) {
+			if ($subject=="pA439urcjLVk6szA" && is_array($sections) && sizeof($sections)>0) {
 				for($y=0; $y<sizeof($sections); $y++) {	
 					$type = $sections[$y]["type"];
 					$encoding = $sections[$y]["encoding"];

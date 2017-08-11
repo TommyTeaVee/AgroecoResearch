@@ -10,13 +10,14 @@ session_start();
 if($_SERVER["REQUEST_METHOD"] == "POST") {
 	if(isset($_POST['add_crop'])){
 		$crop_name=normalize($_POST['crop_name']);
+		$crop_symbol=normalize($_POST['crop_symbol']);
 		$crop_variety_name=normalize($_POST['crop_variety_name']);
 		if(isset($_POST['crop_used_for_intercropping'])){
 			$crop_used_for_intercropping=$_POST['crop_used_for_intercropping'];
 		} else {
 			$crop_used_for_intercropping=0;
 		}
-		$query="INSERT INTO crop (crop_name, crop_variety_name, crop_used_for_intercropping) VALUES ('$crop_name', '$crop_variety_name', $crop_used_for_intercropping)";
+		$query="INSERT INTO crop (crop_name, crop_symbol, crop_variety_name, crop_used_for_intercropping) VALUES ('$crop_name', '$crop_symbol', '$crop_variety_name', $crop_used_for_intercropping)";
 		$result = mysqli_query($dbh,$query);
 		header("Location: crops.php");
 	} else if(isset($_POST['cancel'])){
@@ -39,6 +40,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 <p>      
 <label class="w3-text-green">Crop name:</label>
 <input class="w3-input w3-border-green w3-text-green" name="crop_name" type="text" maxlength="20"></p>
+<p>      
+<label class="w3-text-green">Crop symbol:</label>
+<input class="w3-input w3-border-green w3-text-green" name="crop_symbol" type="text" maxlength="10"></p>
 <p>      
 <label class="w3-text-green">Crop variety:</label>
 <input class="w3-input w3-border-green w3-text-green" name="crop_variety_name" type="text" maxlength="40"></p>

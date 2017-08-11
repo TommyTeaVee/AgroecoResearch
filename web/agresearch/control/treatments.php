@@ -10,6 +10,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 		header("Location: add_treatment.php");
 	} else if(isset($_POST['menu'])){
 		header("Location: menu.php");
+	} else if(isset($_POST['treatment_colors'])){
+		header("Location: treatment_colors.php");
 	}
 } else if(isset($_SESSION['admin']) && $_SESSION['admin']==true) {
 ?>
@@ -25,7 +27,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 <div class="w3-container w3-card-4">
 <h2 class="w3-green">Treatments</h2><br>
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-<button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="add_treatment" name="add_treatment">Add treatment</button> <button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="menu" name="menu">Main menu</button></form><br>
+<button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="add_treatment" name="add_treatment">Add treatment</button> <button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="treatment_colors" name="treatment_colors">Treatment colors</button> <button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="menu" name="menu">Main menu</button></form><br>
 <?php
 $query="(SELECT treatment_id AS id, treatment_name AS treatment, treatment_category AS category, ' ' AS crop1, ' ' AS crop2 FROM treatment WHERE primary_crop_id = NULL AND intercropping_crop_id = NULL) UNION (SELECT treatment_id AS id, treatment_name AS treatment, treatment_category AS category, (SELECT CONCAT(crop_name,' (',crop_variety_name,')') FROM crop WHERE crop_id = treatment.primary_crop_id) AS crop1, (SELECT CONCAT(crop_name,' (',crop_variety_name,')') FROM crop WHERE crop_id = treatment.intercropping_crop_id) AS crop2 FROM treatment) ORDER BY category, treatment";
 $result = mysqli_query($dbh,$query);

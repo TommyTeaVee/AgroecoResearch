@@ -41,7 +41,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 			$measurement_categories="";
 		}
 		$measurement_periodicity=$_POST['measurement_periodicity'];
-		$query="INSERT INTO measurement (measurement_name, measurement_category, measurement_subcategory, measurement_type, measurement_range_min, measurement_range_max, measurement_units, measurement_categories, measurement_periodicity) VALUES ('$measurement_name', '$measurement_category', '$measurement_subcategory', $measurement_type, $measurement_range_min, $measurement_range_max, '$measurement_units', '$measurement_categories', $measurement_periodicity)";
+		if(isset($_POST['measurement_has_sample_number'])){
+			$measurement_has_sample_number=$_POST['measurement_has_sample_number'];
+		} else {
+			$measurement_has_sample_number=0;
+		}
+		$measurement_common_complex=$_POST['measurement_common_complex'];
+		$measurement_description=normalize($_POST['measurement_description']);
+		$query="INSERT INTO measurement (measurement_name, measurement_category, measurement_subcategory, measurement_type, measurement_range_min, measurement_range_max, measurement_units, measurement_categories, measurement_has_sample_number, measurement_periodicity, measurement_common_complex, measurement_description) VALUES ('$measurement_name', '$measurement_category', '$measurement_subcategory', $measurement_type, $measurement_range_min, $measurement_range_max, '$measurement_units', '$measurement_categories', $measurement_has_sample_number, $measurement_periodicity, $measurement_common_complex, '$measurement_description')";
 		$result = mysqli_query($dbh,$query);
 		header("Location: measurements.php");
 	} else if(isset($_POST['cancel'])){
@@ -123,6 +130,15 @@ for($i=0;$i<sizeof($measurement_subcategories);$i++){
 </script> 
 <p><label class="w3-text-green">Periodicity in days: (Enter '0' if variable)</label>
 <input class="w3-input w3-border-green w3-text-green" name="measurement_periodicity" type="text" maxlength="10"></p>
+<p><label class="w3-validate w3-text-green">Needs sample number</label>
+<input class="w3-check" type="checkbox" value="1" name="measurement_has_sample_number" id="measurement_has_sample_number"></p>
+<p><select class="w3-select w3-text-green" name="measurement_common_complex" id="measurement_common_complex">
+  <option value="0" selected>Common measurement</option>
+  <option value="1">Complex measurement</option>
+</select></p>
+<p>      
+<label class="w3-text-green">Measurement description:</label>
+<input class="w3-input w3-border-green w3-text-green" name="measurement_description" type="text"></p>
 <br><button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="add_measurement" name="add_measurement">Add measurement</button> <button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="cancel" name="cancel">Cancel</button></form><br>
 <br><br></div>
 </body>

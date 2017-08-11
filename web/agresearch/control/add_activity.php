@@ -18,7 +18,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 		}
 		$activity_periodicity=$_POST['activity_periodicity'];
 		$activity_measurement_units=$_POST['activity_measurement_units'];
-		$query="INSERT INTO activity (activity_name, activity_category, activity_periodicity, activity_measurement_units) VALUES ('$activity_name', '$activity_category', $activity_periodicity, '$activity_measurement_units')";
+		$activity_description=normalize($_POST['activity_description']);
+		$query="INSERT INTO activity (activity_name, activity_category, activity_periodicity, activity_measurement_units, activity_description) VALUES ('$activity_name', '$activity_category', $activity_periodicity, '$activity_measurement_units','$activity_description')";
 		$result = mysqli_query($dbh,$query);
 		header("Location: activities.php");
 	} else if(isset($_POST['cancel'])){
@@ -65,6 +66,9 @@ for($i=0;$i<sizeof($activity_categories);$i++){
 <input class="w3-input w3-border-green w3-text-green" name="activity_periodicity" type="text" maxlength="10"></p>
 <p><label class="w3-text-green">Measurement units</label>
 <input class="w3-input w3-border-green w3-text-green" name="activity_measurement_units" type="text" maxlength="30"></p>
+<p>      
+<label class="w3-text-green">Activity description:</label>
+<input class="w3-input w3-border-green w3-text-green" name="activity_description" type="text"></p>
 <br><button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="add_activity" name="add_activity">Add activity</button> <button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="cancel" name="cancel">Cancel</button></form><br>
 <br><br></div>
 </body>

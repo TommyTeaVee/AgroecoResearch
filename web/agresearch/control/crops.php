@@ -27,10 +27,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 <button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="add_crop" name="add_crop">Add crop</button> <button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="menu" name="menu">Main menu</button></form><br>
 <?php
-$query="SELECT crop_id, crop_name, crop_variety_name FROM crop ORDER BY crop_name";
+$query="SELECT crop_id, crop_name, crop_symbol, crop_variety_name FROM crop ORDER BY crop_name";
 $result = mysqli_query($dbh,$query);
 while($row = mysqli_fetch_array($result,MYSQL_NUM)){
-	echo("Crop: ".$row[1]."<br>Variety: ".$row[2]."<br>");
+	echo("Crop: ".$row[1]."<br>Symbol: ".$row[2]."<br>Variety: ".$row[3]."<br>");
 ?><a class="w3-text-green" href="edit_crop.php?id=<?php echo($row[0]); ?>">Edit</a> -- <a class="w3-text-green" href="delete_crop.php?id=<?php echo($row[0]); ?>">Delete</a><br><br>
 <?php
 }

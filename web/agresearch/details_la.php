@@ -9,7 +9,7 @@ session_start();
 if(isset($_SESSION['admin']) && $_SESSION['admin']==true && isset($_GET['id'])){
 	
 	$id=$_GET['id'];
-	$query="SELECT log_id, log_date, field_name, field_replication_number, plot_number, activity_name, log_value_units, log_value_number, log_comments FROM log, field, activity WHERE log_id=$id AND field.field_id = log.field_id AND activity.activity_id = log.activity_id";
+	$query="SELECT log_id, log_date, field_name, field_replication_number, plot_number, activity_name, log_value_units, log_value_number, log_comments, log_picture FROM log, field, activity WHERE log_id=$id AND field.field_id = log.field_id AND activity.activity_id = log.activity_id";
 	$result = mysqli_query($dbh,$query);
 	$row = mysqli_fetch_array($result,MYSQL_NUM);
 	
@@ -36,6 +36,17 @@ if(isset($_SESSION['admin']) && $_SESSION['admin']==true && isset($_GET['id'])){
 <b>Activity:</b> <?php echo($row[5]); ?><br>
 <b>Date:</b> <?php echo($row[1]); ?> <br>
 <b>Value (<?php echo($row[6]); ?>):</b> <?php echo($row[7]); ?> <br>
+<?php
+if($row[9]!=""){
+	$filename=$row[9];
+	list($width, $height)=getimagesize($filename);
+	$w=$width*(150/$height);
+	$h=150;
+?>
+<img src="<?php echo($filename); ?>" width="<?php echo($w); ?>" height="<?php echo($h); ?>"><br>
+<?php
+}
+?>
 <b>Comments:</b> <?php echo($row[8]); ?><br>
 </div>
 </p>
