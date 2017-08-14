@@ -1,6 +1,7 @@
 package ojovoz.agroecoresearch;
 
 import android.content.Context;
+import android.graphics.Color;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,6 +32,7 @@ public class agroecoHelper {
     private Context context;
     ArrayList<oCrop> crops;
     ArrayList<oTreatment> treatments;
+    ArrayList<oTreatmentColor> treatmentColors;
     ArrayList<oField> fields;
     ArrayList<oActivity> activities;
     ArrayList<oActivityCalendar> activitiesCalendar;
@@ -76,7 +78,8 @@ public class agroecoHelper {
                 oCrop crop = new oCrop();
                 crop.cropId = Integer.parseInt(record[0]);
                 crop.cropName = record[1];
-                crop.cropVariety = record[2];
+                crop.cropSymbol = record[2];
+                crop.cropVariety = record[3];
                 crops.add(crop);
             }
         }
@@ -145,6 +148,9 @@ public class agroecoHelper {
                 measurement.measurementUnits = record[7];
                 measurement.measurementCategories = record[8];
                 measurement.measurementPeriodicity = Integer.parseInt(record[9]);
+                measurement.measurementHasSampleNumber = (Integer.parseInt(record[10])==0) ? false : true;
+                measurement.measurementIsCommon = (Integer.parseInt(record[11])==0) ? true : false;
+                measurement.measurementDescription = record[12];
                 measurements.add(measurement);
             }
 
@@ -209,7 +215,9 @@ public class agroecoHelper {
 
     public void createTreatments(){
         treatments = new ArrayList<>();
+        treatmentColors = new ArrayList<>();
         List<String[]> treatmentsCSV = readCSVFile("treatments");
+        List<String[]> treatmentColorsCSV = readCSVFile("treatment_colors");
         if(treatmentsCSV!=null) {
             Iterator<String[]> iterator = treatmentsCSV.iterator();
             while (iterator.hasNext()) {
@@ -232,7 +240,30 @@ public class agroecoHelper {
                 }
                 treatments.add(treatment);
             }
+            if(treatmentColorsCSV!=null){
+                Iterator<String[]> iteratorColors = treatmentColorsCSV.iterator();
+                while (iteratorColors.hasNext()) {
+                    String[] record = iteratorColors.next();
+                    oTreatmentColor treatmentColor = new oTreatmentColor();
+                    treatmentColor.treatmentCode=Integer.parseInt(record[0]);;
+                    treatmentColor.colorCode="#"+record[1];
+                    treatmentColors.add(treatmentColor);
+                }
+            }
         }
+    }
+
+    public int getTreatmentColor(int treatmentCode){
+        int ret = Color.parseColor("#CCCCCC");
+        oTreatmentColor tc;
+        for(int i=0;i<treatmentColors.size();i++){
+            tc=treatmentColors.get(i);
+            if(tc.treatmentCode==treatmentCode){
+                ret=Color.parseColor(tc.colorCode);
+                break;
+            }
+        }
+        return ret;
     }
 
     public void createLog(){

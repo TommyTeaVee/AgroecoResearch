@@ -88,6 +88,7 @@ public class downloadCatalogs extends AppCompatActivity implements httpConnectio
             CheckBox treatments = (CheckBox) findViewById(R.id.downloadTreatments);
             if (treatments.isChecked()) {
                 download.add("treatments");
+                download.add("treatment_colors");
             }
             CheckBox measurements = (CheckBox) findViewById(R.id.downloadMeasurements);
             if (measurements.isChecked()) {

@@ -157,22 +157,22 @@ public class chooseFieldPlot extends AppCompatActivity {
                 b.setId(n);
                 b.setPadding(3,3,3,3);
                 if(!plot.hasPestControl && !plot.hasSoilManagement){
-                    b.setBackgroundColor(ContextCompat.getColor(this, R.color.noTreatments));
+                    b.setBackgroundColor(agroHelper.getTreatmentColor(1));
                     if(!treatmentLegends.contains(treatmentNames[0])){
                         treatmentLegends.add(treatmentNames[0]);
                     }
                 } else if(!plot.hasPestControl && plot.hasSoilManagement){
-                    b.setBackgroundColor(ContextCompat.getColor(this, R.color.soilManagement));
+                    b.setBackgroundColor(agroHelper.getTreatmentColor(2));
                     if(!treatmentLegends.contains(treatmentNames[1])){
                         treatmentLegends.add(treatmentNames[1]);
                     }
                 } else if(plot.hasPestControl && !plot.hasSoilManagement){
-                    b.setBackgroundColor(ContextCompat.getColor(this, R.color.pestControl));
+                    b.setBackgroundColor(agroHelper.getTreatmentColor(3));
                     if(!treatmentLegends.contains(treatmentNames[2])){
                         treatmentLegends.add(treatmentNames[2]);
                     }
                 } else {
-                    b.setBackgroundColor(ContextCompat.getColor(this, R.color.bothTreatments));
+                    b.setBackgroundColor(agroHelper.getTreatmentColor(4));
                     if(!treatmentLegends.contains(treatmentNames[3])){
                         treatmentLegends.add(treatmentNames[3]);
                     }
@@ -225,6 +225,16 @@ public class chooseFieldPlot extends AppCompatActivity {
         l.setVisibility(View.VISIBLE);
         l.setText(legend);
 
+        TextView dt = new TextView(this);
+        dt = (TextView)findViewById(R.id.treatment1Legend);
+        dt.setText("");
+        dt = (TextView)findViewById(R.id.treatment2Legend);
+        dt.setText("");
+        dt = (TextView)findViewById(R.id.treatment3Legend);
+        dt.setText("");
+        dt = (TextView)findViewById(R.id.treatment4Legend);
+        dt.setText("");
+
         int i=0;
         Iterator<String> iterator = treatmentLegends.iterator();
         while (iterator.hasNext()) {
@@ -246,13 +256,13 @@ public class chooseFieldPlot extends AppCompatActivity {
             }
             tl.setVisibility(View.VISIBLE);
             if(record.equals(treatmentNames[0])) {
-                tl.setTextColor(ContextCompat.getColor(this, R.color.noTreatments));
+                tl.setTextColor(agroHelper.getTreatmentColor(1));
             } else if(record.equals(treatmentNames[1])) {
-                tl.setTextColor(ContextCompat.getColor(this, R.color.soilManagement));
+                tl.setTextColor(agroHelper.getTreatmentColor(2));
             } else if(record.equals(treatmentNames[2])) {
-                tl.setTextColor(ContextCompat.getColor(this, R.color.pestControl));
+                tl.setTextColor(agroHelper.getTreatmentColor(3));
             } else if(record.equals(treatmentNames[3])) {
-                tl.setTextColor(ContextCompat.getColor(this, R.color.bothTreatments));
+                tl.setTextColor(agroHelper.getTreatmentColor(4));
             }
             tl.setText(record);
             i++;

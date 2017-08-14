@@ -13,6 +13,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".loginScreen"
             android:launchMode="singleTop"
+            android:alwaysRetainTaskState="true"
             android:screenOrientation="portrait"
             android:label="@string/loginScreenTitle">
             <intent-filter>

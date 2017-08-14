@@ -5,7 +5,7 @@ include_once "./../includes/variables.php";
 $dbh = initDB();
 session_start();
 
-function getColorW3($hex,$colors,$color_hex){
+function getColorAssocValue($hex,$colors,$color_hex){
 	$ret="";
 	for($i=0;$i<sizeof($colors);$i++){
 		if($color_hex[$i]==$hex){
@@ -19,20 +19,24 @@ function getColorW3($hex,$colors,$color_hex){
 if($_SERVER["REQUEST_METHOD"] == "POST") {
 	if(isset($_POST['update_colors'])){
 		$no_treatment_color=$_POST['no_treatment'];
-		$no_treatment_color_w3=getColorW3($no_treatment_color,$colors,$color_hex);
+		$no_treatment_color_w3=getColorAssocValue($no_treatment_color,$colors,$color_hex);
+		$no_treatment_color_app=getColorAssocValue($no_treatment_color,$color_code_app,$color_hex);
 		$soil_management_color=$_POST['soil_management'];
-		$soil_management_color_w3=getColorW3($soil_management_color,$colors,$color_hex);
+		$soil_management_color_w3=getColorAssocValue($soil_management_color,$colors,$color_hex);
+		$soil_management_color_app=getColorAssocValue($soil_management_color,$color_code_app,$color_hex);
 		$pest_control_color=$_POST['pest_control'];
-		$pest_control_color_w3=getColorW3($pest_control_color,$colors,$color_hex);
+		$pest_control_color_w3=getColorAssocValue($pest_control_color,$colors,$color_hex);
+		$pest_control_color_app=getColorAssocValue($pest_control_color,$color_code_app,$color_hex);
 		$both_treatments_color=$_POST['both_treatments'];
-		$both_treatments_color_w3=getColorW3($both_treatments_color,$colors,$color_hex);
-		$query="UPDATE treatment_color SET color='$no_treatment_color_w3', color_hex='$no_treatment_color' WHERE treatment_color_id=1";
+		$both_treatments_color_w3=getColorAssocValue($both_treatments_color,$colors,$color_hex);
+		$both_treatments_color_app=getColorAssocValue($both_treatments_color,$color_code_app,$color_hex);
+		$query="UPDATE treatment_color SET color='$no_treatment_color_w3', color_hex='$no_treatment_color', color_code_app='$no_treatment_color_app' WHERE treatment_color_id=1";
 		$result = mysqli_query($dbh,$query);
-		$query="UPDATE treatment_color SET color='$soil_management_color_w3', color_hex='$soil_management_color' WHERE treatment_color_id=2";
+		$query="UPDATE treatment_color SET color='$soil_management_color_w3', color_hex='$soil_management_color', color_code_app='$soil_management_color_app' WHERE treatment_color_id=2";
 		$result = mysqli_query($dbh,$query);
-		$query="UPDATE treatment_color SET color='$pest_control_color_w3', color_hex='$pest_control_color' WHERE treatment_color_id=3";
+		$query="UPDATE treatment_color SET color='$pest_control_color_w3', color_hex='$pest_control_color', color_code_app='$pest_control_color_app' WHERE treatment_color_id=3";
 		$result = mysqli_query($dbh,$query);
-		$query="UPDATE treatment_color SET color='$both_treatments_color_w3', color_hex='$both_treatments_color' WHERE treatment_color_id=4";
+		$query="UPDATE treatment_color SET color='$both_treatments_color_w3', color_hex='$both_treatments_color', color_code_app='$both_treatments_color_app' WHERE treatment_color_id=4";
 		$result = mysqli_query($dbh,$query);
 		header("Location: treatments.php");
 	} else if(isset($_POST['back'])){

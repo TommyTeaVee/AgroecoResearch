@@ -4,10 +4,6 @@
     <color name="colorPrimaryDark">#2b682d</color>
     <color name="colorAccent">#981d1a</color>
     <color name="colorWhite">#ffffff</color>
-    <color name="noTreatments">#f0e68c</color>
-    <color name="soilManagement">#ffeb3b</color>
-    <color name="pestControl">#cddc39</color>
-    <color name="bothTreatments">#8bc34a</color>
     <color name="colorBlack">#000000</color>
     <color name="darkGray">#999999</color>
     <color name="mediumGray">#cccccc</color>

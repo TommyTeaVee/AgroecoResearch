@@ -16,6 +16,9 @@ public class oMeasurement {
     public float measurementMax;
     public String measurementUnits;
     public int measurementPeriodicity;
+    public boolean measurementHasSampleNumber;
+    public boolean measurementIsCommon;
+    public String measurementDescription;
     public ArrayList<oCrop> measurementAppliesToCrops;
     public ArrayList<oTreatment> measurementAppliesToTreatments;
 
