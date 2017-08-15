@@ -11,6 +11,7 @@ public class oActivity {
     public String activityCategory;
     public int activityPeriodicity;
     public String activityMeasurementUnits;
+    public String activityDescription;
     public ArrayList<oCrop> activityAppliesToCrops;
     public ArrayList<oTreatment> activityAppliesToTreatments;
 

@@ -101,6 +101,7 @@ public class agroecoHelper {
                 activity.activityCategory = record[2];
                 activity.activityPeriodicity = Integer.parseInt(record[3]);
                 activity.activityMeasurementUnits = record[4];
+                activity.activityDescription = record[5];
                 activities.add(activity);
             }
 

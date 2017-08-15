@@ -56,7 +56,7 @@ public class chooseFieldPlot extends AppCompatActivity {
         CharSequence title = getTitle() + " " + task;
         setTitle(title);
 
-        agroHelper = new agroecoHelper(this,"crops,fields");
+        agroHelper = new agroecoHelper(this,"crops,fields,treatments");
         fields = agroHelper.fields;
 
 
@@ -141,10 +141,9 @@ public class chooseFieldPlot extends AppCompatActivity {
         plotsGrid.removeAllViews();
 
         int n=0;
-        ArrayList cropList = new ArrayList();
-        int currentCropN;
         String cropsInLegend="";
         String intercropInLegend="";
+        ArrayList<oCrop> cropList=new ArrayList<>();
         String[] treatmentNames = {"Control treatment","Soil management","Pest control","Soil management and pest control"};
         ArrayList<String> treatmentLegends = new ArrayList<>();
         for(int i=0;i<field.rows;i++){
@@ -181,19 +180,17 @@ public class chooseFieldPlot extends AppCompatActivity {
                 b.setTextColor(ContextCompat.getColor(this, R.color.colorBlack));
 
                 oCrop pc = plot.primaryCrop;
-                int pcId = pc.cropId;
-                if(!cropList.contains(pcId)){
-                    cropList.add(pcId);
-                    currentCropN=cropList.size();
-                    if(cropsInLegend.isEmpty()){
-                        cropsInLegend="C" + Integer.toString(currentCropN) + ": " + pc.cropName + " (" + pc.cropVariety + ")";
-                    } else {
-                        cropsInLegend+="\nC" + Integer.toString(currentCropN) + ": " + pc.cropName + " (" + pc.cropVariety + ")";
-                    }
+                if(cropList.isEmpty()){
+                    cropsInLegend=pc.cropSymbol + ": " + pc.cropName + " (" + pc.cropVariety + ")";
+                    cropList.add(pc);
                 } else {
-                    currentCropN=cropList.indexOf(pcId)+1;
+                    if(!cropList.contains(pc)){
+                        cropsInLegend+="\n" + pc.cropSymbol + ": " + pc.cropName + " (" + pc.cropVariety + ")";
+                        cropList.add(pc);
+                    }
                 }
-                String cropsInPlot = "C" + Integer.toString(currentCropN);
+
+                String cropsInPlot = pc.cropSymbol;
 
                 oCrop ic = plot.intercroppingCrop;
                 if(ic!=null){
@@ -225,8 +222,7 @@ public class chooseFieldPlot extends AppCompatActivity {
         l.setVisibility(View.VISIBLE);
         l.setText(legend);
 
-        TextView dt = new TextView(this);
-        dt = (TextView)findViewById(R.id.treatment1Legend);
+        TextView dt = (TextView)findViewById(R.id.treatment1Legend);
         dt.setText("");
         dt = (TextView)findViewById(R.id.treatment2Legend);
         dt.setText("");
