@@ -640,6 +640,16 @@ public class agroecoHelper {
         return sdf.format(d);
     }
 
+    public ArrayList<oCrop> sortCropListBySymbol(ArrayList<oCrop> cList){
+        Collections.sort(cList, new Comparator<oCrop>() {
+            @Override
+            public int compare(oCrop c1, oCrop c2) {
+                return c1.cropSymbol.compareTo(c2.cropSymbol);
+            }
+        });
+        return cList;
+    }
+
     public void addActivityToLog(int fieldId, int plotN, int userId, int activityId, String date, float numberValue, String units, String comments){
         updateActivityDaysAgo(activityId, plotN, fieldId, date);
         createLog();

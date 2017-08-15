@@ -181,11 +181,9 @@ public class chooseFieldPlot extends AppCompatActivity {
 
                 oCrop pc = plot.primaryCrop;
                 if(cropList.isEmpty()){
-                    cropsInLegend=pc.cropSymbol + ": " + pc.cropName + " (" + pc.cropVariety + ")";
                     cropList.add(pc);
                 } else {
                     if(!cropList.contains(pc)){
-                        cropsInLegend+="\n" + pc.cropSymbol + ": " + pc.cropName + " (" + pc.cropVariety + ")";
                         cropList.add(pc);
                     }
                 }
@@ -215,6 +213,18 @@ public class chooseFieldPlot extends AppCompatActivity {
         }
         Button b = (Button)findViewById(R.id.chooseEntireFieldButton);
         b.setVisibility(View.VISIBLE);
+
+        cropList=agroHelper.sortCropListBySymbol(cropList);
+
+        Iterator<oCrop> iteratorC = cropList.iterator();
+        while (iteratorC.hasNext()){
+            oCrop cl = iteratorC.next();
+            if(cropsInLegend.isEmpty()){
+                cropsInLegend=cl.cropSymbol + ": " + cl.cropName + " (" + cl.cropVariety + ")";
+            } else {
+                cropsInLegend+="\n" + cl.cropSymbol + ": " + cl.cropName + " (" + cl.cropVariety + ")";
+            }
+        }
 
         legend=cropsInLegend+intercropInLegend;
 
