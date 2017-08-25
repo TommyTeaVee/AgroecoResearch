@@ -493,6 +493,93 @@ public class agroecoHelper {
         return ret;
     }
 
+    public boolean isPlotChooseable(oPlot p, String task, String subTask, int taskId){
+        boolean ret=false;
+        if(task.equals("activity")){
+            oActivity a=getActivityFromId(taskId);
+            if (a.activityAppliesToCrops.size() == 0 && a.activityAppliesToTreatments.size() == 0) {
+                ret=true;
+            } else {
+                oCrop plotCrop = p.primaryCrop;
+                Iterator<oCrop> iteratorCrop = a.activityAppliesToCrops.iterator();
+                while (iteratorCrop.hasNext()) {
+                    oCrop aC = iteratorCrop.next();
+                    if (aC.cropId == plotCrop.cropId) {
+                        ret=true;
+                        break;
+                    }
+                }
+
+                Iterator<oTreatment> iteratorTreatment = a.activityAppliesToTreatments.iterator();
+                while (iteratorTreatment.hasNext()) {
+                    oTreatment aT = iteratorTreatment.next();
+                    if ((p.intercroppingCrop != null && aT.treatmentCategory.equals("Intercropping"))
+                            || (p.hasSoilManagement && aT.treatmentCategory.equals("Soil management"))
+                            || (p.hasPestControl && aT.treatmentCategory.equals("Pest control"))) {
+                        ret=true;
+                        break;
+                    }
+                }
+            }
+        } else if(task.equals("measurement")){
+            oMeasurement m=getMeasurementFromId(taskId);
+            if(m.measurementAppliesToCrops.size()==0 && m.measurementAppliesToTreatments.size()==0){
+                ret=true;
+            } else {
+                oCrop plotCrop = p.primaryCrop;
+                oCrop plotCropIntercropping = p.intercroppingCrop;
+                Iterator<oCrop> iteratorCrop = m.measurementAppliesToCrops.iterator();
+                while (iteratorCrop.hasNext()) {
+                    oCrop mC = iteratorCrop.next();
+                    if ((mC.cropId == plotCrop.cropId) || (plotCropIntercropping!=null && mC.cropId == plotCropIntercropping.cropId)) {
+                        ret=true;
+                        break;
+                    }
+                }
+
+                Iterator<oTreatment> iteratorTreatment = m.measurementAppliesToTreatments.iterator();
+                while (iteratorTreatment.hasNext()) {
+                    oTreatment mT = iteratorTreatment.next();
+                    if ((p.intercroppingCrop != null && mT.treatmentCategory.equals("Intercropping"))
+                            || (p.hasSoilManagement && mT.treatmentCategory.equals("Soil management"))
+                            || (p.hasPestControl && mT.treatmentCategory.equals("Pest control"))) {
+                        ret=true;
+                        break;
+                    }
+                }
+            }
+        } else if(task.equals("input")){
+            if(subTask.equals("crop")){
+                oCrop plotCrop = p.primaryCrop;
+                oCrop plotCropIntercropping = p.intercroppingCrop;
+                if(plotCrop.cropId==taskId || (plotCropIntercropping!=null && plotCropIntercropping.cropId==taskId)){
+                    ret=true;
+                }
+            } else if(subTask.equals("treatment")){
+                oTreatment t = getTreatmentFromId(taskId);
+                if ((p.intercroppingCrop != null && t.treatmentCategory.equals("Intercropping"))
+                        || (p.hasSoilManagement && t.treatmentCategory.equals("Soil management"))
+                        || (p.hasPestControl && t.treatmentCategory.equals("Pest control"))) {
+                    ret=true;
+                }
+            }
+        }
+        return ret;
+    }
+
+    public oActivity getActivityFromId(int id){
+        oActivity ret = new oActivity();
+        Iterator<oActivity> iterator = activities.iterator();
+        while (iterator.hasNext()) {
+            oActivity activity = iterator.next();
+            if(activity.activityId==id){
+                ret=activity;
+                break;
+            }
+        }
+        return ret;
+    }
+
     public ArrayList<oActivity> getActivities(oPlot plot, oField field){
         ArrayList<oActivity> ret = new ArrayList<>();
         if(plot!=null) {
@@ -552,14 +639,16 @@ public class agroecoHelper {
         return ret;
     }
 
-    public ArrayList<oMeasurement> getMeasurements(oPlot plot, oField field){
+    public ArrayList<oMeasurement> getMeasurements(oPlot plot, oField field, int userRole){
         ArrayList<oMeasurement> ret = new ArrayList<>();
         if(plot!=null) {
             Iterator<oMeasurement> iterator = measurements.iterator();
             while (iterator.hasNext()) {
                 oMeasurement measurement = iterator.next();
                 if (measurement.measurementAppliesToCrops.size() == 0 && measurement.measurementAppliesToTreatments.size() == 0) {
-                    ret.add(measurement);
+                    if(measurement.measurementIsCommon || (!measurement.measurementIsCommon && userRole>0)) {
+                        ret.add(measurement);
+                    }
                 } else {
                     oCrop plotCrop = plot.primaryCrop;
                     Iterator<oCrop> iteratorCrop = measurement.measurementAppliesToCrops.iterator();
@@ -567,7 +656,9 @@ public class agroecoHelper {
                         oCrop aC = iteratorCrop.next();
                         if (aC.cropId == plotCrop.cropId) {
                             if (!ret.contains(measurement)) {
-                                ret.add(measurement);
+                                if(measurement.measurementIsCommon || (!measurement.measurementIsCommon && userRole>0)) {
+                                    ret.add(measurement);
+                                }
                             }
                         }
                     }
@@ -579,7 +670,9 @@ public class agroecoHelper {
                                 || (plot.hasSoilManagement && aT.treatmentCategory.equals("Soil management"))
                                 || (plot.hasPestControl && aT.treatmentCategory.equals("Pest control"))) {
                             if (!ret.contains(measurement)) {
-                                ret.add(measurement);
+                                if(measurement.measurementIsCommon || (!measurement.measurementIsCommon && userRole>0)) {
+                                    ret.add(measurement);
+                                }
                             }
                         }
                     }
@@ -590,7 +683,9 @@ public class agroecoHelper {
             while (iterator.hasNext()) {
                 oMeasurement measurement = iterator.next();
                 if (measurement.measurementAppliesToTreatments.size() == 0) {
-                    ret.add(measurement);
+                    if(measurement.measurementIsCommon || (!measurement.measurementIsCommon && userRole>0)) {
+                        ret.add(measurement);
+                    }
                 } else {
                     Iterator<oTreatment> iteratorTreatment = measurement.measurementAppliesToTreatments.iterator();
                     while (iteratorTreatment.hasNext()) {
@@ -599,14 +694,22 @@ public class agroecoHelper {
                                 || (field.hasSoilManagement && aT.treatmentCategory.equals("Soil management"))
                                 || (field.hasPestControl && aT.treatmentCategory.equals("Pest control"))) {
                             if(!ret.contains(measurement)) {
-                                ret.add(measurement);
+                                if(measurement.measurementIsCommon || (!measurement.measurementIsCommon && userRole>0)) {
+                                    ret.add(measurement);
+                                }
                             }
                         }
                     }
                 }
             }
         } else {
-            ret=measurements;
+            Iterator<oMeasurement> iterator = measurements.iterator();
+            while (iterator.hasNext()) {
+                oMeasurement measurement = iterator.next();
+                if(measurement.measurementIsCommon || (!measurement.measurementIsCommon && userRole>0)){
+                    ret.add(measurement);
+                }
+            }
         }
         return ret;
     }
@@ -1331,6 +1434,18 @@ public class agroecoHelper {
         return ret;
     }
 
+    public ArrayList<String> getMeasurementCategories(int userRole){
+        ArrayList<String> ret = new ArrayList<>();
+        Iterator<oMeasurement> iterator = measurements.iterator();
+        while(iterator.hasNext()){
+            oMeasurement m = iterator.next();
+            if(!ret.contains(m.measurementCategory) && (userRole>0 || (m.measurementIsCommon))){
+                ret.add(m.measurementCategory);
+            }
+        }
+        return ret;
+    }
+
     public String getActivityNameFromId(int id){
         String ret="";
         Iterator<oActivity> iterator = activities.iterator();
@@ -1406,6 +1521,18 @@ public class agroecoHelper {
                 break;
             }
         }
+        return ret;
+    }
+
+    public ArrayList<oCrop> getAllCrops(){
+        ArrayList<oCrop> ret = new ArrayList<>();
+        ret=crops;
+        Collections.sort(ret, new Comparator<oCrop>() {
+            @Override
+            public int compare(oCrop c1, oCrop c2) {
+                return c1.cropName.compareTo(c2.cropName);
+            }
+        });
         return ret;
     }
 

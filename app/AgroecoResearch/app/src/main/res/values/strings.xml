@@ -35,8 +35,8 @@
     <string name="downloadCatalogsProgressDialogTitle">Downloading</string>
     <string name="chooseFieldPlotTitle">Register</string>
     <string name="chooseFieldPrompt">Choose a field</string>
-    <string name="choosePlotPrompt">Choose a plot</string>
-    <string name="chooseEntireFieldButton">Choose entire field</string>
+    <string name="choosePlotPrompt">Choose plots</string>
+    <string name="enterDataButton">Enter data</string>
     <string name="registerInputButton">REGISTER INPUT</string>
     <string name="chooserTitle">Choose</string>
     <string name="logoutAlertTitle">Log out</string>
@@ -65,8 +65,8 @@
     <string name="deleteAlertString">Delete selected entries?</string>
     <string name="sendingDataMessage">Sending data</string>
     <string name="pleaseWaitMessage">Please wait...</string>
-    <string name="invalidParametersMessage">Invalid parameters. Please log in again.</string>
-    <string name="unableToSendMessage">Unable to send. Please try again.</string>
+    <string name="invalidParametersMessage">Invalid parameters, please log in again</string>
+    <string name="unableToSendMessage">Unable to send, please try again</string>
     <string name="enterMeasurementTitle">Measurement</string>
     <string name="enterSampleNumberText">Sample number</string>
     <string name="enterQualitativeValueText">Choose value</string>
@@ -89,4 +89,8 @@
     <string name="otherListTest">Other ...</string>
     <string name="otherButtonText">Other (enter below)</string>
     <string name="enterUnitsText">Units</string>
+    <string name="chooseCategoryPrompt">Choose category</string>
+    <string name="registerMeasurementLabel">Register measurement</string>
+    <string name="chooseMeasurementTitle">Choose measurement</string>
+    <string name="chosenXNotApplicable">Chosen * is not applicable to this field</string>
 </resources>

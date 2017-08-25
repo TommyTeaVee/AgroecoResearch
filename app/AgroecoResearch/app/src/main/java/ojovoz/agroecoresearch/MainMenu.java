@@ -61,6 +61,17 @@ public class mainMenu extends AppCompatActivity {
                 b.setId(i);
                 switch(i) {
                     case 0:
+                        b.setText(R.string.registerInputButton);
+                        b.setOnClickListener(new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View v) {
+                                addInput();
+                            }
+                        });
+                        layout.addView(b, params);
+                        break;
+                    case 1:
                         b.setText(R.string.registerActivityButtonText);
                         b.setOnClickListener(new View.OnClickListener() {
 
@@ -71,24 +82,13 @@ public class mainMenu extends AppCompatActivity {
                         });
                         layout.addView(b, params);
                         break;
-                    case 1:
+                    case 2:
                         b.setText(R.string.registerMeasurementButtonText);
                         b.setOnClickListener(new View.OnClickListener() {
 
                             @Override
                             public void onClick(View v) {
                                 addMeasurement();
-                            }
-                        });
-                        layout.addView(b, params);
-                        break;
-                    case 2:
-                        b.setText(R.string.registerInputButton);
-                        b.setOnClickListener(new View.OnClickListener() {
-
-                            @Override
-                            public void onClick(View v) {
-                                addInput();
                             }
                         });
                         layout.addView(b, params);
@@ -149,18 +149,17 @@ public class mainMenu extends AppCompatActivity {
 
     public void addActivity(){
         final Context context = this;
-        Intent i = new Intent(context, chooseFieldPlot.class);
+        Intent i = new Intent(context, chooser.class);
         i.putExtra("userId",userId);
         i.putExtra("userRole",userRole);
         i.putExtra("task","activity");
-        i.putExtra("field",-1);
         startActivity(i);
         finish();
     }
 
     public void addInput(){
         final Context context = this;
-        Intent i = new Intent(context, chooseFieldPlot.class);
+        Intent i = new Intent(context, inputChooser.class);
         i.putExtra("userId",userId);
         i.putExtra("userRole",userRole);
         i.putExtra("task","input");
@@ -171,11 +170,10 @@ public class mainMenu extends AppCompatActivity {
 
     public void addMeasurement(){
         final Context context = this;
-        Intent i = new Intent(context, chooseFieldPlot.class);
+        Intent i = new Intent(context, measurementChooser.class);
         i.putExtra("userId",userId);
         i.putExtra("userRole",userRole);
         i.putExtra("task","measurement");
-        i.putExtra("field",-1);
         startActivity(i);
         finish();
     }

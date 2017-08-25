@@ -52,45 +52,10 @@ public class chooser extends AppCompatActivity {
         } else if(task.equals("measurement")){
             agroHelper = new agroecoHelper(this, "crops,fields,treatments,measurements");
         }
-
-        fieldId = getIntent().getExtras().getInt("field");
-        field = agroHelper.getFieldFromId(fieldId);
-        plotN = getIntent().getExtras().getInt("plot");
-        if(plotN>=0){
-            plot = field.plots.get(plotN);
-
-            primaryCrop = plot.primaryCrop;
-
-            if(plot.intercroppingCrop!=null){
-                treatmentsTitle = "\nIntercropping";
-            }
-            if(plot.hasSoilManagement){
-                if(treatmentsTitle.isEmpty()){
-                    treatmentsTitle="\nSoil management";
-                } else {
-                    treatmentsTitle+=", Soil management";
-                }
-            }
-            if(plot.hasPestControl){
-                if(treatmentsTitle.isEmpty()){
-                    treatmentsTitle="\nPest control";
-                } else {
-                    treatmentsTitle+=", Pest control";
-                }
-            }
-        } else {
-            plot=null;
-        }
+        setTitle("Register "+task);
 
         TextView tt = (TextView)findViewById(R.id.tableTitle);
-        if(plotN>=0) {
-            tt.setText("Plot " + Integer.toString(plotN + 1) + ": " + primaryCrop.cropName + " (" + primaryCrop.cropVariety + ")" + treatmentsTitle);
-        } else {
-            tt.setText("Entire field");
-        }
-
-        CharSequence title = getTitle() + " " + task + ": " + field.fieldName + " R" + Integer.toString(field.fieldReplicationN);
-        setTitle(title);
+        tt.setText("Choose "+task+":");
 
         if(getIntent().getExtras().getBoolean("newActivity")){
             agroHelper.addActivityToLog(fieldId, plotN, userId, getIntent().getExtras().getInt("activity"),
@@ -108,11 +73,10 @@ public class chooser extends AppCompatActivity {
 
     @Override public void onBackPressed(){
         final Context context = this;
-        Intent i = new Intent(context, chooseFieldPlot.class);
+        Intent i = new Intent(context, mainMenu.class);
         i.putExtra("userId",userId);
         i.putExtra("userRole",userRole);
         i.putExtra("task",task);
-        i.putExtra("field", fieldId);
         startActivity(i);
         finish();
     }
@@ -126,7 +90,8 @@ public class chooser extends AppCompatActivity {
         chooserTable.removeAllViews();
         String category="";
         if(task.equals("activity")){
-            activities = agroHelper.getActivities(plot,field);
+            //activities = agroHelper.getActivities(plot,field);
+            activities = agroHelper.getActivities(null,null);
             Iterator<oActivity> iterator = activities.iterator();
             int n=0;
             while (iterator.hasNext()) {
@@ -159,8 +124,10 @@ public class chooser extends AppCompatActivity {
                 }
 
 
+                /*
                 String daysAgo = "";
                 String nDays = agroHelper.getActivityDaysAgo(activity.activityId,plotN,fieldId);
+                */
 
                 TextView tv = new TextView(chooser.this);
                 tv.setId(n);
@@ -168,7 +135,7 @@ public class chooser extends AppCompatActivity {
                 tv.setText(activity.activityName);
                 tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP,20f);
                 tv.setPadding(4,4,4,4);
-                if(!nDays.equals("0")) {
+                //if(!nDays.equals("0")) {
                     tv.setOnClickListener(new View.OnClickListener() {
 
                         @Override
@@ -177,11 +144,12 @@ public class chooser extends AppCompatActivity {
                         }
 
                     });
-                }
+                //}
                 trow.addView(tv,lp);
                 trow.setGravity(Gravity.CENTER_VERTICAL);
                 chooserTable.addView(trow, lp);
 
+                /*
                 final TableRow trowBelow = new TableRow(chooser.this);
                 TableRow.LayoutParams lpBelow = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f);
                 lpBelow.setMargins(4,0,4,0);
@@ -215,11 +183,13 @@ public class chooser extends AppCompatActivity {
                 trowBelow.addView(tvBelow,lpBelow);
                 trowBelow.setGravity(Gravity.CENTER_VERTICAL);
                 chooserTable.addView(trowBelow, lpBelow);
+                */
 
                 n++;
             }
         } else if(task.equals("measurement")){
-            measurements = agroHelper.getMeasurements(plot,field);
+            //measurements = agroHelper.getMeasurements(plot,field);
+            measurements = agroHelper.getMeasurements(null,null,userRole);
             Iterator<oMeasurement> iterator = measurements.iterator();
             int n=0;
             while (iterator.hasNext()) {
@@ -251,8 +221,10 @@ public class chooser extends AppCompatActivity {
                     trow.setBackgroundColor(ContextCompat.getColor(this,R.color.colorWhite));
                 }
 
+                /*
                 String daysAgo = "";
                 String nDays = agroHelper.getMeasurementDaysAgo(measurement.measurementId,plotN,fieldId);
+                */
 
                 TextView tv = new TextView(chooser.this);
                 tv.setId(n);
@@ -260,7 +232,7 @@ public class chooser extends AppCompatActivity {
                 tv.setText(measurement.measurementName);
                 tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP,20f);
                 tv.setPadding(4,4,4,4);
-                if(!nDays.equals("0")) {
+                //if(!nDays.equals("0")) {
                     tv.setOnClickListener(new View.OnClickListener() {
 
                         @Override
@@ -269,11 +241,12 @@ public class chooser extends AppCompatActivity {
                         }
 
                     });
-                }
+                //}
                 trow.addView(tv,lp);
                 trow.setGravity(Gravity.CENTER_VERTICAL);
                 chooserTable.addView(trow, lp);
 
+                /*
                 final TableRow trowBelow = new TableRow(chooser.this);
                 TableRow.LayoutParams lpBelow = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f);
                 lpBelow.setMargins(4,0,4,0);
@@ -307,6 +280,7 @@ public class chooser extends AppCompatActivity {
                 trowBelow.addView(tvBelow,lpBelow);
                 trowBelow.setGravity(Gravity.CENTER_VERTICAL);
                 chooserTable.addView(trowBelow, lpBelow);
+                */
 
                 n++;
             }
@@ -317,16 +291,19 @@ public class chooser extends AppCompatActivity {
         TextView tv = (TextView)v;
         tv.setBackgroundColor(ContextCompat.getColor(this,R.color.colorPrimaryDark));
         final Context context = this;
-        if(task.equals("activity")) {
-            Intent i = new Intent(context, enterActivity.class);
-            i.putExtra("userId", userId);
-            i.putExtra("userRole", userRole);
-            i.putExtra("task", task);
-            i.putExtra("field", fieldId);
-            i.putExtra("plot", plotN);
-            i.putExtra("activity", activities.get(id).activityId);
-            i.putExtra("update","");
 
+        Intent i = new Intent(context, chooseFieldPlot.class);
+        i.putExtra("userId", userId);
+        i.putExtra("userRole", userRole);
+        i.putExtra("task", task);
+            //i.putExtra("field", fieldId);
+        i.putExtra("field", -1);
+            //i.putExtra("plot", plotN);
+        i.putExtra("activity", activities.get(id).activityId);
+        i.putExtra("title",activities.get(id).activityName);
+           //i.putExtra("update","");
+
+            /*
             String treatmentsTitle = "";
             if(plotN>=0) {
                 plot = field.plots.get(plotN);
@@ -361,19 +338,23 @@ public class chooser extends AppCompatActivity {
 
             i.putExtra("title",activityTitle);
             i.putExtra("units",activities.get(id).activityMeasurementUnits);
+            */
 
             startActivity(i);
             finish();
+        /*
         } else if(task.equals("measurement")){
-            Intent i = new Intent(context, enterMeasurement.class);
+            Intent i = new Intent(context, chooseFieldPlot.class);
             i.putExtra("userId", userId);
             i.putExtra("userRole", userRole);
             i.putExtra("task", task);
-            i.putExtra("field", fieldId);
-            i.putExtra("plot", plotN);
+            //i.putExtra("field", fieldId);
+            i.putExtra("field", -1);
+            //i.putExtra("plot", plotN);
             i.putExtra("measurement", measurements.get(id).measurementId);
-            i.putExtra("update","");
+            //i.putExtra("update","");
 
+            /*
             String treatmentsTitle = "";
             if(plotN>=0) {
                 plot = field.plots.get(plotN);
@@ -412,9 +393,10 @@ public class chooser extends AppCompatActivity {
             i.putExtra("min",measurements.get(id).measurementMin);
             i.putExtra("max",measurements.get(id).measurementMax);
             i.putExtra("categories",measurements.get(id).measurementCategories);
+            */
 
-            startActivity(i);
-            finish();
-        }
+            //startActivity(i);
+            //finish();
+        //}
     }
 }

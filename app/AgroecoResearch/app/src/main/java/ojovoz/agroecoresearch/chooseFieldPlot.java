@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +17,7 @@ import android.widget.ListAdapter;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -27,6 +30,7 @@ public class chooseFieldPlot extends AppCompatActivity {
     public int userId;
     public int userRole;
     public String task;
+    public String itemTitle;
 
     private preferenceManager prefs;
 
@@ -36,7 +40,13 @@ public class chooseFieldPlot extends AppCompatActivity {
     CharSequence fieldsArray[];
     oField field;
 
+    ArrayList<oPlotHelper> plotsInGrid;
+
     public String legend;
+    public String measurementCategory;
+
+    public int taskId;
+    public String subTask="";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,15 +58,30 @@ public class chooseFieldPlot extends AppCompatActivity {
         userId = getIntent().getExtras().getInt("userId");
         userRole = getIntent().getExtras().getInt("userRole");
         task = getIntent().getExtras().getString("task");
+        if(task.equals("measurement")){
+            measurementCategory = getIntent().getExtras().getString("measurementCategory");
+            taskId = getIntent().getExtras().getInt("measurement");
+        } else if (task.equals("activity")){
+            taskId = getIntent().getExtras().getInt("activity");
+        } else if (task.equals("input")){
+            if(getIntent().getExtras().getInt("cropId")>=0){
+                taskId=getIntent().getExtras().getInt("cropId");
+                subTask="crop";
+            } else {
+                taskId=getIntent().getExtras().getInt("treatmentId");
+                subTask="treatment";
+            }
+        }
+        itemTitle = getIntent().getExtras().getString("title");
         int fieldId = getIntent().getExtras().getInt("field");
         if(!(fieldId>=0)){
             fieldId = Integer.parseInt(prefs.getPreference("field"));
         }
 
-        CharSequence title = getTitle() + " " + task;
+        CharSequence title = getTitle() + ": " + itemTitle;
         setTitle(title);
 
-        agroHelper = new agroecoHelper(this,"crops,fields,treatments");
+        agroHelper = new agroecoHelper(this,"crops,fields,treatments,activities,measurements");
         fields = agroHelper.fields;
 
 
@@ -95,9 +120,20 @@ public class chooseFieldPlot extends AppCompatActivity {
 
     @Override public void onBackPressed(){
         final Context context = this;
-        Intent i = new Intent(context, mainMenu.class);
+        Intent i;
+        if(task.equals("activity")) {
+            i = new Intent(context, chooser.class);
+        } else if(task.equals("measurement")){
+            i = new Intent(context, measurementChooser.class);
+            i.putExtra("measurementCategory",measurementCategory);
+        } else if(task.equals("input")){
+            i = new Intent(context, inputChooser.class);
+        } else {
+            i = new Intent(context, mainMenu.class);
+        }
         i.putExtra("userId",userId);
         i.putExtra("userRole",userRole);
+        i.putExtra("task",task);
         startActivity(i);
         finish();
     }
@@ -136,11 +172,13 @@ public class chooseFieldPlot extends AppCompatActivity {
     void drawPlots(){
 
         ArrayList<oPlot> plots = field.plots;
+        plotsInGrid = new ArrayList<>();
 
         TableLayout plotsGrid = (TableLayout) findViewById(R.id.plotsGrid);
         plotsGrid.removeAllViews();
 
         int n=0;
+        int preChosenPlots=0;
         String cropsInLegend="";
         String intercropInLegend="";
         ArrayList<oCrop> cropList=new ArrayList<>();
@@ -152,32 +190,47 @@ public class chooseFieldPlot extends AppCompatActivity {
             lp.setMargins(2,2,2,2);
             for(int j=0;j<field.columns;j++){
                 oPlot plot = plots.get(n);
+
+                boolean isChooseable=agroHelper.isPlotChooseable(plot,task,subTask,taskId);
+
                 Button b = new Button(chooseFieldPlot.this);
                 b.setId(n);
                 b.setPadding(3,3,3,3);
+
+                GradientDrawable drawable = new GradientDrawable();
+                drawable.setShape(GradientDrawable.RECTANGLE);
+
+                if(isChooseable) {
+                    drawable.setStroke(5, Color.RED);
+                    preChosenPlots++;
+                } else {
+                    drawable.setStroke(0, Color.WHITE);
+                }
+
                 if(!plot.hasPestControl && !plot.hasSoilManagement){
-                    b.setBackgroundColor(agroHelper.getTreatmentColor(1));
+                    drawable.setColor(agroHelper.getTreatmentColor(1));
                     if(!treatmentLegends.contains(treatmentNames[0])){
                         treatmentLegends.add(treatmentNames[0]);
                     }
                 } else if(!plot.hasPestControl && plot.hasSoilManagement){
-                    b.setBackgroundColor(agroHelper.getTreatmentColor(2));
+                    drawable.setColor(agroHelper.getTreatmentColor(2));
                     if(!treatmentLegends.contains(treatmentNames[1])){
                         treatmentLegends.add(treatmentNames[1]);
                     }
                 } else if(plot.hasPestControl && !plot.hasSoilManagement){
-                    b.setBackgroundColor(agroHelper.getTreatmentColor(3));
+                    drawable.setColor(agroHelper.getTreatmentColor(3));
                     if(!treatmentLegends.contains(treatmentNames[2])){
                         treatmentLegends.add(treatmentNames[2]);
                     }
                 } else {
-                    b.setBackgroundColor(agroHelper.getTreatmentColor(4));
+                    drawable.setColor(agroHelper.getTreatmentColor(4));
                     if(!treatmentLegends.contains(treatmentNames[3])){
                         treatmentLegends.add(treatmentNames[3]);
                     }
                 }
 
                 b.setTextColor(ContextCompat.getColor(this, R.color.colorBlack));
+                b.setBackground(drawable);
 
                 oCrop pc = plot.primaryCrop;
                 if(cropList.isEmpty()){
@@ -193,25 +246,31 @@ public class chooseFieldPlot extends AppCompatActivity {
                 oCrop ic = plot.intercroppingCrop;
                 if(ic!=null){
                     cropsInPlot += "+L";
-                    intercropInLegend="\nL: " + ic.cropName + " (" + ic.cropVariety + ")";
+                    intercropInLegend="\nL: " + ic.cropName;
                 }
 
                 b.setText(cropsInPlot);
-                b.setOnClickListener(new View.OnClickListener() {
+                if(isChooseable) {
+                    b.setOnClickListener(new View.OnClickListener() {
 
-                    @Override
-                    public void onClick(View v) {
-                        choosePlot(v.getId(),v);
-                    }
+                        @Override
+                        public void onClick(View v) {
+                            choosePlot(v.getId(), v);
+                        }
 
-                });
+                    });
+                }
                 trow.addView(b,lp);
+
+                oPlotHelper np = new oPlotHelper(plot,n,isChooseable,isChooseable);
+                plotsInGrid.add(np);
+
                 n++;
             }
             trow.setGravity(Gravity.CENTER_VERTICAL);
             plotsGrid.addView(trow, lp);
         }
-        Button b = (Button)findViewById(R.id.chooseEntireFieldButton);
+        Button b = (Button)findViewById(R.id.enterDataButton);
         b.setVisibility(View.VISIBLE);
 
         cropList=agroHelper.sortCropListBySymbol(cropList);
@@ -220,9 +279,9 @@ public class chooseFieldPlot extends AppCompatActivity {
         while (iteratorC.hasNext()){
             oCrop cl = iteratorC.next();
             if(cropsInLegend.isEmpty()){
-                cropsInLegend=cl.cropSymbol + ": " + cl.cropName + " (" + cl.cropVariety + ")";
+                cropsInLegend=cl.cropSymbol + ": " + cl.cropName;
             } else {
-                cropsInLegend+="\n" + cl.cropSymbol + ": " + cl.cropName + " (" + cl.cropVariety + ")";
+                cropsInLegend+="\n" + cl.cropSymbol + ": " + cl.cropName;
             }
         }
 
@@ -273,12 +332,40 @@ public class chooseFieldPlot extends AppCompatActivity {
             tl.setText(record);
             i++;
         }
+
+        if(preChosenPlots==0){
+            Toast.makeText(this, R.string.chosenXNotApplicable, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    boolean getPlotState(int n){
+        boolean ret=false;
+        Iterator<oPlotHelper> iterator = plotsInGrid.iterator();
+        while (iterator.hasNext()) {
+            oPlotHelper ph = iterator.next();
+            if (ph.plotNumber == n) {
+                //if choosable, toggle state. else, return same state
+                ret = !ph.state;
+                ph.state = ret;
+                break;
+            }
+        }
+        return ret;
     }
 
     void choosePlot(int n, View v){
         Button b = (Button)v;
-        b.setBackgroundColor(ContextCompat.getColor(this,R.color.colorPrimaryDark));
+        GradientDrawable d = (GradientDrawable) b.getBackground();
 
+        if(getPlotState(n)) {
+            d.setStroke(5, Color.RED);
+        } else {
+            d.setStroke(0, Color.WHITE);
+        }
+
+        b.setBackground(d);
+
+        /*
         final Context context = this;
 
         if(task.equals("activity") || task.equals("measurement")) {
@@ -302,9 +389,11 @@ public class chooseFieldPlot extends AppCompatActivity {
             startActivity(i);
             finish();
         }
+        */
     }
 
-    public void chooseEntireField(View v){
+    public void enterData(View v){
+        /*
         final Context context = this;
 
         if(task.equals("activity") || task.equals("measurement")) {
@@ -328,5 +417,6 @@ public class chooseFieldPlot extends AppCompatActivity {
             startActivity(i);
             finish();
         }
+        */
     }
 }
