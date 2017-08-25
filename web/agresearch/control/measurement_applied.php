@@ -138,7 +138,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 <?php		
 	}
 ?></div>
-</div></p><br><button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="edit_measurement_applied" name="edit_measurement_applied">Associate</button> <button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="cancel" name="cancel">Cancel</button>
+</div></p><br><button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="edit_measurement_applied" name="edit_measurement_applied">Associate</button> <button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="cancel" name="cancel">Back</button>
 </form><br><br></div>
 </body>
 </html>

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: 192.168.86.55
--- Tiempo de generación: 11-08-2017 a las 18:28:34
+-- Tiempo de generación: 25-08-2017 a las 19:15:08
 -- Versión del servidor: 5.5.57-0+deb7u1-log
 -- Versión de PHP: 5.3.29-1~dotdeb.0
 
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `activity` (
   `activity_periodicity` int(10) unsigned NOT NULL COMMENT 'in days',
   `activity_measurement_units` varchar(30) NOT NULL,
   `activity_description` text NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=19 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=25 ;
 
 --
 -- Volcado de datos para la tabla `activity`
@@ -41,7 +41,6 @@ CREATE TABLE IF NOT EXISTS `activity` (
 
 INSERT INTO `activity` (`activity_id`, `activity_name`, `activity_category`, `activity_periodicity`, `activity_measurement_units`, `activity_description`) VALUES
 (1, 'Ploughing', 'Field work', 0, 'hours', ''),
-(4, 'Planting', 'Field work', 0, 'hours', ''),
 (5, 'Harvesting', 'Field work', 0, 'hours', ''),
 (6, 'Weeding', 'Field work', 0, 'hours', ''),
 (7, 'Irrigation', 'Field work', 0, 'L/ha', ''),
@@ -53,7 +52,13 @@ INSERT INTO `activity` (`activity_id`, `activity_name`, `activity_category`, `ac
 (13, 'Mulch application', 'Soil management', 0, 'applied amount', ''),
 (15, 'Thinning', 'Field work', 0, 'hours', ''),
 (16, 'Prunning', 'Field work', 0, 'hours', ''),
-(17, 'Sowing', 'Field work', 0, 'hours', '');
+(17, 'Sowing/Planting', 'Field work', 0, 'hours', ''),
+(19, 'Top dressing', 'Field work', 0, 'hours', ''),
+(20, 'Top dressing preparation', 'Field work', 0, 'hours', ''),
+(21, 'Seed soaking', 'Field work', 0, 'hours', ''),
+(22, 'Gap filling', 'Field work', 0, 'hours', ''),
+(23, 'Transplanting', 'Field work', 0, 'hours', ''),
+(24, 'Seed bed preparation', 'Field work', 0, 'hours', '');
 
 -- --------------------------------------------------------
 
@@ -66,7 +71,7 @@ CREATE TABLE IF NOT EXISTS `activity_x_crop_or_treatment` (
   `activity_id` int(10) unsigned NOT NULL,
   `crop_id` int(10) unsigned DEFAULT NULL,
   `treatment_id` int(10) unsigned DEFAULT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=30 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=42 ;
 
 --
 -- Volcado de datos para la tabla `activity_x_crop_or_treatment`
@@ -92,7 +97,19 @@ INSERT INTO `activity_x_crop_or_treatment` (`activity_x_crop_or_treatment_id`, `
 (25, 15, 8, NULL),
 (26, 15, 1, NULL),
 (27, 15, 9, NULL),
-(28, 16, 2, NULL);
+(28, 16, 2, NULL),
+(30, 23, 2, NULL),
+(31, 23, 4, NULL),
+(32, 23, 1, NULL),
+(33, 23, 8, NULL),
+(34, 24, 2, NULL),
+(35, 24, 4, NULL),
+(36, 24, 1, NULL),
+(37, 24, 8, NULL),
+(38, 21, 2, NULL),
+(39, 21, 4, NULL),
+(40, 21, 1, NULL),
+(41, 21, 8, NULL);
 
 -- --------------------------------------------------------
 
@@ -113,11 +130,10 @@ CREATE TABLE IF NOT EXISTS `crop` (
 --
 
 INSERT INTO `crop` (`crop_id`, `crop_name`, `crop_symbol`, `crop_variety_name`, `crop_used_for_intercropping`) VALUES
-(1, 'Maize', 'C1', 'TMV1', 0),
-(2, 'Cassava', 'C2', 'MKURANGA1', 0),
-(4, 'Cowpeas', '', 'Diolole', 1),
-(8, 'Pigeon peas', '', 'Local', 1),
-(9, 'Sorghum', 'C3', 'Local', 0);
+(1, 'Maize', 'C1', 'All', 0),
+(2, 'Cassava', 'C2', 'All', 0),
+(4, 'Cowpeas', '', 'All', 1),
+(8, 'Pigeon peas', '', 'All', 1);
 
 -- --------------------------------------------------------
 
@@ -145,9 +161,9 @@ INSERT INTO `field` (`field_id`, `parent_field_id`, `user_id`, `field_date_creat
 (23, 23, 1, '2017-02-24', 'Masasi', 1, '-10.792300', '38.894855', 'F=(2,1,1,1);G=(4,4);P=(1,4,0,1);P=(2,0,0,1);P=(1,0,0,0);P=(2,4,0,0);P=(1,0,0,1);P=(2,4,0,1);P=(1,4,0,0);P=(2,0,0,0);P=(1,4,1,1);P=(2,4,1,1);P=(2,0,1,0);P=(1,0,1,0);P=(2,0,1,1);P=(1,0,1,1);P=(2,4,1,0);P=(2,4,1,0);'),
 (24, 23, 1, '2017-02-24', 'Masasi', 2, '-10.792300', '38.894855', 'F=(2,1,1,1);G=(4,4);P=(2,4,0,1);P=(1,0,0,1);P=(1,4,1,1);P=(2,0,1,1);P=(1,4,0,1);P=(2,0,0,1);P=(1,0,1,1);P=(2,4,1,1);P=(2,0,0,0);P=(1,0,0,0);P=(2,4,1,0);P=(1,4,1,0);P=(2,4,0,0);P=(1,4,0,0);P=(2,0,1,0);P=(1,0,1,0);'),
 (25, 23, 1, '2017-02-24', 'Masasi', 3, '-10.792300', '38.894855', 'F=(2,1,1,1);G=(4,4);P=(2,0,1,0);P=(1,4,1,0);P=(1,0,1,1);P=(2,4,1,1);P=(1,0,1,0);P=(2,4,1,0);P=(1,4,1,1);P=(2,0,1,1);P=(2,4,0,0);P=(1,0,0,0);P=(2,0,0,1);P=(1,4,0,1);P=(1,4,0,0);P=(2,0,0,0);P=(2,4,0,1);P=(1,0,0,1);'),
-(34, 34, 3, '2017-04-19', 'Morogoro', 1, '-6.741821', '37.550743', 'F=(3,1,1,1);G=(4,4);P=(1,4,0,1);P=(9,0,0,1);P=(1,0,0,0);P=(9,4,0,0);P=(1,0,0,1);P=(9,4,0,1);P=(1,4,0,0);P=(9,0,0,0);P=(1,4,1,1);P=(9,4,1,1);P=(1,0,1,0);P=(2,0,1,0);P=(9,0,1,1);P=(1,0,1,1);P=(1,4,1,0);P=(2,4,1,0);'),
-(35, 34, 3, '2017-04-19', 'Morogoro', 2, '-6.741821', '37.550743', 'F=(3,1,1,1);G=(4,4);P=(9,4,0,1);P=(1,0,0,1);P=(1,4,1,1);P=(9,0,1,1);P=(1,4,0,1);P=(9,0,0,1);P=(1,0,1,1);P=(9,4,1,1);P=(9,0,0,0);P=(1,0,0,0);P=(2,4,1,0);P=(1,4,1,0);P=(9,4,0,0);P=(1,4,0,0);P=(9,0,1,0);P=(1,0,1,0);'),
-(36, 34, 3, '2017-04-19', 'Morogoro', 3, '-6.741821', '37.550743', 'F=(2,1,1,1);G=(4,4);P=(9,0,1,0);P=(1,4,1,0);P=(1,0,1,1);P=(9,4,1,1);P=(1,0,1,0);P=(9,4,1,0);P=(1,4,1,1);P=(9,0,1,1);P=(9,4,0,0);P=(1,0,0,0);P=(9,0,0,1);P=(1,4,0,1);P=(1,4,0,0);P=(9,0,0,0);P=(9,4,0,1);P=(1,0,0,1);');
+(34, 34, 3, '2017-04-19', 'Morogoro', 1, '-6.741821', '37.550743', 'F=(2,1,1,1);G=(4,4);P=(1,4,0,1);P=(2,0,0,1);P=(1,0,0,0);P=(2,4,0,0);P=(1,0,0,1);P=(2,4,0,1);P=(1,4,0,0);P=(2,0,0,0);P=(1,4,1,1);P=(2,4,1,1);P=(1,0,1,0);P=(2,0,1,0);P=(2,0,1,1);P=(1,0,1,1);P=(1,4,1,0);P=(2,4,1,0);'),
+(35, 34, 3, '2017-04-19', 'Morogoro', 2, '-6.741821', '37.550743', 'F=(2,1,1,1);G=(4,4);P=(2,4,0,1);P=(1,0,0,1);P=(1,4,1,1);P=(2,0,1,1);P=(1,4,0,1);P=(2,0,0,1);P=(1,0,1,1);P=(2,4,1,1);P=(2,0,0,0);P=(1,0,0,0);P=(2,4,1,0);P=(1,4,1,0);P=(2,4,0,0);P=(1,4,0,0);P=(2,0,1,0);P=(1,0,1,0);'),
+(36, 34, 3, '2017-04-19', 'Morogoro', 3, '-6.741821', '37.550743', 'F=(2,1,1,1);G=(4,4);P=(2,0,1,0);P=(1,4,1,0);P=(1,0,1,1);P=(2,4,1,1);P=(1,0,1,0);P=(2,4,1,0);P=(1,4,1,1);P=(2,0,1,1);P=(2,4,0,0);P=(1,0,0,0);P=(2,0,0,1);P=(1,4,0,1);P=(1,4,0,0);P=(2,0,0,0);P=(2,4,0,1);P=(1,0,0,1);');
 
 -- --------------------------------------------------------
 
@@ -237,36 +253,55 @@ CREATE TABLE IF NOT EXISTS `measurement` (
   `measurement_has_sample_number` tinyint(1) NOT NULL DEFAULT '0',
   `measurement_common_complex` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '0 = common, 1 = complex',
   `measurement_description` text NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=46 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=71 ;
 
 --
 -- Volcado de datos para la tabla `measurement`
 --
 
 INSERT INTO `measurement` (`measurement_id`, `measurement_name`, `measurement_category`, `measurement_subcategory`, `measurement_type`, `measurement_range_min`, `measurement_range_max`, `measurement_units`, `measurement_categories`, `measurement_periodicity`, `measurement_has_sample_number`, `measurement_common_complex`, `measurement_description`) VALUES
-(8, 'Number of planted seeds/sticks', 'Crops', 'Sowing/planting - survival', 1, 0, 1000, '', '', 0, 0, 0, ''),
-(9, 'Germinated/sprouted after 14 days', 'Crops', 'Sowing/planting - survival', 1, 0, 1000, '', '', 0, 0, 0, ''),
-(10, 'Crop stand', 'Crops', 'Plant growth', 0, 0, 0, '', 'homogeneous,heterogeneous (between 25%-50% var),very heterogeneous (over 50% var)', 0, 0, 0, ''),
-(11, 'Growth stage (Maize)', 'Crops', 'Plant growth', 0, 0, 0, '', 'VE,V1,V2,V3,V4,V5,V6,V7,V8,V9,V10,V11,V12,V13,V14,V15,V16,V17,V18,V19,V20,V21,V22,V23,R0,R1,R2,R3,R4,R5,R6', 0, 1, 1, ''),
-(12, 'Plant size', 'Crops', 'Plant growth', 1, 0, 500, 'cm', '', 0, 1, 1, ''),
-(13, 'Stem diameter (Cassava)', 'Crops', 'Plant growth', 1, 0, 100, 'mm', '', 0, 1, 1, ''),
-(14, 'Date of branching', 'Crops', 'Plant growth', 1, 0, 0, 'date', '', 0, 0, 0, ''),
-(16, 'Date of flowering', 'Crops', 'Plant growth', 1, 0, 0, 'date', '', 0, 0, 0, ''),
-(17, 'Pest infestation', 'Crops', 'Plant health', 0, 0, 0, '', 'Bird,Insect,Insect larvae,Vertebrate,Worm', 0, 1, 1, ''),
-(21, 'Stress symptoms', 'Crops', 'Plant health', 0, 0, 0, '', 'yes,no', 0, 1, 1, ''),
-(23, '100(0) seed weight', 'Crops', 'Yield', 1, 0, 5000, 'g', '', 0, 1, 1, ''),
-(24, 'Total biomass', 'Crops', 'Yield', 1, 0, 1000, 'kg', '', 0, 0, 1, ''),
-(25, 'Weight', 'Crops', 'Yield', 1, 0, 10000, 'g', '', 0, 0, 1, ''),
-(27, 'Nutritional value per mass (kcal)', 'Crops', 'Quality', 1, 0, 1000, 'kcal', '', 0, 1, 1, ''),
-(28, 'Growth stage (Sorghum)', 'Crops', 'Plant growth', 0, 0, 0, '', '0,1,2,3,4,5,6,7,8,9', 0, 1, 1, ''),
-(29, 'Disease infestation', 'Crops', 'Plant health', 0, 0, 0, '', 'Bacterial,Fungal,Viral', 0, 1, 1, ''),
+(8, 'Number of planted seeds', 'Maize', 'Sowing/planting - survival', 1, 0, 1000, 'per plot', '', 0, 0, 0, ''),
+(9, 'Number of germinated plants', 'Maize', 'Sowing/planting - survival', 1, 0, 1000, 'per plot', '', 0, 0, 0, ''),
+(10, 'Crop stand', 'Maize', 'Plant growth', 0, 0, 0, '', 'homogeneous,heterogeneous (between 25%-50% var),very heterogeneous (over 50% var)', 0, 0, 0, ''),
+(11, 'Growth stage', 'Maize', 'Plant growth', 0, 0, 0, '', 'VE,V1,V2,V3,V4,V5,V6,V7,V8,V9,V10,V11,V12,V13,V14,V15,V16,V17,V18,V19,V20,V21,V22,V23,R0,R1,R2,R3,R4,R5,R6', 0, 1, 1, ''),
+(12, 'Plant size', 'Maize', 'Plant growth', 1, 0, 500, 'cm', '', 0, 1, 1, ''),
+(13, 'Stem diameter', 'Cassava', 'Plant growth', 1, 0, 100, 'mm', '', 0, 1, 1, ''),
+(17, 'Pest infestation', 'Cassava', 'Plant health', 0, 0, 0, '', 'Bird,Insect,Insect larvae,Vertebrate,Worm', 0, 1, 1, ''),
+(21, 'Stress symptoms', 'Cassava', 'Plant health', 0, 0, 0, '', 'discoloration - dark green,discoloration - light green,discoloration - yellowish,water stress - rippled leaf margins,water stress - rolled or folded leaves,water stress - dried leaves', 0, 1, 1, ''),
+(23, '100(0) seed weight', 'Maize', 'Yield', 1, 0, 5000, 'g', '', 0, 1, 1, ''),
+(24, 'Total biomass', 'Cassava', 'Yield', 1, 0, 1000, 'kg', '', 0, 0, 1, ''),
+(25, 'Weight of kernels', 'Maize', 'Yield', 1, 0, 3000, 'g', '', 0, 0, 1, ''),
+(27, 'Nutritional value per mass (kcal)', 'Cassava', 'Quality', 1, 0, 1000, 'kcal', '', 0, 1, 1, ''),
+(29, 'Disease infestation', 'Cassava', 'Plant health', 0, 0, 0, '', 'Bacterial,Fungal,Viral', 0, 1, 1, ''),
 (35, 'Moisture', 'Soil', 'Soil moisture', 1, 0, 100, '%', '', 0, 1, 1, ''),
 (36, 'pH', 'Soil', 'Soil fertility', 1, 0, 14, 'pH', '', 0, 1, 1, ''),
 (37, 'CN ratio', 'Soil', 'Soil fertility', 1, 0, 100, '%', '', 0, 1, 1, ''),
-(38, 'Particle size', 'Soil', 'Soil fertility', 1, 0, 100, 'mm', '', 0, 0, 0, ''),
-(39, 'Number of survived plants', 'Crops', 'Yield', 1, 0, 150, '', '', 0, 0, 0, ''),
-(44, 'Growth stage (Cassava)', 'Crops', 'Plant growth', 0, 0, 0, '', '0,1,2', 0, 1, 1, ''),
-(45, 'Moisture (Maize)', 'Crops', 'Quality', 1, 0, 100, '%', '', 0, 1, 1, '');
+(39, 'Number of survived plants', 'Cassava', 'Yield', 1, 0, 1000, 'per plot', '', 0, 0, 0, ''),
+(44, 'Growth stage', 'Cassava', 'Plant growth', 0, 0, 0, '', 'Emergence of sprouting,Beginning of leaf development and formation of root system,Development of stems and leaves (canopy establishment),High carbohydrate translocation to roots,Dormacy', 0, 1, 1, ''),
+(45, 'Corn moisture', 'Maize', 'Quality', 1, 0, 100, '%', '', 0, 1, 1, ''),
+(46, 'Exchangeable cations', 'Soil', 'Soil fertility', 1, 0, 1000, 'cmol[c]/kg', '', 0, 1, 1, ''),
+(47, 'Crop stand', 'Cassava', 'Plant growth', 0, 0, 0, '', 'homogeneous,heterogeneous (between 25%-50% var),very heterogeneous (over 50% var)', 0, 0, 1, ''),
+(48, 'Plant size', 'Cassava', 'Plant growth', 1, 0, 500, 'cm', '', 0, 1, 1, ''),
+(49, 'Stem diameter', 'Maize', 'Plant growth', 1, 0, 100, 'mm', '', 0, 1, 1, ''),
+(50, 'Disease infestation', 'Maize', 'Plant health', 0, 0, 0, '', 'Bacterial,Fungal,Viral', 0, 1, 1, ''),
+(51, 'Pest infestation', 'Maize', 'Plant health', 0, 0, 0, '', 'Bird,Insect,Insect larvae,Vertebrate,Worm', 0, 1, 1, ''),
+(52, 'Stress symptoms', 'Maize', 'Plant health', 0, 0, 0, '', 'discoloration - dark green,discoloration - light green,discoloration - yellowish,water stress - rippled leaf margins,water stress - rolled or folded leaves,water stress - dried leaves', 0, 1, 1, ''),
+(53, 'Nutritional value per mass (kcal)', 'Maize', 'Quality', 1, 0, 1000, 'kcal', '', 0, 1, 1, ''),
+(54, 'Number of sprouted plants', 'Cassava', 'Sowing/planting - survival', 1, 0, 1000, 'per plot', '', 0, 0, 0, ''),
+(55, 'Number of planted sticks', 'Cassava', 'Sowing/planting - survival', 1, 0, 1000, 'per plot', '', 0, 0, 0, ''),
+(56, 'Number of survived plants', 'Maize', 'Yield', 1, 0, 1000, 'per plot', '', 0, 0, 0, ''),
+(57, 'Weight of tubers', 'Cassava', 'Yield', 1, 0, 3000, 'g', '', 0, 0, 1, ''),
+(58, 'Total biomass', 'Maize', 'Yield', 1, 0, 1000, 'kg', '', 0, 0, 1, ''),
+(59, 'Number of planted seeds', 'Pulses', 'Sowing/planting - survival', 1, 0, 1000, 'per plot', '', 0, 0, 0, ''),
+(60, 'Number of germinated plants', 'Pulses', 'Sowing/planting - survival', 1, 0, 1000, 'per plot', '', 0, 0, 0, ''),
+(61, 'Number of survived plants', 'Pulses', 'Yield', 1, 0, 1000, 'per plot', '', 0, 0, 0, ''),
+(62, 'Total biomass', 'Pulses', 'Yield', 1, 0, 1000, 'kg', '', 0, 0, 0, ''),
+(63, 'Weight of pulses', 'Pulses', 'Yield', 1, 0, 3000, 'g', '', 0, 0, 0, ''),
+(66, 'Content of Nitrogen', 'Maize', 'Quality', 1, 0, 100, '%', '', 0, 0, 1, ''),
+(67, 'Content of Phosphorous', 'Maize', 'Quality', 1, 200, 300, 'mg/100g', '', 0, 0, 1, ''),
+(68, 'Starch content', 'Cassava', 'Quality', 1, 60, 95, '%', '', 0, 0, 1, ''),
+(69, 'Ash content in starch', 'Cassava', 'Quality', 1, 0, 1, '%', '', 0, 0, 1, ''),
+(70, 'Protein content in starch', 'Cassava', 'Quality', 1, 0, 10, '%', '', 0, 0, 1, '');
 
 -- --------------------------------------------------------
 
@@ -279,7 +314,7 @@ CREATE TABLE IF NOT EXISTS `measurement_x_crop_or_treatment` (
   `measurement_id` int(10) unsigned NOT NULL,
   `crop_id` int(10) unsigned DEFAULT NULL,
   `treatment_id` int(10) unsigned DEFAULT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=47 ;
 
 --
 -- Volcado de datos para la tabla `measurement_x_crop_or_treatment`
@@ -295,7 +330,43 @@ INSERT INTO `measurement_x_crop_or_treatment` (`measurement_x_crop_or_treatment_
 (7, 15, 2, NULL),
 (8, 16, 2, NULL),
 (9, 14, 2, NULL),
-(10, 13, 2, NULL);
+(10, 13, 2, NULL),
+(11, 47, 2, NULL),
+(12, 44, 2, NULL),
+(13, 48, 2, NULL),
+(14, 29, 2, NULL),
+(15, 17, 2, NULL),
+(16, 21, 2, NULL),
+(17, 27, 2, NULL),
+(18, 55, 2, NULL),
+(19, 54, 2, NULL),
+(20, 39, 2, NULL),
+(21, 24, 2, NULL),
+(22, 57, 2, NULL),
+(23, 10, 1, NULL),
+(24, 12, 1, NULL),
+(25, 49, 1, NULL),
+(26, 50, 1, NULL),
+(27, 51, 1, NULL),
+(28, 52, 1, NULL),
+(29, 45, 1, NULL),
+(30, 53, 1, NULL),
+(31, 9, 1, NULL),
+(32, 8, 1, NULL),
+(33, 23, 1, NULL),
+(34, 56, 1, NULL),
+(35, 58, 1, NULL),
+(36, 25, 1, NULL),
+(37, 60, 4, NULL),
+(38, 60, 8, NULL),
+(39, 59, 4, NULL),
+(40, 59, 8, NULL),
+(41, 61, 4, NULL),
+(42, 61, 8, NULL),
+(43, 62, 4, NULL),
+(44, 62, 8, NULL),
+(45, 63, 4, NULL),
+(46, 63, 8, NULL);
 
 -- --------------------------------------------------------
 
@@ -344,18 +415,19 @@ CREATE TABLE IF NOT EXISTS `treatment_color` (
 `treatment_color_id` int(10) unsigned NOT NULL,
   `treatment_category` varchar(100) NOT NULL,
   `color` varchar(100) NOT NULL,
-  `color_hex` varchar(100) NOT NULL
+  `color_hex` varchar(100) NOT NULL,
+  `color_code_app` varchar(2) NOT NULL
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
 
 --
 -- Volcado de datos para la tabla `treatment_color`
 --
 
-INSERT INTO `treatment_color` (`treatment_color_id`, `treatment_category`, `color`, `color_hex`) VALUES
-(1, 'No treatment', 'w3-grey', '616161'),
-(2, 'Soil management', 'w3-deep-orange', 'ff5722'),
-(3, 'Pest control', 'w3-yellow', 'ffeb3b'),
-(4, 'Soil management and pest control', 'w3-green', '4caf50');
+INSERT INTO `treatment_color` (`treatment_color_id`, `treatment_category`, `color`, `color_hex`, `color_code_app`) VALUES
+(1, 'No treatment', 'w3-khaki', 'f0e68c', '0'),
+(2, 'Soil management', 'w3-yellow', 'ffeb3b', '1'),
+(3, 'Pest control', 'w3-lime', 'cddc39', '2'),
+(4, 'Soil management and pest control', 'w3-light-green', '8bc34a', '3');
 
 -- --------------------------------------------------------
 
@@ -370,7 +442,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `user_password` varchar(30) NOT NULL,
   `user_organization` varchar(40) NOT NULL,
   `user_role` int(10) unsigned NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
 
 --
 -- Volcado de datos para la tabla `user`
@@ -379,7 +451,8 @@ CREATE TABLE IF NOT EXISTS `user` (
 INSERT INTO `user` (`user_id`, `user_name`, `user_alias`, `user_password`, `user_organization`, `user_role`) VALUES
 (1, 'Eugenio Tisselli', 'eugenio', 'cubo23', 'ETHZ', 2),
 (2, 'Angelika Hilbeck', 'angelika', 'ah', 'ETHZ', 2),
-(3, 'Milena Wiget', 'milena', 'milena', 'ETHZ', 2);
+(3, 'Milena Wiget', 'milena', 'milena', 'ETHZ', 2),
+(4, 'test', 'test', 'test', 'test', 0);
 
 --
 -- Índices para tablas volcadas
@@ -465,12 +538,12 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT de la tabla `activity`
 --
 ALTER TABLE `activity`
-MODIFY `activity_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=19;
+MODIFY `activity_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=25;
 --
 -- AUTO_INCREMENT de la tabla `activity_x_crop_or_treatment`
 --
 ALTER TABLE `activity_x_crop_or_treatment`
-MODIFY `activity_x_crop_or_treatment_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=30;
+MODIFY `activity_x_crop_or_treatment_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=42;
 --
 -- AUTO_INCREMENT de la tabla `crop`
 --
@@ -495,12 +568,12 @@ MODIFY `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=11;
 -- AUTO_INCREMENT de la tabla `measurement`
 --
 ALTER TABLE `measurement`
-MODIFY `measurement_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=46;
+MODIFY `measurement_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=71;
 --
 -- AUTO_INCREMENT de la tabla `measurement_x_crop_or_treatment`
 --
 ALTER TABLE `measurement_x_crop_or_treatment`
-MODIFY `measurement_x_crop_or_treatment_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=11;
+MODIFY `measurement_x_crop_or_treatment_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=47;
 --
 -- AUTO_INCREMENT de la tabla `plot`
 --
@@ -520,7 +593,7 @@ MODIFY `treatment_color_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREM
 -- AUTO_INCREMENT de la tabla `user`
 --
 ALTER TABLE `user`
-MODIFY `user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
+MODIFY `user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
