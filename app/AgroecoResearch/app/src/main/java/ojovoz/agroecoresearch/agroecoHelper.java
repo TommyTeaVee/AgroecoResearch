@@ -1511,6 +1511,19 @@ public class agroecoHelper {
         return ret;
     }
 
+    public String getMeasurementCategoryFromId(int id){
+        String ret="";
+        Iterator<oMeasurement> iterator = measurements.iterator();
+        while(iterator.hasNext()){
+            oMeasurement m = iterator.next();
+            if(m.measurementId==id){
+                ret=m.measurementCategory;
+                break;
+            }
+        }
+        return ret;
+    }
+
     public String getActivityMeasurementUnitsFromId(int id){
         String ret="";
         Iterator<oActivity> iterator = activities.iterator();

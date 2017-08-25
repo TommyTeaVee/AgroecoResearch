@@ -92,5 +92,5 @@
     <string name="chooseCategoryPrompt">Choose category</string>
     <string name="registerMeasurementLabel">Register measurement</string>
     <string name="chooseMeasurementTitle">Choose measurement</string>
-    <string name="chosenXNotApplicable">Chosen * is not applicable to this field</string>
+    <string name="chosenXNotApplicable">Chosen x is not applicable to this field</string>
 </resources>

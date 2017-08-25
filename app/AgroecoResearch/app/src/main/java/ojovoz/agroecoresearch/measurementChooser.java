@@ -194,7 +194,7 @@ public class measurementChooser extends AppCompatActivity {
         i.putExtra("task", "measurement");
         i.putExtra("field", -1);
         i.putExtra("measurement", measurementIds[id]);
-        i.putExtra("title",agroHelper.getMeasurementNameFromId(measurementIds[id]));
+        i.putExtra("title",agroHelper.getMeasurementNameFromId(measurementIds[id])+" ("+agroHelper.getMeasurementCategoryFromId(measurementIds[id])+")");
         i.putExtra("measurementCategory",chosenCategory);
         startActivity(i);
         finish();

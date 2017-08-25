@@ -334,7 +334,9 @@ public class chooseFieldPlot extends AppCompatActivity {
         }
 
         if(preChosenPlots==0){
-            Toast.makeText(this, R.string.chosenXNotApplicable, Toast.LENGTH_SHORT).show();
+            String msg=this.getResources().getString(R.string.chosenXNotApplicable);
+            msg=msg.replaceAll("x",task);
+            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
         }
     }
 
