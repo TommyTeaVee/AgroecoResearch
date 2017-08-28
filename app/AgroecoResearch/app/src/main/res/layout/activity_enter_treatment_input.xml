@@ -129,7 +129,7 @@
             android:id="@+id/inputComments"
             android:layout_marginTop="20dp"
             android:imeOptions="actionDone"
-            android:singleLine="false" />
+            android:singleLine="true" />
 
         <Button
             android:layout_width="match_parent"

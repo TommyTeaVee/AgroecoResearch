@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 /**
@@ -26,6 +27,14 @@ public class settings extends AppCompatActivity implements httpConnection.AsyncR
         setContentView(R.layout.activity_settings);
         userId = getIntent().getExtras().getInt("userId");
         userRole = getIntent().getExtras().getInt("userRole");
+
+        if(userRole==0){
+            Button b1 = (Button)findViewById(R.id.defineServerButton);
+            b1.setVisibility(View.GONE);
+
+            Button b2 = (Button)findViewById(R.id.controlPanelButton);
+            b2.setVisibility(View.GONE);
+        }
 
         initializeVariables();
     }
