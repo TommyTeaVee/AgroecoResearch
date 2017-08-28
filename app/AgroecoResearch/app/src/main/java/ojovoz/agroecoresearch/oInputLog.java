@@ -10,6 +10,7 @@ public class oInputLog {
     public Date inputLogDate;
     public int inputLogFieldId;
     public int inputLogPlotNumber;
+    public String inputLogPlots;
     public int inputLogUserId;
     public int inputLogCropId;
     public int inputLogTreatmentId;

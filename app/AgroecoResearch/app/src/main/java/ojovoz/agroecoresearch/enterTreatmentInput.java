@@ -27,11 +27,13 @@ public class enterTreatmentInput extends AppCompatActivity {
     public int userId;
     public int userRole;
     public String task;
+    public String subTask;
     public int inputLogId;
     public int fieldId;
-    public int plotN;
+    public String plots;
     public int treatmentId;
     public String inputTitle;
+    public String shortTitle;
     public String update;
 
     public Date treatmentInputDate;
@@ -44,10 +46,12 @@ public class enterTreatmentInput extends AppCompatActivity {
         userId = getIntent().getExtras().getInt("userId");
         userRole = getIntent().getExtras().getInt("userRole");
         task = getIntent().getExtras().getString("task");
+        subTask = getIntent().getExtras().getString("subTask");
         fieldId = getIntent().getExtras().getInt("field");
-        plotN = getIntent().getExtras().getInt("plot");
-        treatmentId = getIntent().getExtras().getInt("treatmentId");
+        plots = getIntent().getExtras().getString("plots");
+        treatmentId = getIntent().getExtras().getInt("taskId");
         inputTitle = getIntent().getExtras().getString("title");
+        shortTitle = getIntent().getExtras().getString("shortTitle");
         update = getIntent().getExtras().getString("update");
 
         TextView tt = (TextView)findViewById(R.id.treatmentInputTitle);
@@ -95,13 +99,16 @@ public class enterTreatmentInput extends AppCompatActivity {
     public void onBackPressed(){
         final Context context = this;
         if(update.equals("")) {
-            Intent i = new Intent(context, inputChooser.class);
+            Intent i = new Intent(context, chooseFieldPlot.class);
             i.putExtra("userId", userId);
             i.putExtra("userRole", userRole);
             i.putExtra("task", task);
+            i.putExtra("treatmentId", treatmentId);
+            i.putExtra("cropId", -1);
             i.putExtra("field", fieldId);
-            i.putExtra("plot", plotN);
+            i.putExtra("plots", plots);
             i.putExtra("newTreatmentInput", false);
+            i.putExtra("title", shortTitle);
             startActivity(i);
             finish();
         } else {
@@ -206,14 +213,16 @@ public class enterTreatmentInput extends AppCompatActivity {
                 }
 
                 if (update.equals("")) {
-                    Intent i = new Intent(this, inputChooser.class);
+                    Intent i = new Intent(this, chooseFieldPlot.class);
                     i.putExtra("userId", userId);
                     i.putExtra("userRole", userRole);
                     i.putExtra("task", task);
                     i.putExtra("field", fieldId);
-                    i.putExtra("plot", plotN);
+                    i.putExtra("plots", plots);
+                    i.putExtra("title", shortTitle);
                     i.putExtra("newTreatmentInput", true);
-                    i.putExtra("treatment", treatmentId);
+                    i.putExtra("treatmentId", treatmentId);
+                    i.putExtra("cropId",-1);
                     i.putExtra("treatmentInputDate", dateToString(treatmentInputDate));
                     i.putExtra("treatmentInputMaterial", materialText);
                     i.putExtra("treatmentInputQuantity", quantityNumber);

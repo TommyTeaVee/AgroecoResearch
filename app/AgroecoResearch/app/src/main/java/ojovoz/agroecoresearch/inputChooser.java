@@ -76,6 +76,7 @@ public class inputChooser extends AppCompatActivity {
 
         setTitle("Register input");
 
+        /*
         if(getIntent().getExtras().getBoolean("newCropInput")){
             agroHelper.addCropToInputLog(fieldId, plotN, userId, getIntent().getExtras().getInt("crop"),
                     getIntent().getExtras().getString("cropInputDate"), getIntent().getExtras().getInt("cropInputAge"),
@@ -87,6 +88,7 @@ public class inputChooser extends AppCompatActivity {
                     getIntent().getExtras().getFloat("treatmentInputQuantity"), getIntent().getExtras().getString("treatmentInputMethod"),
                     getIntent().getExtras().getFloat("treatmentInputCost"), getIntent().getExtras().getString("treatmentInputComments"));
         }
+        */
 
         fillTable();
     }

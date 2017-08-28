@@ -771,13 +771,13 @@ public class agroecoHelper {
         writeLog();
     }
 
-    public void addCropToInputLog(int fieldId, int plotN, int userId, int cropId, String date, int age, String origin, float quantity, float cost, String comments){
-        updateCropInputDaysAgo(cropId, plotN, fieldId, date);
+    public void addCropToInputLog(int fieldId, String plots, int userId, int cropId, String date, int age, String origin, float quantity, float cost, String comments){
+        //updateCropInputDaysAgo(cropId, plotN, fieldId, date);
         createInputLog();
         oInputLog newEntry = new oInputLog();
         newEntry.inputLogId = getNewInputLogId();
         newEntry.inputLogFieldId = fieldId;
-        newEntry.inputLogPlotNumber = plotN;
+        newEntry.inputLogPlots = plots;
         newEntry.inputLogUserId = userId;
         newEntry.inputLogCropId = cropId;
         newEntry.inputLogDate = stringToDate(date);
@@ -791,13 +791,13 @@ public class agroecoHelper {
         writeInputLog();
     }
 
-    public void addTreatmentToInputLog(int fieldId, int plotN, int userId, int treatmentId, String date, String material, float quantity, String method, float cost, String comments){
-        updateTreatmentInputDaysAgo(treatmentId, plotN, fieldId, date);
+    public void addTreatmentToInputLog(int fieldId, String plots, int userId, int treatmentId, String date, String material, float quantity, String method, float cost, String comments){
+        //updateTreatmentInputDaysAgo(treatmentId, plotN, fieldId, date);
         createInputLog();
         oInputLog newEntry = new oInputLog();
         newEntry.inputLogId = getNewInputLogId();
         newEntry.inputLogFieldId = fieldId;
-        newEntry.inputLogPlotNumber = plotN;
+        newEntry.inputLogPlots = plots;
         newEntry.inputLogUserId = userId;
         newEntry.inputLogTreatmentId = treatmentId;
         newEntry.inputLogDate = stringToDate(date);
@@ -1572,6 +1572,38 @@ public class agroecoHelper {
                 return c1.cropName.compareTo(c2.cropName);
             }
         });
+        return ret;
+    }
+
+    public String getPlotNames(oField f, String p){
+        String ret="";
+        String[] plots = p.split(",");
+        for(int i=0;i<plots.length;i++){
+            String cropString="";
+            String treatmentString="";
+            String plotString;
+            oPlot plot = f.plots.get(Integer.valueOf(plots[i]));
+            cropString = plot.primaryCrop.cropSymbol;
+            if(plot.hasPestControl){
+                treatmentString="P";
+            }
+            if(plot.hasSoilManagement){
+                treatmentString+="S";
+            }
+            if(plot.intercroppingCrop!=null){
+                treatmentString+="L";
+            }
+            if(!treatmentString.isEmpty()){
+                plotString=cropString+"-"+treatmentString;
+            } else {
+                plotString=cropString;
+            }
+            if(ret.isEmpty()){
+                ret=plotString;
+            } else {
+                ret=ret+", "+plotString;
+            }
+        }
         return ret;
     }
 

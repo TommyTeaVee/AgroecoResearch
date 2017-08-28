@@ -58,6 +58,7 @@ public class chooseFieldPlot extends AppCompatActivity {
         userId = getIntent().getExtras().getInt("userId");
         userRole = getIntent().getExtras().getInt("userRole");
         task = getIntent().getExtras().getString("task");
+        String plots = getIntent().getExtras().getString("plots");
         if(task.equals("measurement")){
             measurementCategory = getIntent().getExtras().getString("measurementCategory");
             taskId = getIntent().getExtras().getInt("measurement");
@@ -83,6 +84,18 @@ public class chooseFieldPlot extends AppCompatActivity {
 
         agroHelper = new agroecoHelper(this,"crops,fields,treatments,activities,measurements");
         fields = agroHelper.fields;
+
+        if(getIntent().getExtras().getBoolean("newCropInput")){
+            agroHelper.addCropToInputLog(fieldId, plots, userId, getIntent().getExtras().getInt("cropId"),
+                    getIntent().getExtras().getString("cropInputDate"), getIntent().getExtras().getInt("cropInputAge"),
+                    getIntent().getExtras().getString("cropInputOrigin"), getIntent().getExtras().getFloat("cropInputQuantity"),
+                    getIntent().getExtras().getFloat("cropInputCost"), getIntent().getExtras().getString("cropInputComments"));
+        } else if(getIntent().getExtras().getBoolean("newTreatmentInput")){
+            agroHelper.addTreatmentToInputLog(fieldId, plots, userId, getIntent().getExtras().getInt("treatmentId"),
+                    getIntent().getExtras().getString("treatmentInputDate"), getIntent().getExtras().getString("treatmentInputMaterial"),
+                    getIntent().getExtras().getFloat("treatmentInputQuantity"), getIntent().getExtras().getString("treatmentInputMethod"),
+                    getIntent().getExtras().getFloat("treatmentInputCost"), getIntent().getExtras().getString("treatmentInputComments"));
+        }
 
 
         ArrayList<CharSequence> tf = new ArrayList<>();
@@ -337,6 +350,8 @@ public class chooseFieldPlot extends AppCompatActivity {
             String msg=this.getResources().getString(R.string.chosenXNotApplicable);
             msg=msg.replaceAll("x",task);
             Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+            Button enterData = (Button) findViewById(R.id.enterDataButton);
+            enterData.setVisibility(View.GONE);
         }
     }
 
@@ -395,9 +410,52 @@ public class chooseFieldPlot extends AppCompatActivity {
     }
 
     public void enterData(View v){
-        /*
         final Context context = this;
+        Intent i;
 
+        String plots="";
+        // gather chosen plots
+        int n=0;
+        Iterator<oPlotHelper> iterator = plotsInGrid.iterator();
+        while (iterator.hasNext()) {
+            oPlotHelper ph = iterator.next();
+            if(ph.state){
+                if(plots.isEmpty()){
+                    plots=Integer.toString(n);
+                } else {
+                    plots=plots+","+Integer.toString(n);
+                }
+            }
+            n++;
+        }
+        if(plots.isEmpty()){
+            Toast.makeText(this, R.string.noPlotsChosen, Toast.LENGTH_SHORT).show();
+        } else {
+            if(task.equals("input")){
+                if(subTask.equals("crop")){
+                    i = new Intent(context, enterCropInput.class);
+                } else {
+                    i = new Intent(context, enterTreatmentInput.class);
+                }
+
+                String longTitle = itemTitle+". Plots: "+agroHelper.getPlotNames(field,plots);
+
+                i.putExtra("userId", userId);
+                i.putExtra("userRole", userRole);
+                i.putExtra("task", task);
+                i.putExtra("subTask", subTask);
+                i.putExtra("title", longTitle);
+                i.putExtra("shortTitle",itemTitle);
+                i.putExtra("taskId", taskId);
+                i.putExtra("field", field.fieldId);
+                i.putExtra("plots", plots);
+                i.putExtra("update", "");
+
+                startActivity(i);
+                finish();
+            }
+        }
+        /*
         if(task.equals("activity") || task.equals("measurement")) {
             Intent i = new Intent(context, chooser.class);
             i.putExtra("userId", userId);
@@ -408,17 +466,7 @@ public class chooseFieldPlot extends AppCompatActivity {
 
             startActivity(i);
             finish();
-        } else if(task.equals("input")){
-            Intent i = new Intent(context, inputChooser.class);
-            i.putExtra("userId", userId);
-            i.putExtra("userRole", userRole);
-            i.putExtra("task", task);
-            i.putExtra("field", field.fieldId);
-            i.putExtra("plot", -1);
-
-            startActivity(i);
-            finish();
-        }
+        } else
         */
     }
 }

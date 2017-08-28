@@ -27,11 +27,13 @@ public class enterCropInput extends AppCompatActivity {
     public int userId;
     public int userRole;
     public String task;
+    public String subTask;
     public int inputLogId;
     public int fieldId;
-    public int plotN;
+    public String plots;
     public int cropId;
     public String inputTitle;
+    public String shortTitle;
     public String update;
 
     public Date cropInputDate;
@@ -44,10 +46,12 @@ public class enterCropInput extends AppCompatActivity {
         userId = getIntent().getExtras().getInt("userId");
         userRole = getIntent().getExtras().getInt("userRole");
         task = getIntent().getExtras().getString("task");
+        subTask = getIntent().getExtras().getString("subTask");
         fieldId = getIntent().getExtras().getInt("field");
-        plotN = getIntent().getExtras().getInt("plot");
-        cropId = getIntent().getExtras().getInt("cropId");
+        plots = getIntent().getExtras().getString("plots");
+        cropId = getIntent().getExtras().getInt("taskId");
         inputTitle = getIntent().getExtras().getString("title");
+        shortTitle = getIntent().getExtras().getString("shortTitle");
         update = getIntent().getExtras().getString("update");
 
         TextView tt = (TextView)findViewById(R.id.cropInputTitle);
@@ -95,13 +99,16 @@ public class enterCropInput extends AppCompatActivity {
     public void onBackPressed(){
         final Context context = this;
         if(update.equals("")) {
-            Intent i = new Intent(context, inputChooser.class);
+            Intent i = new Intent(context, chooseFieldPlot.class);
             i.putExtra("userId", userId);
             i.putExtra("userRole", userRole);
             i.putExtra("task", task);
+            i.putExtra("cropId", cropId);
+            i.putExtra("treatmentId", -1);
             i.putExtra("field", fieldId);
-            i.putExtra("plot", plotN);
+            i.putExtra("plots", plots);
             i.putExtra("newCropInput", false);
+            i.putExtra("title",shortTitle);
             startActivity(i);
             finish();
         } else {
@@ -207,14 +214,16 @@ public class enterCropInput extends AppCompatActivity {
                     }
 
                     if (update.equals("")) {
-                        Intent i = new Intent(this, inputChooser.class);
+                        Intent i = new Intent(this, chooseFieldPlot.class);
                         i.putExtra("userId", userId);
                         i.putExtra("userRole", userRole);
                         i.putExtra("task", task);
+                        i.putExtra("title", shortTitle);
                         i.putExtra("field", fieldId);
-                        i.putExtra("plot", plotN);
+                        i.putExtra("plots", plots);
                         i.putExtra("newCropInput", true);
-                        i.putExtra("crop", cropId);
+                        i.putExtra("cropId", cropId);
+                        i.putExtra("treatmentId", -1);
                         i.putExtra("cropInputDate", dateToString(cropInputDate));
                         i.putExtra("cropInputAge", ageNumber);
                         i.putExtra("cropInputOrigin", originText);
