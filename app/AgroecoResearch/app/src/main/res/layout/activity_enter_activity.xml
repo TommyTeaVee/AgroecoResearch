@@ -104,10 +104,56 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@string/enterLaborersText"
+            android:textColor="@color/colorPrimary"
+            android:id="@+id/enterLaborersText"
+            android:layout_marginTop="20dp"
+            android:layout_below="@+id/activityUnits"
+            android:layout_alignParentStart="true"
+            android:layout_alignEnd="@+id/activityValue"
+            android:textSize="20dp" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/activityLaborers"
+            android:layout_below="@+id/enterLaborersText"
+            android:inputType="number"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="20dp"
+            android:layout_alignEnd="@+id/enterUnitsText"
+            android:singleLine="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/enterActivityCostText"
+            android:textColor="@color/colorPrimary"
+            android:id="@+id/enterCostText"
+            android:layout_below="@+id/activityLaborers"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="20dp"
+            android:layout_alignEnd="@+id/activityUnits"
+            android:textSize="20dp" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/activityCost"
+            android:layout_below="@+id/enterCostText"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="20dp"
+            android:layout_alignEnd="@+id/enterCommentsText"
+            android:singleLine="true"
+            android:inputType="numberDecimal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="@string/enterCommentsText"
             android:textColor="@color/colorPrimary"
             android:id="@+id/enterCommentsText"
-            android:layout_below="@+id/activityUnits"
+            android:layout_below="@+id/activityCost"
             android:layout_alignParentStart="true"
             android:layout_marginTop="20dp"
             android:layout_alignEnd="@+id/activityUnits"
@@ -121,7 +167,8 @@
             android:layout_alignParentStart="true"
             android:layout_marginTop="20dp"
             android:layout_alignEnd="@+id/enterCommentsText"
-            android:singleLine="false" />
+            android:singleLine="true"
+            android:imeOptions="actionDone" />
 
         <Button
             android:layout_width="wrap_content"

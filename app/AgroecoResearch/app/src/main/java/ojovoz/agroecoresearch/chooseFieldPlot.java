@@ -76,7 +76,9 @@ public class chooseFieldPlot extends AppCompatActivity {
         itemTitle = getIntent().getExtras().getString("title");
         int fieldId = getIntent().getExtras().getInt("field");
         if(!(fieldId>=0)){
-            fieldId = Integer.parseInt(prefs.getPreference("field"));
+            if(!prefs.getPreference("field").isEmpty()) {
+                fieldId = Integer.parseInt(prefs.getPreference("field"));
+            }
         }
 
         CharSequence title = getTitle() + ": " + itemTitle;
@@ -95,6 +97,11 @@ public class chooseFieldPlot extends AppCompatActivity {
                     getIntent().getExtras().getString("treatmentInputDate"), getIntent().getExtras().getString("treatmentInputMaterial"),
                     getIntent().getExtras().getFloat("treatmentInputQuantity"), getIntent().getExtras().getString("treatmentInputMethod"),
                     getIntent().getExtras().getFloat("treatmentInputCost"), getIntent().getExtras().getString("treatmentInputComments"));
+        } else if(getIntent().getExtras().getBoolean("newActivity")){
+            agroHelper.addActivityToLog(fieldId, plots, userId, getIntent().getExtras().getInt("activity"),
+                    getIntent().getExtras().getString("activityDate"), getIntent().getExtras().getFloat("activityValue"),
+                    getIntent().getExtras().getString("activityUnits"), getIntent().getExtras().getInt("activityLaborers"),
+                    getIntent().getExtras().getFloat("activityCost"), getIntent().getExtras().getString("activityComments"));
         }
 
 
@@ -382,31 +389,6 @@ public class chooseFieldPlot extends AppCompatActivity {
 
         b.setBackground(d);
 
-        /*
-        final Context context = this;
-
-        if(task.equals("activity") || task.equals("measurement")) {
-            Intent i = new Intent(context, chooser.class);
-            i.putExtra("userId", userId);
-            i.putExtra("userRole", userRole);
-            i.putExtra("task", task);
-            i.putExtra("field", field.fieldId);
-            i.putExtra("plot", n);
-
-            startActivity(i);
-            finish();
-        } else if(task.equals("input")){
-            Intent i = new Intent(context, inputChooser.class);
-            i.putExtra("userId", userId);
-            i.putExtra("userRole", userRole);
-            i.putExtra("task", task);
-            i.putExtra("field", field.fieldId);
-            i.putExtra("plot", n);
-
-            startActivity(i);
-            finish();
-        }
-        */
     }
 
     public void enterData(View v){
@@ -438,7 +420,7 @@ public class chooseFieldPlot extends AppCompatActivity {
                     i = new Intent(context, enterTreatmentInput.class);
                 }
 
-                String longTitle = itemTitle+". Plots: "+agroHelper.getPlotNames(field,plots);
+                String longTitle = itemTitle+" - "+agroHelper.getFieldNameFromId(field.fieldId)+"\nPlots: "+agroHelper.getPlotNames(field,plots);
 
                 i.putExtra("userId", userId);
                 i.putExtra("userRole", userRole);
@@ -453,20 +435,27 @@ public class chooseFieldPlot extends AppCompatActivity {
 
                 startActivity(i);
                 finish();
+
+            } else if(task.equals("activity")){
+
+                String longTitle = itemTitle+" - "+agroHelper.getFieldNameFromId(field.fieldId)+"\nPlots: "+agroHelper.getPlotNames(field,plots);
+                i = new Intent(context, enterActivity.class);
+
+                i.putExtra("userId", userId);
+                i.putExtra("userRole", userRole);
+                i.putExtra("task", task);
+                i.putExtra("title", longTitle);
+                i.putExtra("shortTitle",itemTitle);
+                i.putExtra("activity", taskId);
+                i.putExtra("units",agroHelper.getActivityMeasurementUnitsFromId(taskId));
+                i.putExtra("field", field.fieldId);
+                i.putExtra("plots", plots);
+                i.putExtra("update", "");
+
+                startActivity(i);
+                finish();
+
             }
         }
-        /*
-        if(task.equals("activity") || task.equals("measurement")) {
-            Intent i = new Intent(context, chooser.class);
-            i.putExtra("userId", userId);
-            i.putExtra("userRole", userRole);
-            i.putExtra("task", task);
-            i.putExtra("field", field.fieldId);
-            i.putExtra("plot", -1);
-
-            startActivity(i);
-            finish();
-        } else
-        */
     }
 }

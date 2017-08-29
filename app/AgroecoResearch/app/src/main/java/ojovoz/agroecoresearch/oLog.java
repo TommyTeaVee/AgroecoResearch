@@ -9,6 +9,7 @@ public class oLog {
     public int logId;
     public int logFieldId;
     public int logPlotNumber;
+    public String logPlots;
     public int logUserId;
     public int logCropId;
     public int logSampleNumber;
@@ -19,7 +20,7 @@ public class oLog {
     public float logNumberValue;
     public String logValueUnits="";
     public String logTextValue="";
-    public int loglabourTime;
+    public int logLaborers;
     public float logCost;
     public String logComments="";
 

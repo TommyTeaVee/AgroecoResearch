@@ -29,9 +29,10 @@ public class enterActivity extends AppCompatActivity {
     public String task;
     public int logId;
     public int fieldId;
-    public int plotN;
+    public String plots;
     public int activityId;
     public String activityTitle;
+    public String shortTitle;
     public String activityMeasurementUnits;
 
     public Date activityDate;
@@ -47,9 +48,10 @@ public class enterActivity extends AppCompatActivity {
         userRole = getIntent().getExtras().getInt("userRole");
         task = getIntent().getExtras().getString("task");
         fieldId = getIntent().getExtras().getInt("field");
-        plotN = getIntent().getExtras().getInt("plot");
+        plots = getIntent().getExtras().getString("plots");
         activityId = getIntent().getExtras().getInt("activity");
         activityTitle = getIntent().getExtras().getString("title");
+        shortTitle = getIntent().getExtras().getString("shortTitle");
         activityMeasurementUnits = getIntent().getExtras().getString("units");
         update = getIntent().getExtras().getString("update");
 
@@ -91,13 +93,15 @@ public class enterActivity extends AppCompatActivity {
     @Override public void onBackPressed(){
         final Context context = this;
         if(update.equals("")) {
-            Intent i = new Intent(context, chooser.class);
+            Intent i = new Intent(context, chooseFieldPlot.class);
             i.putExtra("userId", userId);
             i.putExtra("userRole", userRole);
             i.putExtra("task", task);
             i.putExtra("field", fieldId);
-            i.putExtra("plot", plotN);
+            i.putExtra("plots", plots);
             i.putExtra("newActivity", false);
+            i.putExtra("activity",activityId);
+            i.putExtra("title",shortTitle);
             startActivity(i);
             finish();
         } else {
@@ -182,43 +186,68 @@ public class enterActivity extends AppCompatActivity {
                 unitsText = unitsText.replaceAll("\\|"," ");
             }
 
-            EditText comments = (EditText)findViewById(R.id.activityComments);
-            String commentsText = String.valueOf(comments.getText());
+            EditText laborers = (EditText)findViewById(R.id.activityLaborers);
+            String laborersText = String.valueOf(laborers.getText());
+            if(isNumeric(laborersText)) {
+                int laborersNumber = Integer.parseInt(laborersText);
 
-            if(!commentsText.isEmpty()){
-                commentsText = commentsText.replaceAll(";"," ");
-                commentsText = commentsText.replaceAll("\\|"," ");
-            }
+                EditText cost = (EditText)findViewById(R.id.activityCost);
+                String costText = String.valueOf(cost.getText());
 
-            if(update.equals("")) {
-                Intent i = new Intent(this, chooser.class);
-                i.putExtra("userId", userId);
-                i.putExtra("userRole", userRole);
-                i.putExtra("task", task);
-                i.putExtra("field", fieldId);
-                i.putExtra("plot", plotN);
-                i.putExtra("newActivity", true);
-                i.putExtra("activity", activityId);
-                i.putExtra("activityDate", dateToString(activityDate));
-                i.putExtra("activityValue", valueNumber);
-                i.putExtra("activityUnits", unitsText);
-                i.putExtra("activityComments", commentsText);
-                startActivity(i);
-                finish();
+                if(isNumeric(costText)) {
+                    float costValue = Float.parseFloat(costText);
+
+                    EditText comments = (EditText) findViewById(R.id.activityComments);
+                    String commentsText = String.valueOf(comments.getText());
+
+                    if (!commentsText.isEmpty()) {
+                        commentsText = commentsText.replaceAll(";", " ");
+                        commentsText = commentsText.replaceAll("\\|", " ");
+                    }
+
+                    if (update.equals("")) {
+                        Intent i = new Intent(this, chooseFieldPlot.class);
+                        i.putExtra("userId", userId);
+                        i.putExtra("userRole", userRole);
+                        i.putExtra("task", task);
+                        i.putExtra("title", shortTitle);
+                        i.putExtra("field", fieldId);
+                        i.putExtra("plots", plots);
+                        i.putExtra("newActivity", true);
+                        i.putExtra("activity", activityId);
+                        i.putExtra("activityDate", dateToString(activityDate));
+                        i.putExtra("activityValue", valueNumber);
+                        i.putExtra("activityUnits", unitsText);
+                        i.putExtra("activityLaborers", laborersNumber);
+                        i.putExtra("activityCost", costValue);
+                        i.putExtra("activityComments", commentsText);
+                        startActivity(i);
+                        finish();
+                    } else {
+                        Intent i = new Intent(this, manageData.class);
+                        i.putExtra("userId", userId);
+                        i.putExtra("userRole", userRole);
+                        i.putExtra("task", task);
+                        i.putExtra("logId", logId);
+                        i.putExtra("update", "activity");
+                        i.putExtra("activity", activityId);
+                        i.putExtra("activityDate", dateToString(activityDate));
+                        i.putExtra("activityValue", valueNumber);
+                        i.putExtra("activityUnits", unitsText);
+                        i.putExtra("activityLaborers", laborersNumber);
+                        i.putExtra("activityCost", costValue);
+                        i.putExtra("activityComments", commentsText);
+                        startActivity(i);
+                        finish();
+                    }
+                } else {
+                    Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
+                    cost.requestFocus();
+
+                }
             } else {
-                Intent i = new Intent(this, manageData.class);
-                i.putExtra("userId", userId);
-                i.putExtra("userRole", userRole);
-                i.putExtra("task", task);
-                i.putExtra("logId",logId);
-                i.putExtra("update", "activity");
-                i.putExtra("activity", activityId);
-                i.putExtra("activityDate", dateToString(activityDate));
-                i.putExtra("activityValue", valueNumber);
-                i.putExtra("activityUnits", unitsText);
-                i.putExtra("activityComments", commentsText);
-                startActivity(i);
-                finish();
+                Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
+                laborers.requestFocus();
             }
         } else {
             Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();

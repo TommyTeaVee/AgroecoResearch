@@ -94,4 +94,6 @@
     <string name="chooseMeasurementTitle">Choose measurement</string>
     <string name="chosenXNotApplicable">Chosen x is not applicable to this field</string>
     <string name="noPlotsChosen">Please choose at least one plot</string>
+    <string name="enterLaborersText">Number of laborers</string>
+    <string name="enterActivityCostText">Cost (local currency)</string>
 </resources>
