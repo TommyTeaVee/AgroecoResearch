@@ -31,23 +31,6 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/enterSampleNumberText"
-            android:textColor="@color/colorPrimary"
-            android:id="@+id/enterSampleNumberText"
-            android:layout_marginTop="20dp"
-            android:textSize="20dp" />
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/sampleNumber"
-            android:inputType="number"
-            android:layout_marginTop="20dp"
-            android:singleLine="true" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:text="@string/enterDateText"
             android:textColor="@color/colorPrimary"
             android:id="@+id/enterDateText"
@@ -62,6 +45,44 @@
             android:layout_marginTop="20dp"
             android:textSize="20dp"
             android:height="40dp"
+            android:background="@drawable/button_background"
+            android:textColor="@color/colorWhite" />
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:id="@+id/samples">
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/samplesTitle"
+                    android:id="@+id/samplesTableTitle"
+                    android:background="@color/colorPrimary"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="20dp"
+                    android:layout_weight="1"
+                    android:paddingLeft="3dp"/>
+            </TableRow>
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="100dp">
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:shrinkColumns="1,2"
+                    android:id="@+id/samplesTable">
+                </TableLayout>
+            </ScrollView>
+        </TableLayout>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/addSampleText"
+            android:id="@+id/addSample"
+            android:textSize="20dp"
             android:background="@drawable/button_background"
             android:textColor="@color/colorWhite" />
 

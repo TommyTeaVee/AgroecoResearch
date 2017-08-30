@@ -46,7 +46,7 @@ public class measurementChooser extends AppCompatActivity {
         userId = getIntent().getExtras().getInt("userId");
         userRole = getIntent().getExtras().getInt("userRole");
 
-        String measurementCategory=getIntent().getExtras().getString("measurementCategory");
+        String measurementCategory=getIntent().getExtras().getString("measurementChosenCategory");
 
         TableLayout tl = (TableLayout) findViewById(R.id.measurementTable);
         tl.setVisibility(View.INVISIBLE);
@@ -195,7 +195,7 @@ public class measurementChooser extends AppCompatActivity {
         i.putExtra("field", -1);
         i.putExtra("measurement", measurementIds[id]);
         i.putExtra("title",agroHelper.getMeasurementNameFromId(measurementIds[id])+" ("+agroHelper.getMeasurementCategoryFromId(measurementIds[id])+")");
-        i.putExtra("measurementCategory",chosenCategory);
+        i.putExtra("measurementChosenCategory",chosenCategory);
         startActivity(i);
         finish();
     }

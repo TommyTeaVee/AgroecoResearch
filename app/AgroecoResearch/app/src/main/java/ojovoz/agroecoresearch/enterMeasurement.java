@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListAdapter;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,9 +35,12 @@ public class enterMeasurement extends AppCompatActivity {
     public String task;
     public int logId;
     public int fieldId;
-    public int plotN;
+    public String plots;
     public int measurementId;
+    public boolean hasSamples;
     public String measurementTitle;
+    public String shortTitle;
+    public String measurementChosenCategory;
     public String measurementUnits;
     public int type;
     public float min;
@@ -58,9 +62,12 @@ public class enterMeasurement extends AppCompatActivity {
         userRole = getIntent().getExtras().getInt("userRole");
         task = getIntent().getExtras().getString("task");
         fieldId = getIntent().getExtras().getInt("field");
-        plotN = getIntent().getExtras().getInt("plot");
+        plots = getIntent().getExtras().getString("plots");
         measurementId = getIntent().getExtras().getInt("measurement");
+        hasSamples = getIntent().getExtras().getBoolean("hasSamples");
         measurementTitle = getIntent().getExtras().getString("title");
+        shortTitle = getIntent().getExtras().getString("shortTitle");
+        measurementChosenCategory = getIntent().getExtras().getString("measurementChosenCategory");
         measurementUnits = getIntent().getExtras().getString("units");
         type = getIntent().getExtras().getInt("type");
         min = getIntent().getExtras().getFloat("min");
@@ -82,52 +89,68 @@ public class enterMeasurement extends AppCompatActivity {
         EditText tOther = (EditText)findViewById(R.id.measurementOtherTextValue);
         tOther.setVisibility(View.GONE);
 
-        if(type==1 && !measurementUnits.equals("date")){
-            Button cb = (Button)findViewById(R.id.measurementCategory);
-            cb.setVisibility(View.GONE);
-            EditText et = (EditText)findViewById(R.id.measurementUnits);
-            et.setText(measurementUnits);
-        } else if(type==0 && !measurementUnits.equals("date")){
-            TextView vt = (TextView)findViewById(R.id.enterValueText);
+        if(hasSamples){
+            TextView vt = (TextView) findViewById(R.id.enterValueText);
             vt.setVisibility(View.GONE);
-            EditText ve = (EditText)findViewById(R.id.measurementValue);
+            EditText ve = (EditText) findViewById(R.id.measurementValue);
             ve.setVisibility(View.GONE);
-            TextView ut = (TextView)findViewById(R.id.enterUnitsText);
+            TextView ut = (TextView) findViewById(R.id.enterUnitsText);
             ut.setVisibility(View.GONE);
-            EditText ue = (EditText)findViewById(R.id.measurementUnits);
+            EditText ue = (EditText) findViewById(R.id.measurementUnits);
             ue.setVisibility(View.GONE);
+            Button cb = (Button) findViewById(R.id.measurementCategory);
+            cb.setVisibility(View.GONE);
+        } else {
+            TableLayout tl = (TableLayout)findViewById(R.id.samples);
+            tl.setVisibility(View.GONE);
 
-            Button cb = (Button)findViewById(R.id.measurementCategory);
-            cb.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    switch (v.getId()) {
-                        case R.id.measurementCategory:
-                            showMeasurementCategories();
-                            break;
-                        default:
-                            break;
+            Button b = (Button)findViewById(R.id.addSample);
+            b.setVisibility(View.GONE);
+
+            if (type == 1 && !measurementUnits.equals("date")) {
+                Button cb = (Button) findViewById(R.id.measurementCategory);
+                cb.setVisibility(View.GONE);
+                EditText et = (EditText) findViewById(R.id.measurementUnits);
+                et.setText(measurementUnits);
+            } else if (type == 0 && !measurementUnits.equals("date")) {
+                TextView vt = (TextView) findViewById(R.id.enterValueText);
+                vt.setVisibility(View.GONE);
+                EditText ve = (EditText) findViewById(R.id.measurementValue);
+                ve.setVisibility(View.GONE);
+                TextView ut = (TextView) findViewById(R.id.enterUnitsText);
+                ut.setVisibility(View.GONE);
+                EditText ue = (EditText) findViewById(R.id.measurementUnits);
+                ue.setVisibility(View.GONE);
+
+                Button cb = (Button) findViewById(R.id.measurementCategory);
+                cb.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        switch (v.getId()) {
+                            case R.id.measurementCategory:
+                                showMeasurementCategories();
+                                break;
+                            default:
+                                break;
+                        }
                     }
-                }
-            });
-        } else if(measurementUnits.equals("date")){
-            Button cb = (Button)findViewById(R.id.measurementCategory);
-            cb.setVisibility(View.GONE);
-            TextView vt = (TextView)findViewById(R.id.enterValueText);
-            vt.setVisibility(View.GONE);
-            EditText ve = (EditText)findViewById(R.id.measurementValue);
-            ve.setVisibility(View.GONE);
-            TextView ut = (TextView)findViewById(R.id.enterUnitsText);
-            ut.setVisibility(View.GONE);
-            EditText ue = (EditText)findViewById(R.id.measurementUnits);
-            ue.setVisibility(View.GONE);
+                });
+            } else if (measurementUnits.equals("date")) {
+                Button cb = (Button) findViewById(R.id.measurementCategory);
+                cb.setVisibility(View.GONE);
+                TextView vt = (TextView) findViewById(R.id.enterValueText);
+                vt.setVisibility(View.GONE);
+                EditText ve = (EditText) findViewById(R.id.measurementValue);
+                ve.setVisibility(View.GONE);
+                TextView ut = (TextView) findViewById(R.id.enterUnitsText);
+                ut.setVisibility(View.GONE);
+                EditText ue = (EditText) findViewById(R.id.measurementUnits);
+                ue.setVisibility(View.GONE);
+            }
         }
 
         if(update.equals("measurement")){
             logId = getIntent().getExtras().getInt("logId");
-
-            EditText se = (EditText)findViewById(R.id.sampleNumber);
-            se.setText(String.valueOf(getIntent().getExtras().getInt("sample")));
 
             if(type==1 && !measurementUnits.equals("date")){
                 EditText ve = (EditText)findViewById(R.id.measurementValue);
@@ -171,13 +194,16 @@ public class enterMeasurement extends AppCompatActivity {
     @Override public void onBackPressed(){
         final Context context = this;
         if(update.equals("")) {
-            Intent i = new Intent(context, chooser.class);
+            Intent i = new Intent(context, chooseFieldPlot.class);
             i.putExtra("userId", userId);
             i.putExtra("userRole", userRole);
             i.putExtra("task", task);
             i.putExtra("field", fieldId);
-            i.putExtra("plot", plotN);
+            i.putExtra("plots", plots);
             i.putExtra("newMeasurement", false);
+            i.putExtra("measurement",measurementId);
+            i.putExtra("title",shortTitle);
+            i.putExtra("measurementChosenCategory",measurementChosenCategory);
             startActivity(i);
             finish();
         } else {
@@ -282,100 +308,91 @@ public class enterMeasurement extends AppCompatActivity {
         return sdf.format(d);
     }
 
-    public void registerMeasurement(View v){
+    public void registerMeasurement(View v) {
         float valueNumber = 0.0f;
-        String units="";
-        int sampleN=0;
+        String units = "";
         boolean bProceed = true;
-        EditText sample = (EditText)findViewById(R.id.sampleNumber);
-        String sampleValue = String.valueOf(sample.getText());
-        if(isNumeric(sampleValue) || sampleValue.isEmpty()){
-            if(!sampleValue.isEmpty()){
-                sampleN = Integer.parseInt(sampleValue);
-            }
-            if(type==1 && !measurementUnits.equals("date")){
-                EditText value = (EditText)findViewById(R.id.measurementValue);
-                String valueText = String.valueOf(value.getText());
-                if(isNumeric(valueText)){
-                    valueNumber = Float.parseFloat(valueText);
-                    if(valueNumber<min || valueNumber>max){
-                        Toast.makeText(this, R.string.valueOutOfRangeText, Toast.LENGTH_SHORT).show();
-                        value.requestFocus();
-                        bProceed = false;
-                    } else {
-                        EditText unitsText = (EditText)findViewById(R.id.measurementUnits);
-                        units = String.valueOf(unitsText.getText());
-                        if(!units.isEmpty()){
-                            units = units.replaceAll(";"," ");
-                            units = units.replaceAll("\\|"," ");
-                        }
-                    }
-                } else {
-                    Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
+
+        if (type == 1 && !measurementUnits.equals("date")) {
+            EditText value = (EditText) findViewById(R.id.measurementValue);
+            String valueText = String.valueOf(value.getText());
+            if (isNumeric(valueText)) {
+                valueNumber = Float.parseFloat(valueText);
+                if (valueNumber < min || valueNumber > max) {
+                    Toast.makeText(this, R.string.valueOutOfRangeText, Toast.LENGTH_SHORT).show();
                     value.requestFocus();
-                    bProceed=false;
+                    bProceed = false;
+                } else {
+                    EditText unitsText = (EditText) findViewById(R.id.measurementUnits);
+                    units = String.valueOf(unitsText.getText());
+                    if (!units.isEmpty()) {
+                        units = units.replaceAll(";", " ");
+                        units = units.replaceAll("\\|", " ");
+                    }
                 }
-            } else if(type==0 && !measurementUnits.equals("date")){
-                if(measurementCategory.equals("")){
-                    Toast.makeText(this, R.string.enterValidCategoryText, Toast.LENGTH_SHORT).show();
-                    bProceed=false;
-                }
+            } else {
+                Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
+                value.requestFocus();
+                bProceed = false;
             }
-
-            if(measurementCategory.equals(getString(R.string.otherListTest))){
-                EditText tOther = (EditText)findViewById(R.id.measurementOtherTextValue);
-                measurementCategory = String.valueOf(tOther.getText());
-                if(!measurementCategory.isEmpty()){
-                    measurementCategory = measurementCategory.replaceAll(";"," ");
-                    measurementCategory = measurementCategory.replaceAll("\\|"," ");
-                }
+        } else if (type == 0 && !measurementUnits.equals("date")) {
+            if (measurementCategory.equals("")) {
+                Toast.makeText(this, R.string.enterValidCategoryText, Toast.LENGTH_SHORT).show();
+                bProceed = false;
             }
+        }
 
-            EditText comments = (EditText)findViewById(R.id.measurementComments);
-            String commentsText = String.valueOf(comments.getText());
-
-            if(!commentsText.isEmpty()){
-                commentsText = commentsText.replaceAll(";"," ");
-                commentsText = commentsText.replaceAll("\\|"," ");
+        if (measurementCategory.equals(getString(R.string.otherListTest))) {
+            EditText tOther = (EditText) findViewById(R.id.measurementOtherTextValue);
+            measurementCategory = String.valueOf(tOther.getText());
+            if (!measurementCategory.isEmpty()) {
+                measurementCategory = measurementCategory.replaceAll(";", " ");
+                measurementCategory = measurementCategory.replaceAll("\\|", " ");
             }
+        }
 
-            if(update.equals("") && bProceed) {
-                Intent i = new Intent(this, chooser.class);
-                i.putExtra("userId", userId);
-                i.putExtra("userRole", userRole);
-                i.putExtra("task", task);
-                i.putExtra("field", fieldId);
-                i.putExtra("plot", plotN);
-                i.putExtra("newMeasurement", true);
-                i.putExtra("measurement", measurementId);
-                i.putExtra("measurementSample",sampleN);
-                i.putExtra("measurementDate", dateToString(measurementDate));
-                i.putExtra("measurementValue", valueNumber);
-                i.putExtra("measurementUnits", units);
-                i.putExtra("measurementCategory", measurementCategory);
-                i.putExtra("measurementComments", commentsText);
-                startActivity(i);
-                finish();
-            } else if(bProceed){
-                Intent i = new Intent(this, manageData.class);
-                i.putExtra("userId", userId);
-                i.putExtra("userRole", userRole);
-                i.putExtra("task", task);
-                i.putExtra("logId",logId);
-                i.putExtra("update", "measurement");
-                i.putExtra("measurement", measurementId);
-                i.putExtra("measurementSample",sampleN);
-                i.putExtra("measurementDate", dateToString(measurementDate));
-                i.putExtra("measurementValue", valueNumber);
-                i.putExtra("measurementUnits", units);
-                i.putExtra("measurementCategory", measurementCategory);
-                i.putExtra("measurementComments", commentsText);
-                startActivity(i);
-                finish();
-            }
-        } else {
-            Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
-            sample.requestFocus();
+        EditText comments = (EditText) findViewById(R.id.measurementComments);
+        String commentsText = String.valueOf(comments.getText());
+
+        if (!commentsText.isEmpty()) {
+            commentsText = commentsText.replaceAll(";", " ");
+            commentsText = commentsText.replaceAll("\\|", " ");
+        }
+
+        if (update.equals("") && bProceed) {
+            Intent i = new Intent(this, chooseFieldPlot.class);
+            i.putExtra("userId", userId);
+            i.putExtra("userRole", userRole);
+            i.putExtra("task", task);
+            i.putExtra("title", shortTitle);
+            i.putExtra("measurementChosenCategory", measurementChosenCategory);
+            i.putExtra("field", fieldId);
+            i.putExtra("plots", plots);
+            i.putExtra("newMeasurement", true);
+            i.putExtra("measurement", measurementId);
+            i.putExtra("measurementDate", dateToString(measurementDate));
+            i.putExtra("measurementValue", valueNumber);
+            i.putExtra("measurementUnits", units);
+            i.putExtra("measurementCategory", measurementCategory);
+            i.putExtra("measurementComments", commentsText);
+            startActivity(i);
+            finish();
+        } else if (bProceed) {
+            Intent i = new Intent(this, manageData.class);
+            i.putExtra("userId", userId);
+            i.putExtra("userRole", userRole);
+            i.putExtra("task", task);
+            i.putExtra("logId", logId);
+            i.putExtra("update", "measurement");
+            i.putExtra("measurement", measurementId);
+            i.putExtra("measurementDate", dateToString(measurementDate));
+            i.putExtra("measurementValue", valueNumber);
+            i.putExtra("measurementUnits", units);
+            i.putExtra("measurementCategory", measurementCategory);
+            i.putExtra("measurementComments", commentsText);
+            startActivity(i);
+            finish();
         }
     }
+
 }
