@@ -100,4 +100,7 @@
     <string name="addSampleText">Add sample</string>
     <string name="valuesTitle">Value</string>
     <string name="chooseValueSampleTable">...</string>
+    <string name="enterSamplesText">Values</string>
+    <string name="sampleOutOfRange">Sample number x is out of range</string>
+    <string name="sampleNumberIsRepeated">Sample number x was entered more than once</string>
 </resources>
