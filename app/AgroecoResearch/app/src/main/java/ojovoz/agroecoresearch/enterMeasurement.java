@@ -6,23 +6,38 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListAdapter;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.TimeZone;
 
 /**
@@ -47,11 +62,19 @@ public class enterMeasurement extends AppCompatActivity {
     public float max;
     ArrayList<CharSequence> categories;
     CharSequence categoriesArray[];
-    public String measurementCategory="";
+    public String measurementCategory = "";
 
     public Date measurementDate;
 
     public String update;
+
+    public ArrayList<oSampleHelper> samples;
+    public int maxSampleNumber = 1;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,19 +100,19 @@ public class enterMeasurement extends AppCompatActivity {
 
         categories = new ArrayList<>();
         String[] categoriesParts = categoriesString.split(",");
-        for(int i=0; i<categoriesParts.length; i++){
+        for (int i = 0; i < categoriesParts.length; i++) {
             categories.add(categoriesParts[i]);
         }
         categories.add(getString(R.string.otherListTest));
-        categoriesArray=categories.toArray(new CharSequence[categories.size()]);
+        categoriesArray = categories.toArray(new CharSequence[categories.size()]);
 
-        TextView tt = (TextView)findViewById(R.id.fieldPlotText);
+        TextView tt = (TextView) findViewById(R.id.fieldPlotText);
         tt.setText(measurementTitle);
 
-        EditText tOther = (EditText)findViewById(R.id.measurementOtherTextValue);
+        EditText tOther = (EditText) findViewById(R.id.measurementOtherTextValue);
         tOther.setVisibility(View.GONE);
 
-        if(hasSamples){
+        if (hasSamples) {
             TextView vt = (TextView) findViewById(R.id.enterValueText);
             vt.setVisibility(View.GONE);
             EditText ve = (EditText) findViewById(R.id.measurementValue);
@@ -101,10 +124,10 @@ public class enterMeasurement extends AppCompatActivity {
             Button cb = (Button) findViewById(R.id.measurementCategory);
             cb.setVisibility(View.GONE);
         } else {
-            TableLayout tl = (TableLayout)findViewById(R.id.samples);
+            TableLayout tl = (TableLayout) findViewById(R.id.samples);
             tl.setVisibility(View.GONE);
 
-            Button b = (Button)findViewById(R.id.addSample);
+            Button b = (Button) findViewById(R.id.addSample);
             b.setVisibility(View.GONE);
 
             if (type == 1 && !measurementUnits.equals("date")) {
@@ -149,17 +172,17 @@ public class enterMeasurement extends AppCompatActivity {
             }
         }
 
-        if(update.equals("measurement")){
+        if (update.equals("measurement")) {
             logId = getIntent().getExtras().getInt("logId");
 
-            if(type==1 && !measurementUnits.equals("date")){
-                EditText ve = (EditText)findViewById(R.id.measurementValue);
+            if (type == 1 && !measurementUnits.equals("date")) {
+                EditText ve = (EditText) findViewById(R.id.measurementValue);
                 ve.setText(String.valueOf(getIntent().getExtras().getFloat("measurementValue")));
-            } else if (type==0 && !measurementUnits.equals("date")){
-                Button cb = (Button)findViewById(R.id.measurementCategory);
+            } else if (type == 0 && !measurementUnits.equals("date")) {
+                Button cb = (Button) findViewById(R.id.measurementCategory);
                 measurementCategory = getIntent().getExtras().getString("measurementCategory");
-                if(!categories.contains(measurementCategory)){
-                    EditText tOtherEdit = (EditText)findViewById(R.id.measurementOtherTextValue);
+                if (!categories.contains(measurementCategory)) {
+                    EditText tOtherEdit = (EditText) findViewById(R.id.measurementOtherTextValue);
                     tOtherEdit.setVisibility(View.VISIBLE);
                     tOtherEdit.setText(measurementCategory);
                     cb.setText(getString(R.string.otherButtonText));
@@ -168,32 +191,63 @@ public class enterMeasurement extends AppCompatActivity {
                 }
             }
 
-            Button db = (Button)findViewById(R.id.dateButton);
+            Button db = (Button) findViewById(R.id.dateButton);
             db.setText(getIntent().getExtras().getString("date"));
             measurementDate = stringToDate(getIntent().getExtras().getString("date"));
 
-            EditText mc = (EditText)findViewById(R.id.measurementComments);
+            EditText mc = (EditText) findViewById(R.id.measurementComments);
             mc.setText(getIntent().getExtras().getString("measurementComments"));
 
-            Button rb = (Button)findViewById(R.id.okButton);
+            Button rb = (Button) findViewById(R.id.okButton);
             rb.setText(R.string.editButtonText);
         } else {
             measurementDate = new Date();
+
+            if (hasSamples) {
+                initializeSampleTable();
+                Button as = (Button) findViewById(R.id.addSample);
+                as.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        addSample();
+                    }
+                });
+
+                TableLayout st = (TableLayout)findViewById(R.id.samplesTable);
+                st.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        findViewById(R.id.childScrollView).getParent().requestDisallowInterceptTouchEvent(true);
+                        return false;
+                    }
+                });
+
+                ScrollView svp = (ScrollView) findViewById(R.id.parentScrollView);
+                svp.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        findViewById(R.id.childScrollView).getParent().requestDisallowInterceptTouchEvent(false);
+                        return false;
+                    }
+                });
+
+            }
+
         }
 
-        Button cb = (Button)findViewById(R.id.dateButton);
+        Button cb = (Button) findViewById(R.id.dateButton);
         cb.setText(dateToString(measurementDate));
-        cb.setOnClickListener(new View.OnClickListener(){
+        cb.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 displayDatePicker();
             }
         });
     }
 
-    @Override public void onBackPressed(){
+    @Override public void onBackPressed () {
         final Context context = this;
-        if(update.equals("")) {
+        if (update.equals("")) {
             Intent i = new Intent(context, chooseFieldPlot.class);
             i.putExtra("userId", userId);
             i.putExtra("userRole", userRole);
@@ -201,22 +255,157 @@ public class enterMeasurement extends AppCompatActivity {
             i.putExtra("field", fieldId);
             i.putExtra("plots", plots);
             i.putExtra("newMeasurement", false);
-            i.putExtra("measurement",measurementId);
-            i.putExtra("title",shortTitle);
-            i.putExtra("measurementChosenCategory",measurementChosenCategory);
+            i.putExtra("measurement", measurementId);
+            i.putExtra("title", shortTitle);
+            i.putExtra("measurementChosenCategory", measurementChosenCategory);
             startActivity(i);
             finish();
         } else {
             Intent i = new Intent(context, manageData.class);
             i.putExtra("userId", userId);
             i.putExtra("userRole", userRole);
-            i.putExtra("update","");
+            i.putExtra("update", "");
             startActivity(i);
             finish();
         }
     }
 
-    public void showMeasurementCategories(){
+    public void initializeSampleTable() {
+
+        samples = new ArrayList<>();
+        oSampleHelper sh = new oSampleHelper();
+        sh.sampleNumber = maxSampleNumber;
+        sh.value = "";
+        samples.add(sh);
+
+        fillSampleTable();
+
+    }
+
+    public void fillSampleTable() {
+
+        int n = 0;
+        TableLayout samplesTable = (TableLayout) findViewById(R.id.samplesTable);
+        samplesTable.removeAllViews();
+        Iterator<oSampleHelper> iterator = samples.iterator();
+        while (iterator.hasNext()) {
+            oSampleHelper sh = iterator.next();
+
+            final TableRow trow = new TableRow(enterMeasurement.this);
+            TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f);
+            lp.setMargins(10, 10, 0, 10);
+            if (n % 2 == 0) {
+                trow.setBackgroundColor(ContextCompat.getColor(this, R.color.lightGray));
+            } else {
+                trow.setBackgroundColor(ContextCompat.getColor(this, R.color.colorWhite));
+            }
+
+            CheckBox cb = new CheckBox(enterMeasurement.this);
+            cb.setButtonDrawable(R.drawable.delete_checkbox);
+            cb.setId(n);
+            cb.setPadding(10, 10, 10, 10);
+            cb.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    findViewById(R.id.childScrollView).getParent().requestDisallowInterceptTouchEvent(true);
+                    return false;
+                }
+            });
+            trow.addView(cb, lp);
+
+            EditText sn = new EditText(enterMeasurement.this);
+            sn.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17f);
+            sn.setText(String.valueOf(sh.sampleNumber));
+            sn.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            sn.setInputType(InputType.TYPE_CLASS_NUMBER);
+            sn.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+            sn.setPadding(0, 10, 0, 10);
+            sn.setId(n);
+            sn.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean b) {
+                    if (!b) {
+                        updateSampleNumber(view);
+                    }
+                }
+            });
+            sn.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    findViewById(R.id.childScrollView).getParent().requestDisallowInterceptTouchEvent(true);
+                    return false;
+                }
+            });
+            trow.addView(sn, lp);
+
+            if (type == 0) {
+                //chooseValueSampleTable
+
+            } else {
+                EditText sv = new EditText(enterMeasurement.this);
+                sv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17f);
+                sv.setText(sh.value);
+                sv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                sv.setPadding(0, 10, 0, 10);
+                sv.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                sv.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                sv.setId(n);
+                sv.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View view, boolean b) {
+                        if (!b) {
+                            updateSampleValue(view);
+                        }
+                    }
+                });
+                sv.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        findViewById(R.id.childScrollView).getParent().requestDisallowInterceptTouchEvent(true);
+                        return false;
+                    }
+                });
+                trow.addView(sv, lp);
+            }
+
+            trow.setGravity(Gravity.CENTER_VERTICAL);
+            samplesTable.addView(trow, lp);
+            n++;
+        }
+    }
+
+    public void updateSampleValue(View view) {
+        EditText e = (EditText) view;
+        int id = e.getId();
+        String value = String.valueOf(e.getText());
+
+        oSampleHelper sh = samples.get(id);
+        sh.value = value;
+    }
+
+    public void updateSampleNumber(View view) {
+        EditText e = (EditText) view;
+        int id = e.getId();
+        int number = Integer.valueOf(String.valueOf(e.getText()));
+
+        oSampleHelper sh = samples.get(id);
+        sh.sampleNumber = number;
+    }
+
+    public void addSample() {
+        maxSampleNumber++;
+        oSampleHelper sh = new oSampleHelper();
+        sh.sampleNumber = maxSampleNumber;
+        sh.value = "";
+        samples.add(sh);
+
+        fillSampleTable();
+
+        final ScrollView sv = (ScrollView)findViewById(R.id.childScrollView);
+        sv.postDelayed(new Runnable() { @Override public void run() { sv.fullScroll(View.FOCUS_DOWN); } }, 500);
+    }
+
+    public void showMeasurementCategories() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setNegativeButton(R.string.cancelButtonText, new DialogInterface.OnClickListener() {
@@ -224,20 +413,20 @@ public class enterMeasurement extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
-        final ListAdapter adapter = new ArrayAdapter<>(this,R.layout.checked_list_template,categoriesArray);
-        builder.setSingleChoiceItems(adapter,-1,new DialogInterface.OnClickListener() {
+        final ListAdapter adapter = new ArrayAdapter<>(this, R.layout.checked_list_template, categoriesArray);
+        builder.setSingleChoiceItems(adapter, -1, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                if(i>=0) {
+                if (i >= 0) {
                     Button fieldListView = (Button) findViewById(R.id.measurementCategory);
-                    measurementCategory=(String)categoriesArray[i];
-                    if(measurementCategory.equals(getString(R.string.otherListTest))){
+                    measurementCategory = (String) categoriesArray[i];
+                    if (measurementCategory.equals(getString(R.string.otherListTest))) {
                         fieldListView.setText(R.string.otherButtonText);
-                        EditText tOther = (EditText)findViewById(R.id.measurementOtherTextValue);
+                        EditText tOther = (EditText) findViewById(R.id.measurementOtherTextValue);
                         tOther.setVisibility(View.VISIBLE);
                     } else {
                         fieldListView.setText(categoriesArray[i]);
-                        EditText tOther = (EditText)findViewById(R.id.measurementOtherTextValue);
+                        EditText tOther = (EditText) findViewById(R.id.measurementOtherTextValue);
                         tOther.setVisibility(View.GONE);
                     }
 
@@ -250,7 +439,7 @@ public class enterMeasurement extends AppCompatActivity {
         dialog.show();
     }
 
-    public void displayDatePicker(){
+    public void displayDatePicker() {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_datepicker);
@@ -258,7 +447,7 @@ public class enterMeasurement extends AppCompatActivity {
         DatePicker dp = (DatePicker) dialog.findViewById(R.id.datePicker);
         Calendar calActivity = Calendar.getInstance();
         calActivity.setTime(measurementDate);
-        dp.init(calActivity.get(Calendar.YEAR), calActivity.get(Calendar.MONTH), calActivity.get(Calendar.DAY_OF_MONTH),null);
+        dp.init(calActivity.get(Calendar.YEAR), calActivity.get(Calendar.MONTH), calActivity.get(Calendar.DAY_OF_MONTH), null);
 
         Calendar calMax = Calendar.getInstance();
         calMax.setTime(new Date());
@@ -272,13 +461,13 @@ public class enterMeasurement extends AppCompatActivity {
                 DatePicker dp = (DatePicker) dialog.findViewById(R.id.datePicker);
                 int day = dp.getDayOfMonth();
                 int month = dp.getMonth();
-                int year =  dp.getYear();
+                int year = dp.getYear();
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(year, month, day);
 
                 measurementDate = calendar.getTime();
 
-                Button cb = (Button)findViewById(R.id.dateButton);
+                Button cb = (Button) findViewById(R.id.dateButton);
                 cb.setText(dateToString(measurementDate));
                 dialog.dismiss();
             }
@@ -286,7 +475,7 @@ public class enterMeasurement extends AppCompatActivity {
         dialog.show();
     }
 
-    public Date stringToDate(String d){
+    public Date stringToDate(String d) {
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         sdf.setTimeZone(TimeZone.getDefault());
@@ -302,7 +491,7 @@ public class enterMeasurement extends AppCompatActivity {
         return str.matches("-?\\d+(\\.\\d+)?");
     }
 
-    public String dateToString(Date d){
+    public String dateToString(Date d) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         sdf.setTimeZone(TimeZone.getDefault());
         return sdf.format(d);

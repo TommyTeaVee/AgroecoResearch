@@ -96,6 +96,8 @@
     <string name="noPlotsChosen">Please choose at least one plot</string>
     <string name="enterLaborersText">Number of laborers</string>
     <string name="enterActivityCostText">Cost (local currency)</string>
-    <string name="samplesTitle">Samples</string>
+    <string name="samplesTitle">Sample</string>
     <string name="addSampleText">Add sample</string>
+    <string name="valuesTitle">Value</string>
+    <string name="chooseValueSampleTable">...</string>
 </resources>
