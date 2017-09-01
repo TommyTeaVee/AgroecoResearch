@@ -5,17 +5,18 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -28,8 +29,6 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.text.ParseException;
@@ -70,6 +69,11 @@ public class enterMeasurement extends AppCompatActivity {
 
     public ArrayList<oSampleHelper> samples;
     public int maxSampleNumber = 1;
+
+    public boolean bDeleting=false;
+
+    public Button currentSampleChoiceButton=null;
+    private promptDialog dlg=null;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -103,7 +107,7 @@ public class enterMeasurement extends AppCompatActivity {
         for (int i = 0; i < categoriesParts.length; i++) {
             categories.add(categoriesParts[i]);
         }
-        categories.add(getString(R.string.otherListTest));
+        categories.add(getString(R.string.otherListText));
         categoriesArray = categories.toArray(new CharSequence[categories.size()]);
 
         TextView tt = (TextView) findViewById(R.id.fieldPlotText);
@@ -117,15 +121,14 @@ public class enterMeasurement extends AppCompatActivity {
             vt.setVisibility(View.GONE);
             EditText ve = (EditText) findViewById(R.id.measurementValue);
             ve.setVisibility(View.GONE);
-            //TextView ut = (TextView) findViewById(R.id.enterUnitsText);
-            //ut.setVisibility(View.GONE);
-            //EditText ue = (EditText) findViewById(R.id.measurementUnits);
-            //ue.setVisibility(View.GONE);
+
             Button cb = (Button) findViewById(R.id.measurementCategory);
             cb.setVisibility(View.GONE);
 
-            TextView tvs = (TextView)findViewById(R.id.enterSamplesText);
-            tvs.setText(tvs.getText()+ " (" + measurementUnits + ")");
+            if(!measurementUnits.isEmpty()) {
+                TextView tvs = (TextView) findViewById(R.id.enterSamplesText);
+                tvs.setText(tvs.getText() + " (" + measurementUnits + ")");
+            }
         } else {
             TableLayout tl = (TableLayout) findViewById(R.id.samples);
             tl.setVisibility(View.GONE);
@@ -142,17 +145,12 @@ public class enterMeasurement extends AppCompatActivity {
 
                 TextView tv = (TextView)findViewById(R.id.enterValueText);
                 tv.setText(tv.getText()+" ("+ measurementUnits +")");
-                //EditText et = (EditText) findViewById(R.id.measurementUnits);
-                //et.setText(measurementUnits);
+
             } else if (type == 0 && !measurementUnits.equals("date")) {
                 TextView vt = (TextView) findViewById(R.id.enterValueText);
                 vt.setVisibility(View.GONE);
                 EditText ve = (EditText) findViewById(R.id.measurementValue);
                 ve.setVisibility(View.GONE);
-                //TextView ut = (TextView) findViewById(R.id.enterUnitsText);
-                //ut.setVisibility(View.GONE);
-                //EditText ue = (EditText) findViewById(R.id.measurementUnits);
-                //ue.setVisibility(View.GONE);
 
                 Button cb = (Button) findViewById(R.id.measurementCategory);
                 cb.setOnClickListener(new View.OnClickListener() {
@@ -174,10 +172,7 @@ public class enterMeasurement extends AppCompatActivity {
                 vt.setVisibility(View.GONE);
                 EditText ve = (EditText) findViewById(R.id.measurementValue);
                 ve.setVisibility(View.GONE);
-                //TextView ut = (TextView) findViewById(R.id.enterUnitsText);
-                //ut.setVisibility(View.GONE);
-                //EditText ue = (EditText) findViewById(R.id.measurementUnits);
-                //ue.setVisibility(View.GONE);
+
             }
         }
 
@@ -320,6 +315,20 @@ public class enterMeasurement extends AppCompatActivity {
                     return false;
                 }
             });
+
+            cb.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(final View view) {
+                    view.requestFocus();
+                    bDeleting=true;
+                    view.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            deleteSample(view);
+                        }
+                    },200);
+                }
+            });
             trow.addView(cb, lp);
 
             EditText sn = new EditText(enterMeasurement.this);
@@ -348,7 +357,33 @@ public class enterMeasurement extends AppCompatActivity {
             trow.addView(sn, lp);
 
             if (type == 0) {
-                //chooseValueSampleTable
+                Button sb = new Button(enterMeasurement.this);
+                sb.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17f);
+                if(!sh.value.isEmpty()) {
+                    sb.setText(sh.value);
+                } else {
+                    sb.setText(R.string.chooseValueSampleTable);
+                }
+                sb.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                sb.setPadding(0,10,0,10);
+                sb.setId(n);
+                sb.setBackgroundResource(R.drawable.button_background);
+                sb.setTextColor(Color.WHITE);
+                sb.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        findViewById(R.id.childScrollView).getParent().requestDisallowInterceptTouchEvent(true);
+                        return false;
+                    }
+                });
+                sb.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        currentSampleChoiceButton = (Button)v;
+                        showMeasurementCategoriesSampleTable();
+                    }
+                });
+                trow.addView(sb, lp);
 
             } else {
                 EditText sv = new EditText(enterMeasurement.this);
@@ -384,37 +419,45 @@ public class enterMeasurement extends AppCompatActivity {
     }
 
     public void updateSampleValue(View view) {
-        EditText e = (EditText) view;
-        int id = e.getId();
-        String value = String.valueOf(e.getText());
+        if(!bDeleting) {
+            EditText e = (EditText) view;
+            int id = e.getId();
+            String value = String.valueOf(e.getText());
 
-        if(!value.isEmpty()) {
-            oSampleHelper sh = samples.get(id);
-            sh.value = value;
+            if (!value.isEmpty()) {
+                oSampleHelper sh = samples.get(id);
+                sh.value = value;
 
-            if (!isNumeric(value) || (Float.parseFloat(value) < min || Float.parseFloat(value) > max)) {
-                String msg = this.getResources().getString(R.string.sampleOutOfRange);
-                msg = msg.replaceAll("x", String.valueOf(sh.sampleNumber));
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+                if (!isNumeric(value) || (Float.parseFloat(value) < min || Float.parseFloat(value) > max)) {
+                    String msg = this.getResources().getString(R.string.sampleOutOfRange);
+                    msg = msg.replaceAll("x", String.valueOf(sh.sampleNumber));
+                    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+                }
             }
+        } else {
+            bDeleting=false;
         }
     }
 
     public void updateSampleNumber(View view) {
-        EditText e = (EditText) view;
-        int id = e.getId();
-        String sampleValue = String.valueOf(e.getText());
-        if(!sampleValue.isEmpty()) {
-            int number = Integer.valueOf(sampleValue);
+        if(!bDeleting) {
+            EditText e = (EditText) view;
+            int id = e.getId();
+            String sampleValue = String.valueOf(e.getText());
+            if (!sampleValue.isEmpty()) {
+                int number = Integer.valueOf(sampleValue);
 
-            oSampleHelper sh = samples.get(id);
-            sh.sampleNumber = number;
-            int repeated = findRepeatedSampleNumber(number, id);
-            if(repeated>=0) {
-                String msg = this.getResources().getString(R.string.sampleNumberIsRepeated);
-                msg = msg.replaceAll("x", String.valueOf(sh.sampleNumber));
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+                oSampleHelper sh = samples.get(id);
+                sh.sampleNumber = number;
+                int repeated = findRepeatedSampleNumber(number, id);
+                if (repeated >= 0) {
+                    String msg = this.getResources().getString(R.string.sampleNumberIsRepeated);
+                    msg = msg.replaceAll("x", String.valueOf(sh.sampleNumber));
+                    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+                }
             }
+        } else {
+            bDeleting=false;
         }
     }
 
@@ -448,6 +491,87 @@ public class enterMeasurement extends AppCompatActivity {
         sv.postDelayed(new Runnable() { @Override public void run() { sv.fullScroll(View.FOCUS_DOWN); } }, 500);
     }
 
+    public void deleteSample(View v){
+
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+        final CheckBox c = (CheckBox)v;
+        c.setChecked(true);
+        final int deleteId = c.getId();
+        oSampleHelper sh = samples.get(deleteId);
+
+        String msg = this.getResources().getString(R.string.deleteSampleString);
+        msg = msg.replaceAll("x", String.valueOf(sh.sampleNumber));
+
+        AlertDialog.Builder logoutDialog = new AlertDialog.Builder(this);
+        logoutDialog.setTitle(R.string.deleteSampleTitle);
+        logoutDialog.setMessage(msg);
+        logoutDialog.setNegativeButton(R.string.cancelButtonText, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                c.setChecked(false);
+                bDeleting=false;
+            }
+        });
+        logoutDialog.setPositiveButton(R.string.okButtonText, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                c.setChecked(false);
+                doDelete(deleteId);
+            }
+        });
+        logoutDialog.create();
+        logoutDialog.show();
+    }
+
+    public void doDelete(int id){
+        samples.remove(id);
+        fillSampleTable();
+    }
+
+    public void showMeasurementCategoriesSampleTable(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setNegativeButton(R.string.cancelButtonText, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        final ListAdapter adapter = new ArrayAdapter<>(this, R.layout.checked_list_template, categoriesArray);
+        builder.setSingleChoiceItems(adapter, -1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (i >= 0 && currentSampleChoiceButton!=null) {
+
+                    String sampleMeasurementCategory = (String) categoriesArray[i];
+                    if (sampleMeasurementCategory.equals(getString(R.string.otherListText))) {
+                        oSampleHelper sh = samples.get(currentSampleChoiceButton.getId());
+                        dlg = new promptDialog(enterMeasurement.this, R.string.emptyString, R.string.enterOtherValueLabel, sh.value) {
+                            @Override
+                            public boolean onOkClicked(String input) {
+                                currentSampleChoiceButton.setText(input);
+                                oSampleHelper sh = samples.get(currentSampleChoiceButton.getId());
+                                sh.value=input;
+                                return true;
+                            }
+                        };
+                        dlg.show();
+                    } else {
+                        currentSampleChoiceButton.setText(categoriesArray[i]);
+                        oSampleHelper sh = samples.get(currentSampleChoiceButton.getId());
+                        sh.value=(String)categoriesArray[i];
+                    }
+
+                }
+                dialogInterface.dismiss();
+
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
     public void showMeasurementCategories() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
@@ -463,7 +587,7 @@ public class enterMeasurement extends AppCompatActivity {
                 if (i >= 0) {
                     Button fieldListView = (Button) findViewById(R.id.measurementCategory);
                     measurementCategory = (String) categoriesArray[i];
-                    if (measurementCategory.equals(getString(R.string.otherListTest))) {
+                    if (measurementCategory.equals(getString(R.string.otherListText))) {
                         fieldListView.setText(R.string.otherButtonText);
                         EditText tOther = (EditText) findViewById(R.id.measurementOtherTextValue);
                         tOther.setVisibility(View.VISIBLE);
@@ -545,6 +669,9 @@ public class enterMeasurement extends AppCompatActivity {
         String units = "";
         boolean bProceed = true;
 
+        EditText c = (EditText)findViewById(R.id.measurementComments);
+        c.requestFocus();
+
         if (type == 1 && !measurementUnits.equals("date")) {
             EditText value = (EditText) findViewById(R.id.measurementValue);
             String valueText = String.valueOf(value.getText());
@@ -554,15 +681,6 @@ public class enterMeasurement extends AppCompatActivity {
                     Toast.makeText(this, R.string.valueOutOfRangeText, Toast.LENGTH_SHORT).show();
                     value.requestFocus();
                     bProceed = false;
-                } else {
-                    /*
-                    EditText unitsText = (EditText) findViewById(R.id.measurementUnits);
-                    units = String.valueOf(unitsText.getText());
-                    if (!units.isEmpty()) {
-                        units = units.replaceAll(";", " ");
-                        units = units.replaceAll("\\|", " ");
-                    }
-                    */
                 }
             } else {
                 Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
@@ -576,7 +694,7 @@ public class enterMeasurement extends AppCompatActivity {
             }
         }
 
-        if (measurementCategory.equals(getString(R.string.otherListTest))) {
+        if (measurementCategory.equals(getString(R.string.otherListText))) {
             EditText tOther = (EditText) findViewById(R.id.measurementOtherTextValue);
             measurementCategory = String.valueOf(tOther.getText());
             if (!measurementCategory.isEmpty()) {

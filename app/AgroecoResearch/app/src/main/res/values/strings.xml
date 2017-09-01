@@ -86,7 +86,7 @@
     <string name="enterTreatmentInputTitle">Treatment input</string>
     <string name="activitiesMeasurementsTableTitle">Activities and measurements</string>
     <string name="inputsTableTitle">Inputs</string>
-    <string name="otherListTest">Other ...</string>
+    <string name="otherListText">Other ...</string>
     <string name="otherButtonText">Other (enter below)</string>
     <string name="enterUnitsText">Units</string>
     <string name="chooseCategoryPrompt">Choose category</string>
@@ -103,4 +103,7 @@
     <string name="enterSamplesText">Values</string>
     <string name="sampleOutOfRange">Sample number x is out of range</string>
     <string name="sampleNumberIsRepeated">Sample number x was entered more than once</string>
+    <string name="deleteSampleTitle">Delete sample</string>
+    <string name="deleteSampleString">Do you want to delete sample number x?</string>
+    <string name="enterOtherValueLabel">Enter other value</string>
 </resources>
