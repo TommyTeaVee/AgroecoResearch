@@ -530,6 +530,52 @@ public class enterMeasurement extends AppCompatActivity {
         fillSampleTable();
     }
 
+    public boolean verifySamples(){
+        boolean ret=true;
+        int n=0;
+        Iterator<oSampleHelper> iterator = samples.iterator();
+        while (iterator.hasNext()) {
+            oSampleHelper sh = iterator.next();
+            if(findRepeatedSampleNumber(sh.sampleNumber,n)>0){
+                String msg = this.getResources().getString(R.string.sampleNumberIsRepeated);
+                msg = msg.replaceAll("x", String.valueOf(sh.sampleNumber));
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+                ret=false;
+                break;
+            } else {
+                if (type==1 && (!isNumeric(sh.value) || (Float.parseFloat(sh.value) < min || Float.parseFloat(sh.value) > max))) {
+                    String msg = this.getResources().getString(R.string.sampleOutOfRange);
+                    msg = msg.replaceAll("x", String.valueOf(sh.sampleNumber));
+                    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+                    ret=false;
+                    break;
+                } else if(type==0 && sh.value.isEmpty()){
+                    String msg = this.getResources().getString(R.string.enterValidCategoryTextSample);
+                    msg = msg.replaceAll("x", String.valueOf(sh.sampleNumber));
+                    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+                    ret=false;
+                    break;
+                }
+            }
+            n++;
+        }
+        return ret;
+    }
+
+    public String convertSamplesToString(){
+        String ret="";
+        Iterator<oSampleHelper> iterator = samples.iterator();
+        while (iterator.hasNext()) {
+            oSampleHelper sh = iterator.next();
+            if(ret.isEmpty()){
+                ret=String.valueOf(sh.sampleNumber)+"*"+sh.value;
+            } else {
+                ret=ret+"*"+String.valueOf(sh.sampleNumber)+"*"+sh.value;
+            }
+        }
+        return ret;
+    }
+
     public void showMeasurementCategoriesSampleTable(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
@@ -667,44 +713,52 @@ public class enterMeasurement extends AppCompatActivity {
     public void registerMeasurement(View v) {
         float valueNumber = 0.0f;
         String units = "";
+        String samplesString = "";
         boolean bProceed = true;
 
         EditText c = (EditText)findViewById(R.id.measurementComments);
         c.requestFocus();
+        String commentsText = String.valueOf(c.getText());
 
-        if (type == 1 && !measurementUnits.equals("date")) {
-            EditText value = (EditText) findViewById(R.id.measurementValue);
-            String valueText = String.valueOf(value.getText());
-            if (isNumeric(valueText)) {
-                valueNumber = Float.parseFloat(valueText);
-                if (valueNumber < min || valueNumber > max) {
-                    Toast.makeText(this, R.string.valueOutOfRangeText, Toast.LENGTH_SHORT).show();
+        if(hasSamples){
+            if(verifySamples()){
+                samplesString=convertSamplesToString();
+            } else {
+                bProceed=false;
+            }
+        } else {
+
+            if (type == 1 && !measurementUnits.equals("date")) {
+                EditText value = (EditText) findViewById(R.id.measurementValue);
+                String valueText = String.valueOf(value.getText());
+                if (isNumeric(valueText)) {
+                    valueNumber = Float.parseFloat(valueText);
+                    if (valueNumber < min || valueNumber > max) {
+                        Toast.makeText(this, R.string.valueOutOfRangeText, Toast.LENGTH_SHORT).show();
+                        value.requestFocus();
+                        bProceed = false;
+                    }
+                } else {
+                    Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
                     value.requestFocus();
                     bProceed = false;
                 }
-            } else {
-                Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
-                value.requestFocus();
-                bProceed = false;
+            } else if (type == 0 && !measurementUnits.equals("date")) {
+                if (measurementCategory.equals("")) {
+                    Toast.makeText(this, R.string.enterValidCategoryText, Toast.LENGTH_SHORT).show();
+                    bProceed = false;
+                }
             }
-        } else if (type == 0 && !measurementUnits.equals("date")) {
-            if (measurementCategory.equals("")) {
-                Toast.makeText(this, R.string.enterValidCategoryText, Toast.LENGTH_SHORT).show();
-                bProceed = false;
+
+            if (measurementCategory.equals(getString(R.string.otherListText))) {
+                EditText tOther = (EditText) findViewById(R.id.measurementOtherTextValue);
+                measurementCategory = String.valueOf(tOther.getText());
+                if (!measurementCategory.isEmpty()) {
+                    measurementCategory = measurementCategory.replaceAll(";", " ");
+                    measurementCategory = measurementCategory.replaceAll("\\|", " ");
+                }
             }
         }
-
-        if (measurementCategory.equals(getString(R.string.otherListText))) {
-            EditText tOther = (EditText) findViewById(R.id.measurementOtherTextValue);
-            measurementCategory = String.valueOf(tOther.getText());
-            if (!measurementCategory.isEmpty()) {
-                measurementCategory = measurementCategory.replaceAll(";", " ");
-                measurementCategory = measurementCategory.replaceAll("\\|", " ");
-            }
-        }
-
-        EditText comments = (EditText) findViewById(R.id.measurementComments);
-        String commentsText = String.valueOf(comments.getText());
 
         if (!commentsText.isEmpty()) {
             commentsText = commentsText.replaceAll(";", " ");
@@ -725,7 +779,11 @@ public class enterMeasurement extends AppCompatActivity {
             i.putExtra("measurementDate", dateToString(measurementDate));
             i.putExtra("measurementValue", valueNumber);
             i.putExtra("measurementUnits", measurementUnits);
-            i.putExtra("measurementCategory", measurementCategory);
+            if(hasSamples) {
+                i.putExtra("measurementCategory", samplesString);
+            } else {
+                i.putExtra("measurementCategory", measurementCategory);
+            }
             i.putExtra("measurementComments", commentsText);
             startActivity(i);
             finish();

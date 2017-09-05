@@ -72,6 +72,7 @@
     <string name="enterQualitativeValueText">Choose value</string>
     <string name="valueOutOfRangeText">Value is out of range</string>
     <string name="enterValidCategoryText">Please enter a valid category</string>
+    <string name="enterValidCategoryTextSample">Please enter a valid category in sample x</string>
     <string name="cropsTableRowText">Crops</string>
     <string name="treatmentsTableRowText">Treatments</string>
     <string name="enterCropAgeText">Age (days)</string>

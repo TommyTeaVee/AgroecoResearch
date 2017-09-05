@@ -102,6 +102,11 @@ public class chooseFieldPlot extends AppCompatActivity {
                     getIntent().getExtras().getString("activityDate"), getIntent().getExtras().getFloat("activityValue"),
                     getIntent().getExtras().getString("activityUnits"), getIntent().getExtras().getInt("activityLaborers"),
                     getIntent().getExtras().getFloat("activityCost"), getIntent().getExtras().getString("activityComments"));
+        } else if(getIntent().getExtras().getBoolean("newMeasurement")){
+            agroHelper.addMeasurementToLog(fieldId, plots, userId, getIntent().getExtras().getInt("measurement"),
+                    getIntent().getExtras().getString("measurementDate"), getIntent().getExtras().getFloat("measurementValue"),
+                    getIntent().getExtras().getString("measurementUnits"), getIntent().getExtras().getString("measurementCategory"),
+                    getIntent().getExtras().getString("measurementComments"));
         }
 
 

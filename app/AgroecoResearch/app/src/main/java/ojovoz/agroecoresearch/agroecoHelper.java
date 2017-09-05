@@ -814,16 +814,15 @@ public class agroecoHelper {
         writeInputLog();
     }
 
-    public void addMeasurementToLog(int fieldId, int plotN, int userId, int measurementId, int sampleN, String date, float numberValue, String units, String category, String comments){
-        updateMeasurementDaysAgo(measurementId, plotN, fieldId, date);
+    public void addMeasurementToLog(int fieldId, String plots, int userId, int measurementId, String date, float numberValue, String units, String category, String comments){
+        //updateMeasurementDaysAgo(measurementId, plotN, fieldId, date);
         createLog();
         oLog newEntry = new oLog();
         newEntry.logId = getNewLogId();
         newEntry.logFieldId = fieldId;
-        newEntry.logPlotNumber = plotN;
+        newEntry.logPlots = plots;
         newEntry.logUserId = userId;
         newEntry.logMeasurementId = measurementId;
-        newEntry.logSampleNumber = sampleN;
         newEntry.logDate = stringToDate(date);
         newEntry.logNumberValue = numberValue;
         newEntry.logValueUnits = units;

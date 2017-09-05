@@ -57,13 +57,6 @@ public class chooser extends AppCompatActivity {
         TextView tt = (TextView)findViewById(R.id.tableTitle);
         tt.setText("Choose "+task+":");
 
-        if(getIntent().getExtras().getBoolean("newMeasurement")){
-            agroHelper.addMeasurementToLog(fieldId, plotN, userId, getIntent().getExtras().getInt("measurement"),
-                    getIntent().getExtras().getInt("measurementSample"), getIntent().getExtras().getString("measurementDate"),
-                    getIntent().getExtras().getFloat("measurementValue"), getIntent().getExtras().getString("measurementUnits"),
-                    getIntent().getExtras().getString("measurementCategory"), getIntent().getExtras().getString("measurementComments"));
-        }
-
         fillTable();
     }
 
