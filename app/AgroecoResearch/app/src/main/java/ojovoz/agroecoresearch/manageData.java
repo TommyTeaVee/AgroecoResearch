@@ -372,13 +372,8 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
                     itemName = agroHelper.getMeasurementNameFromId(logElement.logMeasurementId);
                 }
 
-                String plotNumber = "";
-                if(logElement.logPlotNumber>=0){
-                    plotNumber = "-plot " + Integer.toString(logElement.logPlotNumber+1);
-                }
-
                 String tvText = agroHelper.dateToString(logElement.logDate) + " " + agroHelper.getFieldNameFromId(logElement.logFieldId)
-                        + plotNumber + "\n" + itemName;
+                        + "\n" + itemName;
 
                 CheckBox cb = new CheckBox(manageData.this);
                 cb.setButtonDrawable(R.drawable.custom_checkbox);
@@ -457,13 +452,15 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
                     itemName = agroHelper.getTreatmentNameFromId(inputLogElement.inputLogTreatmentId);
                 }
 
+                /*
                 String plotNumber = "";
                 if(inputLogElement.inputLogPlotNumber>=0){
                     plotNumber = "-plot " + Integer.toString(inputLogElement.inputLogPlotNumber+1);
                 }
+                */
 
                 String tvText = agroHelper.dateToString(inputLogElement.inputLogDate) + " " + agroHelper.getFieldNameFromId(inputLogElement.inputLogFieldId)
-                        + plotNumber + "\n" + itemName;
+                        + "\n" + itemName;
 
                 CheckBox cb = new CheckBox(manageData.this);
                 cb.setButtonDrawable(R.drawable.custom_checkbox);
@@ -513,11 +510,10 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
 
         String inputTitle="";
 
-        if(inputLogItem.inputLogPlotNumber>=0) {
-            inputTitle = "Field: " + lf.fieldName + " R" + Integer.toString(lf.fieldReplicationN) + "\nPlot " + Integer.toString(inputLogItem.inputLogPlotNumber + 1) + ": ";
-        } else {
-            inputTitle = "Field: " + lf.fieldName + " R" + Integer.toString(lf.fieldReplicationN) + ": ";
-        }
+
+        inputTitle = "Field: " + lf.fieldName + " R" + Integer.toString(lf.fieldReplicationN) + "\nPlots: " + agroHelper.getPlotNames(lf,inputLogItem.inputLogPlots)+"\n";
+
+
 
         if(inputLogItem.inputLogCropId>0){
             inputTitle+=agroHelper.getCropNameFromId(inputLogItem.inputLogCropId);
@@ -528,7 +524,7 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
             i.putExtra("task", "input");
             i.putExtra("inputLogId",inputLogItem.inputLogId);
             i.putExtra("field", lf.fieldId);
-            i.putExtra("plot", inputLogItem.inputLogPlotNumber);
+            i.putExtra("plots", inputLogItem.inputLogPlots);
             i.putExtra("update","crop");
             i.putExtra("cropId", inputLogItem.inputLogCropId);
             i.putExtra("cropInputDate", agroHelper.dateToString(inputLogItem.inputLogDate));
@@ -549,7 +545,7 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
             i.putExtra("task", "input");
             i.putExtra("inputLogId",inputLogItem.inputLogId);
             i.putExtra("field", lf.fieldId);
-            i.putExtra("plot", inputLogItem.inputLogPlotNumber);
+            i.putExtra("plots", inputLogItem.inputLogPlots);
             i.putExtra("update","treatment");
             i.putExtra("treatmentId", inputLogItem.inputLogTreatmentId);
             i.putExtra("treatmentInputDate", agroHelper.dateToString(inputLogItem.inputLogDate));
