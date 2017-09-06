@@ -371,7 +371,7 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
                 if (logElement.logActivityId > 0) {
                     itemName = agroHelper.getActivityNameFromId(logElement.logActivityId);
                 } else if (logElement.logMeasurementId > 0) {
-                    itemName = agroHelper.getMeasurementNameFromId(logElement.logMeasurementId);
+                    itemName = agroHelper.getMeasurementNameFromId(logElement.logMeasurementId) + " (" + agroHelper.getMeasurementCategoryFromId(logElement.logMeasurementId) + ")";
                 }
 
                 String tvText = agroHelper.dateToString(logElement.logDate) + " " + agroHelper.getFieldNameFromId(logElement.logFieldId)
@@ -596,14 +596,7 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
 
         } else if(logItem.logMeasurementId>0) {
 
-            /*
-            String measurementTitle="";
-
-            if(logItem.logPlotNumber>=0) {
-                measurementTitle = "Field: " + lf.fieldName + " R" + Integer.toString(lf.fieldReplicationN) + "\nPlot " + Integer.toString(logItem.logPlotNumber + 1) + ": " + primaryCrop.cropName + " (" + primaryCrop.cropVariety + ")" + treatmentsTitle + "\nMeasurement: " + agroHelper.getMeasurementNameFromId(logItem.logMeasurementId);
-            } else {
-                measurementTitle = "Field: " + lf.fieldName + " R" + Integer.toString(lf.fieldReplicationN) + "\nMeasurement: " + agroHelper.getMeasurementNameFromId(logItem.logMeasurementId);
-            }
+            String measurementTitle = "Field: " + lf.fieldName + " R" + Integer.toString(lf.fieldReplicationN) + "\nPlots: " + agroHelper.getPlotNames(lf,logItem.logPlots) + "\n" + agroHelper.getMeasurementNameFromId(logItem.logMeasurementId)  + " (" + agroHelper.getMeasurementCategoryFromId(logItem.logMeasurementId) + ")";
 
             oMeasurement m = agroHelper.getMeasurementFromId(logItem.logMeasurementId);
 
@@ -613,12 +606,12 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
             i.putExtra("userRole", userRole);
             i.putExtra("logId",logItem.logId);
             i.putExtra("fieldId", logItem.logFieldId);
-            i.putExtra("plot", logItem.logPlotNumber);
+            i.putExtra("plots", logItem.logPlots);
             i.putExtra("measurement",logItem.logMeasurementId);
             i.putExtra("type",m.measurementType);
             i.putExtra("update", "measurement");
             i.putExtra("title",measurementTitle);
-            i.putExtra("sample",logItem.logSampleNumber);
+            i.putExtra("hasSamples",m.measurementHasSampleNumber);
             i.putExtra("min",m.measurementMin);
             i.putExtra("max",m.measurementMax);
             i.putExtra("categories",m.measurementCategories);
@@ -629,7 +622,7 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
             i.putExtra("measurementComments",logItem.logComments);
             startActivity(i);
             finish();
-            */
+
         }
     }
 

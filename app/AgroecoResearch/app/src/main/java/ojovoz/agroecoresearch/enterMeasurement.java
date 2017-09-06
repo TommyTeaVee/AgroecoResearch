@@ -179,7 +179,35 @@ public class enterMeasurement extends AppCompatActivity {
         if (update.equals("measurement")) {
             logId = getIntent().getExtras().getInt("logId");
 
-            if (type == 1 && !measurementUnits.equals("date")) {
+            if(hasSamples){
+                initializeSampleTable(getIntent().getExtras().getString("measurementCategory"));
+
+                Button as = (Button) findViewById(R.id.addSample);
+                as.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        addSample();
+                    }
+                });
+
+                TableLayout st = (TableLayout)findViewById(R.id.samplesTable);
+                st.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        findViewById(R.id.childScrollView).getParent().requestDisallowInterceptTouchEvent(true);
+                        return false;
+                    }
+                });
+
+                ScrollView svp = (ScrollView) findViewById(R.id.parentScrollView);
+                svp.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        findViewById(R.id.childScrollView).getParent().requestDisallowInterceptTouchEvent(false);
+                        return false;
+                    }
+                });
+            } else if (type == 1 && !measurementUnits.equals("date")) {
                 EditText ve = (EditText) findViewById(R.id.measurementValue);
                 ve.setText(String.valueOf(getIntent().getExtras().getFloat("measurementValue")));
             } else if (type == 0 && !measurementUnits.equals("date")) {
@@ -208,7 +236,7 @@ public class enterMeasurement extends AppCompatActivity {
             measurementDate = new Date();
 
             if (hasSamples) {
-                initializeSampleTable();
+                initializeSampleTable("");
                 Button as = (Button) findViewById(R.id.addSample);
                 as.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -274,13 +302,23 @@ public class enterMeasurement extends AppCompatActivity {
         }
     }
 
-    public void initializeSampleTable() {
-
+    public void initializeSampleTable(String ini) {
+        oSampleHelper sh;
         samples = new ArrayList<>();
-        oSampleHelper sh = new oSampleHelper();
-        sh.sampleNumber = maxSampleNumber;
-        sh.value = "";
-        samples.add(sh);
+        if(ini.isEmpty()) {
+            sh = new oSampleHelper();
+            sh.sampleNumber = maxSampleNumber;
+            sh.value = "";
+            samples.add(sh);
+        } else {
+            String[] sampleItems = ini.split("\\*");
+            for(int i=0;i<sampleItems.length;i+=2){
+                sh = new oSampleHelper();
+                sh.sampleNumber = Integer.valueOf(sampleItems[i]);
+                sh.value = sampleItems[i+1];
+                samples.add(sh);
+            }
+        }
 
         fillSampleTable();
 
@@ -478,8 +516,20 @@ public class enterMeasurement extends AppCompatActivity {
         return ret;
     }
 
+    public int getMaxSampleNumber(){
+        int ret=0;
+        Iterator<oSampleHelper> iterator = samples.iterator();
+        while (iterator.hasNext()) {
+            oSampleHelper sh = iterator.next();
+            if(sh.sampleNumber>ret){
+                ret=sh.sampleNumber;
+            }
+        }
+        return ret+1;
+    }
+
     public void addSample() {
-        maxSampleNumber++;
+        maxSampleNumber=getMaxSampleNumber();
         oSampleHelper sh = new oSampleHelper();
         sh.sampleNumber = maxSampleNumber;
         sh.value = "";
@@ -797,8 +847,12 @@ public class enterMeasurement extends AppCompatActivity {
             i.putExtra("measurement", measurementId);
             i.putExtra("measurementDate", dateToString(measurementDate));
             i.putExtra("measurementValue", valueNumber);
-            i.putExtra("measurementUnits", units);
-            i.putExtra("measurementCategory", measurementCategory);
+            i.putExtra("measurementUnits", measurementUnits);
+            if(hasSamples){
+                i.putExtra("measurementCategory", samplesString);
+            } else {
+                i.putExtra("measurementCategory", measurementCategory);
+            }
             i.putExtra("measurementComments", commentsText);
             startActivity(i);
             finish();
