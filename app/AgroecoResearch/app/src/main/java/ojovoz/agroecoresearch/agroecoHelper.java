@@ -883,7 +883,7 @@ public class agroecoHelper {
         return ret;
     }
 
-    public void updateLogActivityEntry(int logId, String aD, Float aV, String aU, String aC){
+    public void updateLogActivityEntry(int logId, String aD, Float aV, String aU, int aL, float aK, String aC){
         Iterator<oLog> iterator = log.iterator();
         while(iterator.hasNext()){
             oLog l = iterator.next();
@@ -891,8 +891,10 @@ public class agroecoHelper {
                 l.logDate=stringToDate(aD);
                 l.logNumberValue=aV;
                 l.logValueUnits=aU;
+                l.logLaborers=aL;
+                l.logCost=aK;
                 l.logComments=aC;
-                updateActivityDaysAgo(l.logActivityId,l.logPlotNumber,l.logFieldId,aD);
+                //updateActivityDaysAgo(l.logActivityId,l.logPlotNumber,l.logFieldId,aD);
                 sortLog();
                 writeLog();
                 break;
@@ -911,7 +913,7 @@ public class agroecoHelper {
                 l.inputLogInputQuantity=cQ;
                 l.inputLogInputCost=cC;
                 l.inputLogComments=cCC;
-                updateCropInputDaysAgo(l.inputLogCropId,l.inputLogPlotNumber,l.inputLogFieldId,cD);
+                //updateCropInputDaysAgo(l.inputLogCropId,l.inputLogPlotNumber,l.inputLogFieldId,cD);
                 sortInputLog();
                 writeInputLog();
                 break;
@@ -930,7 +932,7 @@ public class agroecoHelper {
                 l.inputLogTreatmentPreparationMethod=tMM;
                 l.inputLogInputCost=tC;
                 l.inputLogComments=tCC;
-                updateTreatmentInputDaysAgo(l.inputLogTreatmentId,l.inputLogPlotNumber,l.inputLogFieldId,tD);
+                //updateTreatmentInputDaysAgo(l.inputLogTreatmentId,l.inputLogPlotNumber,l.inputLogFieldId,tD);
                 sortInputLog();
                 writeInputLog();
                 break;
@@ -949,7 +951,7 @@ public class agroecoHelper {
                 l.logValueUnits=mU;
                 l.logTextValue=mC;
                 l.logComments=mCC;
-                updateMeasurementDaysAgo(l.logMeasurementId,l.logPlotNumber,l.logFieldId,mD);
+                //updateMeasurementDaysAgo(l.logMeasurementId,l.logPlotNumber,l.logFieldId,mD);
                 sortLog();
                 writeLog();
                 break;

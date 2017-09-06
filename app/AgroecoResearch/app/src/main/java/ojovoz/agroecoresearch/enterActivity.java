@@ -74,6 +74,12 @@ public class enterActivity extends AppCompatActivity {
             EditText av = (EditText)findViewById(R.id.activityValue);
             av.setText(Float.toString(getIntent().getExtras().getFloat("activityValue")));
 
+            EditText al = (EditText)findViewById(R.id.activityLaborers);
+            al.setText(Integer.toString(getIntent().getExtras().getInt("activityLaborers")));
+
+            EditText ak = (EditText)findViewById(R.id.activityCost);
+            ak.setText(Float.toString(getIntent().getExtras().getFloat("activityCost")));
+
             EditText ac = (EditText)findViewById(R.id.activityComments);
             ac.setText(getIntent().getExtras().getString("activityComments"));
         } else {

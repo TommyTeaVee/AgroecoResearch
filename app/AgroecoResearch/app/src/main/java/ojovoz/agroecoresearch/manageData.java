@@ -64,8 +64,10 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
             String aD = getIntent().getExtras().getString("activityDate");
             Float aV = getIntent().getExtras().getFloat("activityValue");
             String aU = getIntent().getExtras().getString("activityUnits");
+            int aL = getIntent().getExtras().getInt("activityLaborers");
+            float aK = getIntent().getExtras().getFloat("activityCost");
             String aC = getIntent().getExtras().getString("activityComments");
-            agroHelper.updateLogActivityEntry(logId, aD, aV, aU, aC);
+            agroHelper.updateLogActivityEntry(logId, aD, aV, aU, aL, aK, aC);
         } else if(update.equals("measurement")){
             int logId = getIntent().getExtras().getInt("logId");
             int mS = getIntent().getExtras().getInt("measurementSample");
@@ -565,43 +567,13 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
         tv.setBackgroundColor(ContextCompat.getColor(this,R.color.colorPrimaryDark));
 
         oLog logItem = agroHelper.getLogItemFromId(id);
-        oCrop primaryCrop=null;
 
         oField lf = agroHelper.getFieldFromId(logItem.logFieldId);
 
-        String treatmentsTitle = "";
-        if(logItem.logPlotNumber>=0) {
-            oPlot plot = lf.plots.get(logItem.logPlotNumber);
-            primaryCrop = plot.primaryCrop;
-
-            if (plot.intercroppingCrop != null) {
-                treatmentsTitle = "\nIntercropping";
-            }
-            if (plot.hasSoilManagement) {
-                if (treatmentsTitle.isEmpty()) {
-                    treatmentsTitle = "\nSoil management";
-                } else {
-                    treatmentsTitle += ", Soil management";
-                }
-            }
-            if (plot.hasPestControl) {
-                if (treatmentsTitle.isEmpty()) {
-                    treatmentsTitle = "\nPest control";
-                } else {
-                    treatmentsTitle += ", Pest control";
-                }
-            }
-        }
 
         if(logItem.logActivityId>0) {
 
-            String activityTitle="";
-
-            if(logItem.logPlotNumber>=0) {
-                activityTitle = "Field: " + lf.fieldName + " R" + Integer.toString(lf.fieldReplicationN) + "\nPlot " + Integer.toString(logItem.logPlotNumber + 1) + ": " + primaryCrop.cropName + " (" + primaryCrop.cropVariety + ")" + treatmentsTitle + "\nActivity: " + agroHelper.getActivityNameFromId(logItem.logActivityId);
-            } else {
-                activityTitle = "Field: " + lf.fieldName + " R" + Integer.toString(lf.fieldReplicationN) + "\nActivity: " + agroHelper.getActivityNameFromId(logItem.logActivityId);
-            }
+            String activityTitle = "Field: " + lf.fieldName + " R" + Integer.toString(lf.fieldReplicationN) + "\nPlots: " + agroHelper.getPlotNames(lf,logItem.logPlots) + "\n" + agroHelper.getActivityNameFromId(logItem.logActivityId);
 
             final Context context = this;
             Intent i = new Intent(context, enterActivity.class);
@@ -609,19 +581,22 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
             i.putExtra("userRole", userRole);
             i.putExtra("logId",logItem.logId);
             i.putExtra("fieldId", logItem.logFieldId);
-            i.putExtra("plot", logItem.logPlotNumber);
+            i.putExtra("plots", logItem.logPlots);
             i.putExtra("activity",logItem.logActivityId);
             i.putExtra("update", "activity");
             i.putExtra("title",activityTitle);
             i.putExtra("units",logItem.logValueUnits);
             i.putExtra("date",agroHelper.dateToString(logItem.logDate));
             i.putExtra("activityValue",logItem.logNumberValue);
+            i.putExtra("activityLaborers",logItem.logLaborers);
+            i.putExtra("activityCost",logItem.logCost);
             i.putExtra("activityComments",logItem.logComments);
             startActivity(i);
             finish();
 
         } else if(logItem.logMeasurementId>0) {
 
+            /*
             String measurementTitle="";
 
             if(logItem.logPlotNumber>=0) {
@@ -654,6 +629,7 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
             i.putExtra("measurementComments",logItem.logComments);
             startActivity(i);
             finish();
+            */
         }
     }
 
