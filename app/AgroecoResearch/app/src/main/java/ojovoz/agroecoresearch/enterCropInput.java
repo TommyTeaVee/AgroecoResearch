@@ -203,6 +203,7 @@ public class enterCropInput extends AppCompatActivity {
                     if (!originText.isEmpty()) {
                         originText = originText.replaceAll(";", " ");
                         originText = originText.replaceAll("\\|", " ");
+                        originText = originText.replaceAll("\\*", " ");
                     }
 
                     EditText comments = (EditText) findViewById(R.id.inputComments);
@@ -211,6 +212,7 @@ public class enterCropInput extends AppCompatActivity {
                     if (!commentsText.isEmpty()) {
                         commentsText = commentsText.replaceAll(";", " ");
                         commentsText = commentsText.replaceAll("\\|", " ");
+                        commentsText = commentsText.replaceAll("\\*", " ");
                     }
 
                     if (update.equals("")) {

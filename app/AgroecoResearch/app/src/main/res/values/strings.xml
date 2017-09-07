@@ -107,4 +107,6 @@
     <string name="deleteSampleTitle">Delete sample</string>
     <string name="deleteSampleString">Do you want to delete sample number x?</string>
     <string name="enterOtherValueLabel">Enter other value</string>
+    <string name="closeButtonText">Close</string>
+    <string name="noDescriptionAvailableText">No description available</string>
 </resources>

@@ -196,6 +196,7 @@ public class enterTreatmentInput extends AppCompatActivity {
                 if (!materialText.isEmpty()) {
                     materialText = materialText.replaceAll(";", " ");
                     materialText = materialText.replaceAll("\\|", " ");
+                    materialText = materialText.replaceAll("\\*", " ");
                 }
 
                 EditText method = (EditText) findViewById(R.id.treatmentPreparationMethod);
@@ -203,6 +204,7 @@ public class enterTreatmentInput extends AppCompatActivity {
                 if (!methodText.isEmpty()) {
                     methodText = methodText.replaceAll(";", " ");
                     methodText = methodText.replaceAll("\\|", " ");
+                    methodText = methodText.replaceAll("\\*", " ");
                 }
 
                 EditText comments = (EditText) findViewById(R.id.inputComments);
@@ -210,6 +212,7 @@ public class enterTreatmentInput extends AppCompatActivity {
                 if (!commentsText.isEmpty()) {
                     commentsText = commentsText.replaceAll(";", " ");
                     commentsText = commentsText.replaceAll("\\|", " ");
+                    commentsText = commentsText.replaceAll("\\*", " ");
                 }
 
                 if (update.equals("")) {

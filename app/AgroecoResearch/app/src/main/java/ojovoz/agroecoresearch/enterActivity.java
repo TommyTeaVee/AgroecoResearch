@@ -190,6 +190,7 @@ public class enterActivity extends AppCompatActivity {
             if(!unitsText.isEmpty()){
                 unitsText = unitsText.replaceAll(";"," ");
                 unitsText = unitsText.replaceAll("\\|"," ");
+                unitsText = unitsText.replaceAll("\\*"," ");
             }
 
             EditText laborers = (EditText)findViewById(R.id.activityLaborers);
@@ -209,6 +210,7 @@ public class enterActivity extends AppCompatActivity {
                     if (!commentsText.isEmpty()) {
                         commentsText = commentsText.replaceAll(";", " ");
                         commentsText = commentsText.replaceAll("\\|", " ");
+                        commentsText = commentsText.replaceAll("\\*", " ");
                     }
 
                     if (update.equals("")) {

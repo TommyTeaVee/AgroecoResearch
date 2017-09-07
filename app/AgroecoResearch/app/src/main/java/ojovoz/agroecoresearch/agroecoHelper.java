@@ -1026,7 +1026,7 @@ public class agroecoHelper {
             while(iterator.hasNext()) {
                 oLog l = iterator.next();
                 if(l.logId==id){
-                    ret+=Integer.toString(l.logFieldId)+";"+Integer.toString(l.logPlotNumber)+";"+Integer.toString(l.logUserId)+";"+Integer.toString(l.logCropId)
+                    ret+=Integer.toString(l.logFieldId)+";"+l.logPlots+";"+Integer.toString(l.logUserId)+";"+Integer.toString(l.logCropId)
                             +";"+Integer.toString(l.logTreatmentId)+";"+Integer.toString(l.logMeasurementId)+";"+Integer.toString(l.logActivityId)
                             +";"+dateToString(l.logDate)+";"+Float.toString(l.logNumberValue)+";"+l.logValueUnits+";"+l.logTextValue+";"+Integer.toString(l.logLaborers)
                             +";"+Float.toString(l.logCost)+";"+l.logComments+";"+Integer.toString(l.logId)+";"+Integer.toString(l.logSampleNumber)+"|";
@@ -1046,7 +1046,7 @@ public class agroecoHelper {
             while(iterator.hasNext()) {
                 oInputLog l = iterator.next();
                 if(l.inputLogId==id){
-                    ret+=Integer.toString(l.inputLogId)+";"+Integer.toString(l.inputLogFieldId)+";"+Integer.toString(l.inputLogPlotNumber)+";"
+                    ret+=Integer.toString(l.inputLogId)+";"+Integer.toString(l.inputLogFieldId)+";"+l.inputLogPlots+";"
                             +Integer.toString(l.inputLogUserId)+";"+Integer.toString(l.inputLogCropId)+";"+Integer.toString(l.inputLogTreatmentId)
                             +";"+dateToString(l.inputLogDate)+";"+Integer.toString(l.inputLogInputAge)+";"+l.inputLogInputOrigin+";"
                             +Float.toString(l.inputLogInputQuantity)+";"+Float.toString(l.inputLogInputCost)+";"+l.inputLogTreatmentMaterial

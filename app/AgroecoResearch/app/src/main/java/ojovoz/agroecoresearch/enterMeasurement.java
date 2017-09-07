@@ -646,6 +646,9 @@ public class enterMeasurement extends AppCompatActivity {
                         dlg = new promptDialog(enterMeasurement.this, R.string.emptyString, R.string.enterOtherValueLabel, sh.value) {
                             @Override
                             public boolean onOkClicked(String input) {
+                                input = input.replaceAll(";","");
+                                input = input.replaceAll("\\|","");
+                                input = input.replaceAll("\\*","");
                                 currentSampleChoiceButton.setText(input);
                                 oSampleHelper sh = samples.get(currentSampleChoiceButton.getId());
                                 sh.value=input;
@@ -806,6 +809,7 @@ public class enterMeasurement extends AppCompatActivity {
                 if (!measurementCategory.isEmpty()) {
                     measurementCategory = measurementCategory.replaceAll(";", " ");
                     measurementCategory = measurementCategory.replaceAll("\\|", " ");
+                    measurementCategory = measurementCategory.replaceAll("\\*", " ");
                 }
             }
         }

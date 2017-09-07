@@ -190,7 +190,7 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
                     if(!selectedLog.equals("")) { firstPart=agroHelper.getSelectedLogItemsAsString(selectedLog); }
                     if(!selectedInputLog.equals("")) { secondPart=agroHelper.getSelectedInputLogItemsAsString(selectedInputLog); }
 
-                    final String body = firstPart + "*" + secondPart;
+                    final String body = firstPart + "<>" + secondPart;
                     final String finalSelectedLog = selectedLog;
                     final String finalSelectedInputLog = selectedInputLog;
                     AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
@@ -380,7 +380,7 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
                 CheckBox cb = new CheckBox(manageData.this);
                 cb.setButtonDrawable(R.drawable.custom_checkbox);
                 cb.setId(logElement.logId);
-                cb.setPadding(10, 10, 10, 10);
+                cb.setPadding(4, 4, 4, 4);
                 cb.setChecked(true);
                 checkboxesLog.add(cb);
                 trow.addView(cb, lp);

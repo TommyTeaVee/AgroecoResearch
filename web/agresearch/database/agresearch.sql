@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: 192.168.86.55
--- Tiempo de generación: 25-08-2017 a las 19:15:08
+-- Tiempo de generación: 07-09-2017 a las 20:06:46
 -- Versión del servidor: 5.5.57-0+deb7u1-log
 -- Versión de PHP: 5.3.29-1~dotdeb.0
 
@@ -33,32 +33,33 @@ CREATE TABLE IF NOT EXISTS `activity` (
   `activity_periodicity` int(10) unsigned NOT NULL COMMENT 'in days',
   `activity_measurement_units` varchar(30) NOT NULL,
   `activity_description` text NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=25 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=26 ;
 
 --
 -- Volcado de datos para la tabla `activity`
 --
 
 INSERT INTO `activity` (`activity_id`, `activity_name`, `activity_category`, `activity_periodicity`, `activity_measurement_units`, `activity_description`) VALUES
-(1, 'Ploughing', 'Field work', 0, 'hours', ''),
+(1, 'Ploughing', 'Field work', 0, 'hours', 'A week before sowing or planting, plots need to be ploughed after they have been watered intensively to loose the soil and make it workable. Afterwards, weekly/monthly ploughing is needed to break up the crust on the soil surface and thus to support the water nutrient uptake as well as the root/plant development.'),
 (5, 'Harvesting', 'Field work', 0, 'hours', ''),
-(6, 'Weeding', 'Field work', 0, 'hours', ''),
-(7, 'Irrigation', 'Field work', 0, 'L/ha', ''),
-(8, 'Pest control preparation', 'Pest control', 0, 'hours', ''),
-(9, 'Pest control application', 'Pest control', 0, 'applied amount', ''),
-(10, 'Compost preparation', 'Soil management', 0, 'hours', ''),
-(11, 'Compost application', 'Soil management', 0, 'applied amount', ''),
+(6, 'Weeding', 'Field work', 0, 'hours', 'Control whether the weed population is interfering with the development of the main crop.'),
+(7, 'Irrigation', 'Field work', 0, 'L/ha', 'The crops are spot irrigated according to their needs or a given calendar. The amount of water (1can = 10L) used for one plot and the date/time of watering has to be recorded. To avoid bias, the signs of water needs and the amount of water used for irrigation are defined for each crop in advance. After applying compost, plots have to be irrigated intensively, so that the nutrients are washed into the soil and compost and soil components are better mixed.'),
+(8, 'Pest control preparation', 'Pest control', 0, 'hours', 'Recipe 1 (maize): 1kg of Neem leaves, 200g hot chillies and 100g garlic are finely pound in a big mortar. The mixed material is then dissolved in 10L of fresh water and soaked for one night (12h). The next day the solution is sieved and is ready for spraying.**Recipe 2 (maize): Mucuna beans are collected and cooked for one hour several times, exhanging the water with each cooking. The first three volumes of cooking water are then sieved and used for spraying the crops/plants.**Recipe 3 (maize): Ash from fireplaces is collected, sieved and mixed with sun-dried and powdered Pilipili.**Recipe 4 (cassava): At least 1kg of Neem leaves is collected and finely pound in a big mortar. The pounded leaves are then dissolved in 10L of fresh water and soaked for one night (12h). The next day the solution is sieved and is ready for spraying.'),
+(9, 'Pest control application', 'Pest control', 0, 'applied amount', 'Rats: clear the vegetation around the field and set up 3 to 5 rat traps within the plots to avoid rats feeding on the crops.**Insects (daily control): application of the prepared pest control according to the occurrence and intensity of any corresponding pest infestation. For maize, each plant has to be sprayed with the preparation every second day. For cassava, the basis of the stems need to be sprayed twice or three times per week.'),
+(10, 'Compost preparation', 'Soil management', 0, 'hours', 'Start a compost by filling a pit with layers of ash, dried maize stems, mature grass, legumes, manure and top soil. Water extensively and repeat several times until the pit is full. Finally, the filled pit is covered with grass or a permeable tarpaulin. The compost in the pit has to be stirred regularly so that it doesn\\''t get too hot or anaerobic - this can be controlled by a wooden stick which is placed in the middle of the compost pit and which works as thermometer.'),
+(11, 'Compost application', 'Soil management', 0, 'applied amount', 'Mix the soil with compost. Each S-plot gets 10 buckets of compost (1bucket = 10kg) which has to be evenly distributed on the plot or according to the sowing scheme locally applied.'),
 (12, 'Mulch preparation', 'Soil management', 0, 'hours', ''),
-(13, 'Mulch application', 'Soil management', 0, 'applied amount', ''),
-(15, 'Thinning', 'Field work', 0, 'hours', ''),
-(16, 'Prunning', 'Field work', 0, 'hours', ''),
-(17, 'Sowing/Planting', 'Field work', 0, 'hours', ''),
-(19, 'Top dressing', 'Field work', 0, 'hours', ''),
-(20, 'Top dressing preparation', 'Field work', 0, 'hours', ''),
-(21, 'Seed soaking', 'Field work', 0, 'hours', ''),
-(22, 'Gap filling', 'Field work', 0, 'hours', ''),
-(23, 'Transplanting', 'Field work', 0, 'hours', ''),
-(24, 'Seed bed preparation', 'Field work', 0, 'hours', '');
+(13, 'Mulch application', 'Soil management', 0, 'applied amount', 'Cover the soil surface with a layer of fine-cut mature grass. The layer should be as thin as possible while covering the soil surface completely.'),
+(15, 'Thinning', 'Field work', 0, 'hours', 'Only one plant should remain per spot. Remove (in case transplanting will follow) or cut off the weaker seedlings (at the stem basis in case gap-filling will be done subsequently) to support the development of the stronger seedlings.'),
+(16, 'Pruning', 'Field work', 0, 'hours', ''),
+(17, 'Sowing', 'Field work', 0, 'hours', 'Maize: sow the maize seeds according to the sowing scheme in a depth of approx. 5cm and cover the holes with a little soil. Two seeds are sown per spot. The sowing scheme can easily be laid out with the help of ropes with corresponding marking. In the end, there should be five rows of maize on each plot with 19 maize plants in one row, or 13 maize plants in one row on intercopped plots.**Cowpeas (with maize): Sow the cowpeas according to the sowing scheme in a depth of approx. 5cm between the maize and cover the holes with a little soil. Two seeds are sown per spot. There should be two rows of cowpeas between the maize rows and one cowpea between each maize in a row.**Cowpeas (with cassava): Sow the cowpeas according to the sowing scheme in a depth of approx. 5cm between the cassava sticks and cover the holes with a little soil. There should be three rows of cowpeas between the cassava rows and the margins, and three cowpeas between each cassava stick in a row.'),
+(19, 'Top dressing', 'Soil management', 0, 'hours', 'Application of 0,25 L of manure tea as top dressing on each plant.'),
+(20, 'Top dressing preparation', 'Soil management', 0, 'hours', 'A water permeable bag has to be filled with approx. 20kg of fresh manure. The bag is then hanged into a 160L bucket which is filled with around 80L of water. With a tarpaulin cover, the manure bags will remain for 21 days in the water and moved from time to time until the manure tea is ready for top dressing. The manure tea can then be used for up to 4 months as top dressing if properly stored.'),
+(21, 'Seed soaking', 'Field work', 0, 'hours', 'To speed up and support the germination of the maize seeds during the dry season, the seeds can be soaked in water the day before sowing.'),
+(22, 'Gap filling', 'Field work', 0, 'hours', 'Follow the given sowing scheme and sowing recommendations and sow new seeds in the gaps between the germinated seedlings where the previous sowed seeds have not germinated. Sow again two seeds per spot.'),
+(23, 'Transplanting', 'Field work', 0, 'hours', 'If the weather and soil conditions, as well as the condition of the seedlings, allow transplanting, take the removed and remaining healthy seedlings after thinning and plant them in the gaps between the germinated seedlings, where the previously sowed seeds have not germinated.'),
+(24, 'Seed bed preparation', 'Field work', 0, 'hours', 'Rake the ploughed plots to get a fine seed bed texture.  In the case of cassava, dig holes according to the planting scheme (1 by 1 meter), whereby the planting scheme can easily be measured/laid out with the help of two 1m sticks. The removed soil is then loosened and mixed with compost, and then put back into the hole.'),
+(25, 'Planting', 'Field work', 0, 'hours', '20cm cassava sticks are planted in a lopsided position (to promote a vertical and not horizontal root development) according to a 1x1m planting scheme (1m distance to each other and the margins), whereby 1/3 of the planted sticks should be above the ground and 2/3 below, and the leaf scars have to look upwards.');
 
 -- --------------------------------------------------------
 
@@ -71,15 +72,13 @@ CREATE TABLE IF NOT EXISTS `activity_x_crop_or_treatment` (
   `activity_id` int(10) unsigned NOT NULL,
   `crop_id` int(10) unsigned DEFAULT NULL,
   `treatment_id` int(10) unsigned DEFAULT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=42 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=53 ;
 
 --
 -- Volcado de datos para la tabla `activity_x_crop_or_treatment`
 --
 
 INSERT INTO `activity_x_crop_or_treatment` (`activity_x_crop_or_treatment_id`, `activity_id`, `crop_id`, `treatment_id`) VALUES
-(8, 1, 1, NULL),
-(9, 1, NULL, 5),
 (10, 14, NULL, 5),
 (11, 14, NULL, 10),
 (12, 11, NULL, 5),
@@ -92,11 +91,9 @@ INSERT INTO `activity_x_crop_or_treatment` (`activity_x_crop_or_treatment_id`, `
 (20, 17, 4, NULL),
 (21, 17, 1, NULL),
 (22, 17, 8, NULL),
-(23, 17, 9, NULL),
 (24, 15, 4, NULL),
 (25, 15, 8, NULL),
 (26, 15, 1, NULL),
-(27, 15, 9, NULL),
 (28, 16, 2, NULL),
 (30, 23, 2, NULL),
 (31, 23, 4, NULL),
@@ -106,10 +103,17 @@ INSERT INTO `activity_x_crop_or_treatment` (`activity_x_crop_or_treatment_id`, `
 (35, 24, 4, NULL),
 (36, 24, 1, NULL),
 (37, 24, 8, NULL),
-(38, 21, 2, NULL),
-(39, 21, 4, NULL),
 (40, 21, 1, NULL),
-(41, 21, 8, NULL);
+(43, 25, 2, NULL),
+(44, 15, 2, NULL),
+(45, 22, 2, NULL),
+(46, 22, 4, NULL),
+(47, 22, 1, NULL),
+(48, 22, 8, NULL),
+(49, 19, NULL, 10),
+(50, 19, NULL, 5),
+(51, 20, NULL, 5),
+(52, 20, NULL, 10);
 
 -- --------------------------------------------------------
 
@@ -175,7 +179,7 @@ CREATE TABLE IF NOT EXISTS `input_log` (
 `input_log_id` int(10) unsigned NOT NULL,
   `input_log_date` date NOT NULL,
   `field_id` int(10) unsigned NOT NULL,
-  `plot_number` int(10) NOT NULL,
+  `plots` varchar(200) NOT NULL,
   `user_id` int(11) NOT NULL,
   `crop_id` int(11) NOT NULL,
   `treatment_id` int(11) NOT NULL,
@@ -187,14 +191,14 @@ CREATE TABLE IF NOT EXISTS `input_log` (
   `input_treatment_preparation_method` text NOT NULL,
   `input_comments` text NOT NULL,
   `input_picture` varchar(200) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
 
 --
 -- Volcado de datos para la tabla `input_log`
 --
 
-INSERT INTO `input_log` (`input_log_id`, `input_log_date`, `field_id`, `plot_number`, `user_id`, `crop_id`, `treatment_id`, `input_age`, `input_origin`, `input_quantity`, `input_cost`, `input_treatment_material`, `input_treatment_preparation_method`, `input_comments`, `input_picture`) VALUES
-(6, '2017-07-03', 23, -1, 1, 0, 6, 0, '', 5, 10000, 'garlic (100 g) peppers (200 g), neem leaves (1 kg)', 'mixing, grinding, adding 10 l. water', 'added an image', 'images/DSC_0038_small.JPG');
+INSERT INTO `input_log` (`input_log_id`, `input_log_date`, `field_id`, `plots`, `user_id`, `crop_id`, `treatment_id`, `input_age`, `input_origin`, `input_quantity`, `input_cost`, `input_treatment_material`, `input_treatment_preparation_method`, `input_comments`, `input_picture`) VALUES
+(7, '2017-09-07', 23, '1,3,5,7,9,10,12,14,15', 1, 2, 0, 20, 'Bagamoyo', 200, 10000, '', '', 'Mkuranga', '');
 
 -- --------------------------------------------------------
 
@@ -205,7 +209,7 @@ INSERT INTO `input_log` (`input_log_id`, `input_log_date`, `field_id`, `plot_num
 CREATE TABLE IF NOT EXISTS `log` (
 `log_id` int(10) unsigned NOT NULL,
   `field_id` int(10) unsigned NOT NULL,
-  `plot_number` varchar(200) NOT NULL,
+  `plots` varchar(200) NOT NULL,
   `user_id` int(10) unsigned NOT NULL,
   `crop_id` int(10) unsigned NOT NULL,
   `sample_number` varchar(200) NOT NULL,
@@ -216,22 +220,20 @@ CREATE TABLE IF NOT EXISTS `log` (
   `log_value_number` float NOT NULL,
   `log_value_units` varchar(30) NOT NULL,
   `log_value_text` text NOT NULL,
-  `labour_time` int(10) unsigned NOT NULL COMMENT 'in hours',
-  `cost` float NOT NULL,
+  `log_number_of_laborers` int(10) unsigned NOT NULL COMMENT 'in hours',
+  `log_cost` float NOT NULL,
   `log_comments` text NOT NULL,
   `log_picture` varchar(200) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=18 ;
 
 --
 -- Volcado de datos para la tabla `log`
 --
 
-INSERT INTO `log` (`log_id`, `field_id`, `plot_number`, `user_id`, `crop_id`, `sample_number`, `treatment_id`, `measurement_id`, `activity_id`, `log_date`, `log_value_number`, `log_value_units`, `log_value_text`, `labour_time`, `cost`, `log_comments`, `log_picture`) VALUES
-(6, 23, '8', 1, 0, '0', 0, 0, 13, '2017-07-03', 20, 'applied amount', '', 0, 0, 'image added', 'images/DSC_0027_small.JPG'),
-(7, 23, '13', 1, 0, '0', 0, 0, 13, '2017-07-03', 20, 'applied amount', '', 0, 0, '', ''),
-(8, 23, '-1', 1, 0, '0', 0, 0, 8, '2017-07-03', 3, 'hours', '', 0, 0, '', ''),
-(9, 34, '9', 1, 0, '2', 0, 8, 0, '2017-06-28', 200, 'sticks', '', 0, 0, 'look at the image', 'images/DSC_0038_small.JPG'),
-(10, 23, '5', 1, 0, '0', 0, 0, 4, '2017-07-04', 3, 'hours', '', 0, 0, 'cowpeas', '');
+INSERT INTO `log` (`log_id`, `field_id`, `plots`, `user_id`, `crop_id`, `sample_number`, `treatment_id`, `measurement_id`, `activity_id`, `log_date`, `log_value_number`, `log_value_units`, `log_value_text`, `log_number_of_laborers`, `log_cost`, `log_comments`, `log_picture`) VALUES
+(13, 23, '0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15', 1, 0, '0', 0, 0, 6, '2017-09-07', 5, 'hours', '', 2, 2000, '', ''),
+(14, 23, '0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15', 1, 0, '0', 0, 35, 0, '2017-09-07', 0, '%', '1*80*2*75*3*88', 0, 0, 'Measured at SUA', ''),
+(17, 23, '0,2,4,6,8,11,13', 1, 0, '0', 0, 51, 0, '2017-09-07', 0, '', '1*fuckmen*2*Vertebrate*3*Insect*4*batshits', 0, 0, '', '');
 
 -- --------------------------------------------------------
 
@@ -314,7 +316,7 @@ CREATE TABLE IF NOT EXISTS `measurement_x_crop_or_treatment` (
   `measurement_id` int(10) unsigned NOT NULL,
   `crop_id` int(10) unsigned DEFAULT NULL,
   `treatment_id` int(10) unsigned DEFAULT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=47 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=52 ;
 
 --
 -- Volcado de datos para la tabla `measurement_x_crop_or_treatment`
@@ -322,11 +324,9 @@ CREATE TABLE IF NOT EXISTS `measurement_x_crop_or_treatment` (
 
 INSERT INTO `measurement_x_crop_or_treatment` (`measurement_x_crop_or_treatment_id`, `measurement_id`, `crop_id`, `treatment_id`) VALUES
 (1, 11, 1, NULL),
-(2, 28, 9, NULL),
 (3, 33, 2, NULL),
 (4, 32, 4, NULL),
 (5, 32, 1, NULL),
-(6, 32, 9, NULL),
 (7, 15, 2, NULL),
 (8, 16, 2, NULL),
 (9, 14, 2, NULL),
@@ -366,7 +366,12 @@ INSERT INTO `measurement_x_crop_or_treatment` (`measurement_x_crop_or_treatment_
 (43, 62, 4, NULL),
 (44, 62, 8, NULL),
 (45, 63, 4, NULL),
-(46, 63, 8, NULL);
+(46, 63, 8, NULL),
+(47, 69, 2, NULL),
+(48, 70, 2, NULL),
+(49, 68, 2, NULL),
+(50, 66, 1, NULL),
+(51, 67, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -538,12 +543,12 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT de la tabla `activity`
 --
 ALTER TABLE `activity`
-MODIFY `activity_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=25;
+MODIFY `activity_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=26;
 --
 -- AUTO_INCREMENT de la tabla `activity_x_crop_or_treatment`
 --
 ALTER TABLE `activity_x_crop_or_treatment`
-MODIFY `activity_x_crop_or_treatment_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=42;
+MODIFY `activity_x_crop_or_treatment_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=53;
 --
 -- AUTO_INCREMENT de la tabla `crop`
 --
@@ -558,12 +563,12 @@ MODIFY `field_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=38;
 -- AUTO_INCREMENT de la tabla `input_log`
 --
 ALTER TABLE `input_log`
-MODIFY `input_log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=7;
+MODIFY `input_log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT de la tabla `log`
 --
 ALTER TABLE `log`
-MODIFY `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=11;
+MODIFY `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=18;
 --
 -- AUTO_INCREMENT de la tabla `measurement`
 --
@@ -573,7 +578,7 @@ MODIFY `measurement_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=
 -- AUTO_INCREMENT de la tabla `measurement_x_crop_or_treatment`
 --
 ALTER TABLE `measurement_x_crop_or_treatment`
-MODIFY `measurement_x_crop_or_treatment_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=47;
+MODIFY `measurement_x_crop_or_treatment_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=52;
 --
 -- AUTO_INCREMENT de la tabla `plot`
 --
