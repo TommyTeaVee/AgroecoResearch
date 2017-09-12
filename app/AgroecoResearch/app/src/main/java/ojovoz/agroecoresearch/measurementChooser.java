@@ -1,6 +1,7 @@
 package ojovoz.agroecoresearch;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,8 +11,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListAdapter;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -160,12 +163,26 @@ public class measurementChooser extends AppCompatActivity {
                     trow.setBackgroundColor(ContextCompat.getColor(this, R.color.colorWhite));
                 }
 
+                CheckBox cb = new CheckBox(measurementChooser.this);
+                cb.setButtonDrawable(R.drawable.info_checkbox);
+                cb.setId(n);
+                cb.setPadding(4, 4, 4, 4);
+                cb.setChecked(false);
+                cb.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        showDescription(v.getId(), v);
+                    }
+                });
+                trow.addView(cb, lp);
+
                 TextView tv = new TextView(measurementChooser.this);
                 tv.setId(n);
                 tv.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
                 tv.setText(measurement.measurementName);
                 tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f);
                 tv.setPadding(4, 4, 4, 4);
+                tv.setMinWidth(100);
                 tv.setOnClickListener(new View.OnClickListener() {
 
                     @Override
@@ -182,6 +199,30 @@ public class measurementChooser extends AppCompatActivity {
                 n++;
             }
         }
+    }
+
+    public void showDescription(int id, View v){
+
+        CheckBox cb = (CheckBox)v;
+        cb.setChecked(false);
+
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_description);
+        dialog.setCanceledOnTouchOutside(true);
+        TextView descriptionTitle = (TextView)dialog.findViewById(R.id.description_title);
+        descriptionTitle.setText("Measurement: "+measurements.get(id).measurementName);
+
+        TextView descriptionText = (TextView)dialog.findViewById(R.id.description_text);
+        String activityDescription = measurements.get(id).measurementDescription;
+        if(activityDescription.isEmpty()){
+            activityDescription=getString(R.string.noDescriptionAvailableText);
+        } else {
+            activityDescription = activityDescription.replaceAll("\\*", "\n");
+        }
+        descriptionText.setText(activityDescription);
+
+        dialog.show();
     }
 
     public void chooseItem(int id, View v) {

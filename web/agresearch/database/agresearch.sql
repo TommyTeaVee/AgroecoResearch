@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: 192.168.86.55
--- Tiempo de generación: 07-09-2017 a las 20:06:46
+-- Tiempo de generación: 12-09-2017 a las 19:25:55
 -- Versión del servidor: 5.5.57-0+deb7u1-log
 -- Versión de PHP: 5.3.29-1~dotdeb.0
 
@@ -273,7 +273,7 @@ INSERT INTO `measurement` (`measurement_id`, `measurement_name`, `measurement_ca
 (23, '100(0) seed weight', 'Maize', 'Yield', 1, 0, 5000, 'g', '', 0, 1, 1, ''),
 (24, 'Total biomass', 'Cassava', 'Yield', 1, 0, 1000, 'kg', '', 0, 0, 1, ''),
 (25, 'Weight of kernels', 'Maize', 'Yield', 1, 0, 3000, 'g', '', 0, 0, 1, ''),
-(27, 'Nutritional value per mass (kcal)', 'Cassava', 'Quality', 1, 0, 1000, 'kcal', '', 0, 1, 1, ''),
+(27, 'Kcal per mass', 'Cassava', 'Quality', 1, 0, 1000, 'kcal', '', 0, 1, 1, ''),
 (29, 'Disease infestation', 'Cassava', 'Plant health', 0, 0, 0, '', 'Bacterial,Fungal,Viral', 0, 1, 1, ''),
 (35, 'Moisture', 'Soil', 'Soil moisture', 1, 0, 100, '%', '', 0, 1, 1, ''),
 (36, 'pH', 'Soil', 'Soil fertility', 1, 0, 14, 'pH', '', 0, 1, 1, ''),
@@ -288,7 +288,7 @@ INSERT INTO `measurement` (`measurement_id`, `measurement_name`, `measurement_ca
 (50, 'Disease infestation', 'Maize', 'Plant health', 0, 0, 0, '', 'Bacterial,Fungal,Viral', 0, 1, 1, ''),
 (51, 'Pest infestation', 'Maize', 'Plant health', 0, 0, 0, '', 'Bird,Insect,Insect larvae,Vertebrate,Worm', 0, 1, 1, ''),
 (52, 'Stress symptoms', 'Maize', 'Plant health', 0, 0, 0, '', 'discoloration - dark green,discoloration - light green,discoloration - yellowish,water stress - rippled leaf margins,water stress - rolled or folded leaves,water stress - dried leaves', 0, 1, 1, ''),
-(53, 'Nutritional value per mass (kcal)', 'Maize', 'Quality', 1, 0, 1000, 'kcal', '', 0, 1, 1, ''),
+(53, 'Kcal per mass', 'Maize', 'Quality', 1, 0, 1000, 'kcal', '', 0, 1, 1, ''),
 (54, 'Number of sprouted plants', 'Cassava', 'Sowing/planting - survival', 1, 0, 1000, 'per plot', '', 0, 0, 0, ''),
 (55, 'Number of planted sticks', 'Cassava', 'Sowing/planting - survival', 1, 0, 1000, 'per plot', '', 0, 0, 0, ''),
 (56, 'Number of survived plants', 'Maize', 'Yield', 1, 0, 1000, 'per plot', '', 0, 0, 0, ''),
