@@ -211,10 +211,10 @@ public class measurementChooser extends AppCompatActivity {
         dialog.setContentView(R.layout.dialog_description);
         dialog.setCanceledOnTouchOutside(true);
         TextView descriptionTitle = (TextView)dialog.findViewById(R.id.description_title);
-        descriptionTitle.setText("Measurement: "+measurements.get(id).measurementName);
+        descriptionTitle.setText("Measurement: "+agroHelper.getMeasurementNameFromId(measurementIds[id]));
 
         TextView descriptionText = (TextView)dialog.findViewById(R.id.description_text);
-        String activityDescription = measurements.get(id).measurementDescription;
+        String activityDescription = agroHelper.getMeasurementDescriptionFromId(measurementIds[id]);
         if(activityDescription.isEmpty()){
             activityDescription=getString(R.string.noDescriptionAvailableText);
         } else {
