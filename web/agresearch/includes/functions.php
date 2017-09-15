@@ -27,6 +27,16 @@ function getUserRole($dbh,$user_id){
 	return $ret;
 }
 
+function getUserNameFromId($dbh,$user_id){
+	$ret="";
+	$query="SELECT user_name FROM user WHERE user_id=$user_id";
+	$result = mysqli_query($dbh,$query);
+	if($row = mysqli_fetch_array($result,MYSQL_NUM)){
+		$ret=$row[0];
+	}
+	return $ret;
+}
+
 function getCrops($dbh,$int){
 	$ret=array();
 	if($int==1){
@@ -456,5 +466,10 @@ function checkMessages($mail_server, $mail_user, $mail_password, $dbh){
 		}
 		imap_close($inbox, CL_EXPUNGE);
 	}
+}
+
+function markNotificationAsSent($dbh,$id){
+	$query="UPDATE notification SET notification_sent=1 WHERE notification_id=$id";
+	$result = mysqli_query($dbh,$query);
 }
 ?>

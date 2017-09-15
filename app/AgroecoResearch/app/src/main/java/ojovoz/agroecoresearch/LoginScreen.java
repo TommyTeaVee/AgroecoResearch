@@ -11,6 +11,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.StringReader;
+
+import au.com.bytecode.opencsv.CSVReader;
+import au.com.bytecode.opencsv.CSVWriter;
 
 public class loginScreen extends AppCompatActivity implements httpConnection.AsyncResponse {
 
@@ -18,6 +24,8 @@ public class loginScreen extends AppCompatActivity implements httpConnection.Asy
     private promptDialog dlg = null;
     private preferenceManager prefs;
     private boolean bConnecting = false;
+
+    private int connectionState=0;
 
     public int userId;
     public int userRole;
@@ -60,6 +68,7 @@ public class loginScreen extends AppCompatActivity implements httpConnection.Asy
     }
 
     public void validateUser(View v){
+        connectionState=0;
         httpConnection http = new httpConnection(this,this);
         View view = this.getCurrentFocus();
         if (view != null) {
@@ -110,25 +119,56 @@ public class loginScreen extends AppCompatActivity implements httpConnection.Asy
     @Override
     public void processFinish(String output){
         bConnecting=false;
-        CharSequence parts[];
-        if(TextUtils.isEmpty(output)){
-            tv.setText(R.string.checkConnectionMessage);
-        } else if(output.equals("-1")){
-            tv.setText(R.string.invalidUserMessage);
-        } else {
-            parts=output.split(",");
-            if(parts.length==6){
-                userId=Integer.parseInt(parts[0].toString());
-                userRole=Integer.parseInt(parts[1].toString());
-                prefs.updateUserPrefs("users","*"+ uAS + "," + uPS + "*," + userId + "," + userRole);
-                prefs.savePreference("mail",(String)parts[2]);
-                prefs.savePreference("password",(String)parts[3]);
-                prefs.savePreference("smtpServer",(String)parts[4]);
-                prefs.savePreference("smtpPort",(String)parts[5]);
+        switch(connectionState) {
+            case 0:
+                CharSequence parts[];
+                if(TextUtils.isEmpty(output)){
+                    tv.setText(R.string.checkConnectionMessage);
+                } else if(output.equals("-1")){
+                    tv.setText(R.string.invalidUserMessage);
+                } else {
+                    parts=output.split(",");
+                    if(parts.length==6){
+                        userId=Integer.parseInt(parts[0].toString());
+                        userRole=Integer.parseInt(parts[1].toString());
+                        prefs.updateUserPrefs("users","*"+ uAS + "," + uPS + "*," + userId + "," + userRole);
+                        prefs.savePreference("mail",(String)parts[2]);
+                        prefs.savePreference("password",(String)parts[3]);
+                        prefs.savePreference("smtpServer",(String)parts[4]);
+                        prefs.savePreference("smtpPort",(String)parts[5]);
+                        downloadNotifications();
+                    } else {
+                        tv.setText(R.string.invalidUserMessage);
+                    }
+                }
+                break;
+            case 1:
+                String[] nextLine;
+                CSVReader reader = new CSVReader(new StringReader(output),',','"');
+                File file = new File(this.getFilesDir(), "notifications");
+                try {
+                    FileWriter w = new FileWriter(file,true);
+                    CSVWriter writer = new CSVWriter(w, ',', '"');
+                    while((nextLine = reader.readNext()) != null){
+                        writer.writeNext(nextLine);
+                    }
+                    writer.close();
+                    reader.close();
+                } catch (IOException e) {
+
+                }
                 launchMainMenu();
-            } else {
-                tv.setText(R.string.invalidUserMessage);
-            }
+        }
+    }
+
+    public void downloadNotifications(){
+        httpConnection http = new httpConnection(this,this);
+        if (http.isOnline()) {
+            connectionState=1;
+            bConnecting=true;
+            http.execute(server + "/mobile/get_notifications.php?user_id=" + userId,"");
+        } else {
+            launchMainMenu();
         }
     }
 

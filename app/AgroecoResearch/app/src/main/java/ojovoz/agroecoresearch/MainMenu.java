@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -24,6 +25,8 @@ public class mainMenu extends AppCompatActivity {
     private preferenceManager prefs;
     boolean bCatalogsDownloaded=false;
 
+    private notificationHelper notifications;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +35,8 @@ public class mainMenu extends AppCompatActivity {
         userRole = getIntent().getExtras().getInt("userRole");
 
         checkCatalogsDownloaded();
+
+        notifications = new notificationHelper(this);
         createButtons();
     }
 
@@ -42,102 +47,27 @@ public class mainMenu extends AppCompatActivity {
 
     public void createButtons(){
 
-        LinearLayout.LayoutParams params;
-        LinearLayout layout = (LinearLayout)findViewById(R.id.menu_layout);
+        Button b;
 
-        for(int i=0;i<6;i++){
-            params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.height=70;
-            params.gravity=Gravity.CENTER;
-            if(i>0) {
-                params.topMargin = 50;
-            }
+        if(!bCatalogsDownloaded){
+            b = (Button)findViewById(R.id.registerInput);
+            b.setVisibility(View.GONE);
 
-            if((i<4) && bCatalogsDownloaded) {
-                Button b = new Button(mainMenu.this);
-                b.setBackgroundResource(R.drawable.button_background);
-                b.setTextColor(Color.WHITE);
-                b.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-                b.setId(i);
-                switch(i) {
-                    case 0:
-                        b.setText(R.string.registerInputButton);
-                        b.setOnClickListener(new View.OnClickListener() {
+            b = (Button)findViewById(R.id.registerActivity);
+            b.setVisibility(View.GONE);
 
-                            @Override
-                            public void onClick(View v) {
-                                addInput();
-                            }
-                        });
-                        layout.addView(b, params);
-                        break;
-                    case 1:
-                        b.setText(R.string.registerActivityButtonText);
-                        b.setOnClickListener(new View.OnClickListener() {
+            b = (Button)findViewById(R.id.registerMeasurement);
+            b.setVisibility(View.GONE);
 
-                            @Override
-                            public void onClick(View v) {
-                                addActivity();
-                            }
-                        });
-                        layout.addView(b, params);
-                        break;
-                    case 2:
-                        b.setText(R.string.registerMeasurementButtonText);
-                        b.setOnClickListener(new View.OnClickListener() {
-
-                            @Override
-                            public void onClick(View v) {
-                                addMeasurement();
-                            }
-                        });
-                        layout.addView(b, params);
-                        break;
-                    case 3:
-                        b.setText(R.string.manageDataButtonText);
-                        b.setOnClickListener(new View.OnClickListener() {
-
-                            @Override
-                            public void onClick(View v) {
-                                manageData();
-                            }
-                        });
-                        layout.addView(b, params);
-                        break;
-                }
-            } else if(i>=4) {
-                Button b = new Button(mainMenu.this);
-                b.setBackgroundResource(R.drawable.button_background);
-                b.setTextColor(Color.WHITE);
-                b.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-                b.setId(i);
-
-                switch(i){
-                    case 4:
-                        b.setText(R.string.settingsButtonText);
-                        b.setOnClickListener(new View.OnClickListener() {
-
-                            @Override
-                            public void onClick(View v) {
-                                settings();
-                            }
-                        });
-                        layout.addView(b,params);
-                        break;
-                    case 5:
-                        b.setText(R.string.logoutButtonText);
-                        b.setOnClickListener(new View.OnClickListener() {
-
-                            @Override
-                            public void onClick(View v) {
-                                doLogout();
-                            }
-                        });
-                        layout.addView(b,params);
-                        break;
-                }
-            }
+            b = (Button)findViewById(R.id.manageData);
+            b.setVisibility(View.GONE);
         }
+
+        if(!notifications.notificationsPending(userId)){
+            FloatingActionButton fb = (FloatingActionButton)findViewById(R.id.notificationsButton);
+            fb.setVisibility(View.GONE);
+        }
+
     }
 
     public void checkCatalogsDownloaded(){
@@ -147,7 +77,7 @@ public class mainMenu extends AppCompatActivity {
         bCatalogsDownloaded = (prefs.exists("crops") && prefs.exists("treatments") && prefs.exists("measurements") && prefs.exists("activities") && prefs.exists("fields"));
     }
 
-    public void addActivity(){
+    public void addActivity(View v){
         final Context context = this;
         Intent i = new Intent(context, chooser.class);
         i.putExtra("userId",userId);
@@ -157,7 +87,7 @@ public class mainMenu extends AppCompatActivity {
         finish();
     }
 
-    public void addInput(){
+    public void addInput(View v){
         final Context context = this;
         Intent i = new Intent(context, inputChooser.class);
         i.putExtra("userId",userId);
@@ -168,7 +98,7 @@ public class mainMenu extends AppCompatActivity {
         finish();
     }
 
-    public void addMeasurement(){
+    public void addMeasurement(View v){
         final Context context = this;
         Intent i = new Intent(context, measurementChooser.class);
         i.putExtra("userId",userId);
@@ -178,7 +108,7 @@ public class mainMenu extends AppCompatActivity {
         finish();
     }
 
-    public void manageData(){
+    public void manageData(View v){
         final Context context = this;
         Intent i = new Intent(context, manageData.class);
         i.putExtra("userId",userId);
@@ -188,7 +118,7 @@ public class mainMenu extends AppCompatActivity {
         finish();
     }
 
-    public void settings(){
+    public void settings(View v){
         final Context context = this;
         Intent i = new Intent(context, settings.class);
         i.putExtra("userId",userId);
@@ -205,7 +135,7 @@ public class mainMenu extends AppCompatActivity {
         logoutDialog.setPositiveButton(R.string.okButtonText, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                doLogout();
+                doLogout(null);
             }
         });
         logoutDialog.create();
@@ -213,10 +143,14 @@ public class mainMenu extends AppCompatActivity {
 
     }
 
-    public void doLogout(){
+    public void doLogout(View v){
         final Context context = this;
         Intent i = new Intent(context, loginScreen.class);
         startActivity(i);
         finish();
+    }
+
+    public void notifications(View v){
+
     }
 }

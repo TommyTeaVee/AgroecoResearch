@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: 192.168.86.55
--- Tiempo de generación: 13-09-2017 a las 12:52:49
+-- Tiempo de generación: 15-09-2017 a las 16:48:32
 -- Versión del servidor: 5.5.57-0+deb7u1-log
 -- Versión de PHP: 5.3.29-1~dotdeb.0
 
@@ -134,10 +134,10 @@ CREATE TABLE IF NOT EXISTS `crop` (
 --
 
 INSERT INTO `crop` (`crop_id`, `crop_name`, `crop_symbol`, `crop_variety_name`, `crop_used_for_intercropping`) VALUES
-(1, 'Maize', 'C1', 'All', 0),
-(2, 'Cassava', 'C2', 'All', 0),
-(4, 'Cowpeas', '', 'All', 1),
-(8, 'Pigeon peas', '', 'All', 1);
+(1, 'Maize', 'C2', 'All', 0),
+(2, 'Cassava', 'C1', 'All', 0),
+(4, 'Cowpeas', 'L', 'All', 1),
+(8, 'Pigeon peas', 'L', 'All', 1);
 
 -- --------------------------------------------------------
 
@@ -162,7 +162,7 @@ CREATE TABLE IF NOT EXISTS `field` (
 --
 
 INSERT INTO `field` (`field_id`, `parent_field_id`, `user_id`, `field_date_created`, `field_name`, `field_replication_number`, `field_lat`, `field_lng`, `field_configuration`) VALUES
-(23, 23, 1, '2017-02-24', 'Masasi', 1, '-10.792300', '38.894855', 'F=(2,1,1,1);G=(4,4);P=(1,4,0,1);P=(2,0,0,1);P=(1,0,0,0);P=(2,4,0,0);P=(1,0,0,1);P=(2,4,0,1);P=(1,4,0,0);P=(2,0,0,0);P=(1,4,1,1);P=(2,4,1,1);P=(2,0,1,0);P=(1,0,1,0);P=(2,0,1,1);P=(1,0,1,1);P=(2,4,1,0);P=(2,4,1,0);'),
+(23, 23, 1, '2017-02-24', 'Masasi', 1, '-10.792300', '38.894855', 'F=(2,1,1,1);G=(4,4);P=(1,4,0,1);P=(2,0,0,1);P=(1,0,0,0);P=(2,4,0,0);P=(1,0,0,1);P=(2,4,0,1);P=(1,4,0,0);P=(2,0,0,0);P=(1,4,1,1);P=(2,4,1,1);P=(2,0,1,0);P=(1,0,1,0);P=(2,0,1,1);P=(1,0,1,1);P=(2,4,1,0);P=(1,4,1,0);'),
 (24, 23, 1, '2017-02-24', 'Masasi', 2, '-10.792300', '38.894855', 'F=(2,1,1,1);G=(4,4);P=(2,4,0,1);P=(1,0,0,1);P=(1,4,1,1);P=(2,0,1,1);P=(1,4,0,1);P=(2,0,0,1);P=(1,0,1,1);P=(2,4,1,1);P=(2,0,0,0);P=(1,0,0,0);P=(2,4,1,0);P=(1,4,1,0);P=(2,4,0,0);P=(1,4,0,0);P=(2,0,1,0);P=(1,0,1,0);'),
 (25, 23, 1, '2017-02-24', 'Masasi', 3, '-10.792300', '38.894855', 'F=(2,1,1,1);G=(4,4);P=(2,0,1,0);P=(1,4,1,0);P=(1,0,1,1);P=(2,4,1,1);P=(1,0,1,0);P=(2,4,1,0);P=(1,4,1,1);P=(2,0,1,1);P=(2,4,0,0);P=(1,0,0,0);P=(2,0,0,1);P=(1,4,0,1);P=(1,4,0,0);P=(2,0,0,0);P=(2,4,0,1);P=(1,0,0,1);'),
 (34, 34, 3, '2017-04-19', 'Morogoro', 1, '-6.741821', '37.550743', 'F=(2,1,1,1);G=(4,4);P=(1,4,0,1);P=(2,0,0,1);P=(1,0,0,0);P=(2,4,0,0);P=(1,0,0,1);P=(2,4,0,1);P=(1,4,0,0);P=(2,0,0,0);P=(1,4,1,1);P=(2,4,1,1);P=(1,0,1,0);P=(2,0,1,0);P=(2,0,1,1);P=(1,0,1,1);P=(1,4,1,0);P=(2,4,1,0);'),
@@ -279,7 +279,7 @@ INSERT INTO `measurement` (`measurement_id`, `measurement_name`, `measurement_ca
 (36, 'pH', 'Soil', 'Soil fertility', 1, 0, 14, 'pH', '', 0, 1, 1, 'Take with the auger ten soil samples per plot on ten random and evenly distributed spots. Seperate the upper soil (0-20 cm depth) from the subsoil (20-40 cm depth). The ten samples of one soil depth should be mixed, dried, sieved and homogenized. The pH (H2O) of each dried and homogenized soil samples - one upper soil and one subsoil sample per plot - will be analysed at the SUA/ETH soil laboratories.'),
 (37, 'CN ratio', 'Soil', 'Soil fertility', 1, 0, 100, '%', '', 0, 1, 1, 'Take with the auger ten soil samples per plot on ten random and evenly distributed spots. Seperate the upper soil (0-20 cm depth) from the subsoil (20-40 cm depth). The ten samples of one soil depth should be mixed, dried, sieved and homogenized. The organic carbon ratio of each dried and homogenized soil samples - one upper soil and one subsoil sample per plot - will be analysed at the SUA/ETH soil laboratories.'),
 (39, 'Number of survived plants', 'Cassava', 'Yield', 1, 0, 1000, 'per plot', '', 0, 0, 0, 'Count the number of plants which have survived on each plot shortly before harvesting the crops on that plot.'),
-(44, 'Growth stage', 'Cassava', 'Plant growth', 0, 0, 0, '', 'GS1,GS2,GS3,GS4,GS5', 0, 1, 1, 'The growth stages of cassava are defined by the emergence of sprouting (GS1), by the expansion of the \\&quot;true\\&quot; leaves (GS2), by the canopy establishment and branching (GS3), by the leaf senesence and stem lignification (GS4) and by leaf fall and growth pause (dormacy; GS5). Thus, to determine the growth stage measure the plant height (given by the stem heigth plus the height of the longest branch), the stem girth and record the date of flowering and fruit development for each plant per plot.'),
+(44, 'Growth stage', 'Cassava', 'Plant growth', 0, 0, 0, '', 'GS1,GS2,GS3,GS4,GS5', 0, 1, 1, 'The growth stages of cassava are defined by the emergence of sprouting (GS1), by the expansion of the true leaves (GS2), by the canopy establishment and branching (GS3), by the leaf senesence and stem lignification (GS4) and by leaf fall and growth pause (dormacy; GS5). Thus, to determine the growth stage measure the plant height (given by the stem heigth plus the height of the longest branch), the stem girth and record the date of flowering and fruit development for each plant per plot.'),
 (45, 'Corn moisture', 'Maize', 'Quality', 1, 0, 100, '%', '', 0, 1, 1, 'Analyse the corn moisture of the maize yield is obtained by testing at SUA/ ETH laboratories different kernel samples harvested on one plot. Weight the samples shortly after harvest and, after drying them in an oven, calcultate the moisture % of each sample by dividing the dry mass by the fresh mass, and by subtracting then the division by 100 (percentage)'),
 (46, 'Exchangeable cations', 'Soil', 'Soil fertility', 1, 0, 1000, 'cmol[c]/kg', '', 0, 1, 1, 'Take with the auger ten soil samples per plot on ten random and evenly distributed spots. Seperate the upper soil (0-20 cm depth) from the subsoil (20-40 cm depth). The ten samples of one soil depth should be mixed, dried, sieved and homogenized. The cation exchange capacity of each dried and homogenized soil samples - one upper soil and one subsoil sample per plot - will be analysed at the SUA/ETH soil laboratories.'),
 (47, 'Crop stand', 'Cassava', 'Plant growth', 0, 0, 0, '', 'homogeneous,heterogeneous (between 25%-50% var),very heterogeneous (over 50% var)', 0, 0, 1, 'Categorization of the crop stand (homogenous or heterogenous) based on the plant height measurements.'),
@@ -319,7 +319,7 @@ CREATE TABLE IF NOT EXISTS `measurement_x_crop_or_treatment` (
   `measurement_id` int(10) unsigned NOT NULL,
   `crop_id` int(10) unsigned DEFAULT NULL,
   `treatment_id` int(10) unsigned DEFAULT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=52 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=56 ;
 
 --
 -- Volcado de datos para la tabla `measurement_x_crop_or_treatment`
@@ -374,7 +374,33 @@ INSERT INTO `measurement_x_crop_or_treatment` (`measurement_x_crop_or_treatment_
 (48, 70, 2, NULL),
 (49, 68, 2, NULL),
 (50, 66, 1, NULL),
-(51, 67, 1, NULL);
+(51, 67, 1, NULL),
+(52, 71, 2, NULL),
+(53, 72, 1, NULL),
+(54, 73, 4, NULL),
+(55, 73, 8, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `notification`
+--
+
+CREATE TABLE IF NOT EXISTS `notification` (
+`notification_id` int(10) unsigned NOT NULL,
+  `sender_id` int(10) unsigned NOT NULL,
+  `receiver_id` int(10) NOT NULL,
+  `notification_date` date NOT NULL,
+  `notification_text` text NOT NULL,
+  `notification_sent` tinyint(3) unsigned NOT NULL DEFAULT '0'
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
+
+--
+-- Volcado de datos para la tabla `notification`
+--
+
+INSERT INTO `notification` (`notification_id`, `sender_id`, `receiver_id`, `notification_date`, `notification_text`, `notification_sent`) VALUES
+(7, 2, 1, '2017-09-15', 'A message for Eugenio', 1);
 
 -- --------------------------------------------------------
 
@@ -401,7 +427,7 @@ CREATE TABLE IF NOT EXISTS `treatment` (
   `treatment_category` varchar(30) NOT NULL,
   `primary_crop_id` int(11) unsigned DEFAULT NULL,
   `intercropping_crop_id` int(11) unsigned DEFAULT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=13 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=16 ;
 
 --
 -- Volcado de datos para la tabla `treatment`
@@ -411,7 +437,8 @@ INSERT INTO `treatment` (`treatment_id`, `treatment_name`, `treatment_category`,
 (5, 'Composting', 'Soil management', NULL, NULL),
 (6, 'Pest control', 'Pest control', NULL, NULL),
 (10, 'Mulching', 'Soil management', NULL, NULL),
-(12, 'Intercropping', 'Intercropping', 1, 4);
+(12, 'Intercropping', 'Intercropping', 1, 4),
+(14, 'Top dressing', 'Soil management', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -515,6 +542,12 @@ ALTER TABLE `measurement_x_crop_or_treatment`
  ADD PRIMARY KEY (`measurement_x_crop_or_treatment_id`);
 
 --
+-- Indices de la tabla `notification`
+--
+ALTER TABLE `notification`
+ ADD PRIMARY KEY (`notification_id`);
+
+--
 -- Indices de la tabla `plot`
 --
 ALTER TABLE `plot`
@@ -581,7 +614,12 @@ MODIFY `measurement_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=
 -- AUTO_INCREMENT de la tabla `measurement_x_crop_or_treatment`
 --
 ALTER TABLE `measurement_x_crop_or_treatment`
-MODIFY `measurement_x_crop_or_treatment_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=52;
+MODIFY `measurement_x_crop_or_treatment_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=56;
+--
+-- AUTO_INCREMENT de la tabla `notification`
+--
+ALTER TABLE `notification`
+MODIFY `notification_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT de la tabla `plot`
 --
@@ -591,7 +629,7 @@ MODIFY `plot_id` int(10) unsigned NOT NULL AUTO_INCREMENT;
 -- AUTO_INCREMENT de la tabla `treatment`
 --
 ALTER TABLE `treatment`
-MODIFY `treatment_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=13;
+MODIFY `treatment_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=16;
 --
 -- AUTO_INCREMENT de la tabla `treatment_color`
 --
