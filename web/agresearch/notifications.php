@@ -1,8 +1,8 @@
 <?php
 header("Cache-Control: no-cache, must-revalidate");
-include_once "./../includes/init_database.php";
-include_once "./../includes/variables.php";
-include_once "./../includes/functions.php";
+include_once "includes/init_database.php";
+include_once "includes/variables.php";
+include_once "includes/functions.php";
 $dbh = initDB();
 session_start();
 
@@ -36,7 +36,7 @@ if($proceed) {
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="./../css/w3.css">
+<link rel="stylesheet" href="css/w3.css">
 <title>Agroeco Research</title>
 </head>
 <body>

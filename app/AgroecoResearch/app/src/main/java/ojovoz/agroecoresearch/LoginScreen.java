@@ -25,6 +25,8 @@ public class loginScreen extends AppCompatActivity implements httpConnection.Asy
     private preferenceManager prefs;
     private boolean bConnecting = false;
 
+    public notificationHelper nHelper;
+
     private int connectionState=0;
 
     public int userId;
@@ -42,6 +44,8 @@ public class loginScreen extends AppCompatActivity implements httpConnection.Asy
 
         initializeVariables();
         tv = (TextView)findViewById(R.id.loginMessage);
+
+        nHelper = new notificationHelper(this);
     }
 
     private void initializeVariables(){
@@ -108,9 +112,11 @@ public class loginScreen extends AppCompatActivity implements httpConnection.Asy
             //delete following block
             //begin
 
+            /*
             userId=1;
             userRole=2;
             launchMainMenu();
+            */
 
             //end
         }
@@ -143,20 +149,9 @@ public class loginScreen extends AppCompatActivity implements httpConnection.Asy
                 }
                 break;
             case 1:
-                String[] nextLine;
-                CSVReader reader = new CSVReader(new StringReader(output),',','"');
-                File file = new File(this.getFilesDir(), "notifications");
-                try {
-                    FileWriter w = new FileWriter(file,true);
-                    CSVWriter writer = new CSVWriter(w, ',', '"');
-                    while((nextLine = reader.readNext()) != null){
-                        writer.writeNext(nextLine);
-                    }
-                    writer.close();
-                    reader.close();
-                } catch (IOException e) {
 
-                }
+                nHelper.appendNewNotifications(output);
+
                 launchMainMenu();
         }
     }
@@ -166,7 +161,7 @@ public class loginScreen extends AppCompatActivity implements httpConnection.Asy
         if (http.isOnline()) {
             connectionState=1;
             bConnecting=true;
-            http.execute(server + "/mobile/get_notifications.php?user_id=" + userId,"");
+            http.execute(server + "/mobile/get_notifications.php?user_id=" + userId,"csv");
         } else {
             launchMainMenu();
         }

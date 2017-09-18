@@ -109,4 +109,8 @@
     <string name="enterOtherValueLabel">Enter other value</string>
     <string name="closeButtonText">Close</string>
     <string name="noDescriptionAvailableText">No description available</string>
+    <string name="notificationsTitle">Notifications:</string>
+    <string name="notificationsLabel">Notifications</string>
+    <string name="deleteNotificationMessage">Delete notification?</string>
+    <string name="deleteNotification">Delete</string>
 </resources>

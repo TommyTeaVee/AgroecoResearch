@@ -151,6 +151,11 @@ public class mainMenu extends AppCompatActivity {
     }
 
     public void notifications(View v){
-
+        final Context context = this;
+        Intent i = new Intent(context, notifications.class);
+        i.putExtra("userId",userId);
+        i.putExtra("userRole",userRole);
+        startActivity(i);
+        finish();
     }
 }
