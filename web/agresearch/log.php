@@ -75,6 +75,10 @@ function goToMenu(){
 	document.location = "menu.php";
 }
 
+function refresh(){
+	document.location = "log.php";
+}
+
 function affectAllCheckboxes(){
 	var masterCheckbox = document.getElementById("toggle_all");
 	var state = masterCheckbox.checked;
@@ -125,7 +129,6 @@ function confirmDelete(){
 	  <th>Item</th>
 	  <th>Date</th>
 	  <th>Field</th>
-	  <th>Plot</th>
 	  <th>Description</th>
 	  <th>Actions</th>
 	</tr>
@@ -140,13 +143,13 @@ if(isset($_SESSION['log_activity_filter'])){
 } else if(isset($_SESSION['input_log_treatment_filter'])){
 	$query="SELECT 'Input', input_log_id AS id, input_log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, treatment_name AS item FROM field, treatment, input_log WHERE field.field_id = input_log.field_id".$_SESSION['input_log_field_filter'].$_SESSION['input_log_date_filter']."AND treatment.treatment_id = input_log.treatment_id AND input_log.treatment_id=".$_SESSION['input_log_treatment_filter']." ORDER BY date DESC, fname, frn, plot, item LIMIT $from, $maxmessages";
 } else {
-	$query="(SELECT 'Log', log_id AS id, log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, activity_name AS item FROM field, activity, log WHERE field.field_id = log.field_id".$_SESSION['log_field_filter'].$_SESSION['log_date_filter']."AND activity.activity_id = log.activity_id AND log.activity_id>0) UNION (SELECT 'Log', log_id AS id, log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, measurement_name AS item FROM field, measurement, log WHERE field.field_id = log.field_id".$_SESSION['log_field_filter'].$_SESSION['log_date_filter']."AND measurement.measurement_id = log.measurement_id AND log.measurement_id>0) UNION (SELECT 'Input', input_log_id AS id, input_log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, crop_name AS item FROM field, crop, input_log WHERE field.field_id = input_log.field_id".$_SESSION['input_log_field_filter'].$_SESSION['input_log_date_filter']."AND crop.crop_id = input_log.crop_id AND input_log.crop_id>0) UNION (SELECT 'Input', input_log_id AS id, input_log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, treatment_name AS item FROM field, treatment, input_log WHERE field.field_id = input_log.field_id".$_SESSION['input_log_field_filter'].$_SESSION['input_log_date_filter']."AND treatment.treatment_id = input_log.treatment_id AND input_log.treatment_id>0) ORDER BY date DESC, fname, frn, plot, item LIMIT $from, $max_messages";
+	$query="(SELECT 'Activity', log_id AS id, log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, activity_name AS item FROM field, activity, log WHERE field.field_id = log.field_id".$_SESSION['log_field_filter'].$_SESSION['log_date_filter']."AND activity.activity_id = log.activity_id AND log.activity_id>0) UNION (SELECT 'Measurement', log_id AS id, log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, measurement_name AS item FROM field, measurement, log WHERE field.field_id = log.field_id".$_SESSION['log_field_filter'].$_SESSION['log_date_filter']."AND measurement.measurement_id = log.measurement_id AND log.measurement_id>0) UNION (SELECT 'Input', input_log_id AS id, input_log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, crop_name AS item FROM field, crop, input_log WHERE field.field_id = input_log.field_id".$_SESSION['input_log_field_filter'].$_SESSION['input_log_date_filter']."AND crop.crop_id = input_log.crop_id AND input_log.crop_id>0) UNION (SELECT 'Input', input_log_id AS id, input_log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, treatment_name AS item FROM field, treatment, input_log WHERE field.field_id = input_log.field_id".$_SESSION['input_log_field_filter'].$_SESSION['input_log_date_filter']."AND treatment.treatment_id = input_log.treatment_id AND input_log.treatment_id>0) ORDER BY date DESC, fname, frn, plot, item LIMIT $from, $max_messages";
 }
 $result = mysqli_query($dbh,$query);
 $n=0;
 while($row = mysqli_fetch_array($result,MYSQL_NUM)){
 	echo('<tr>');
-	if($row[0]=='Log'){
+	if($row[0]=='Activity' || $row[0]=='Measurement'){
 		echo('<td><input class="w3-check" type="checkbox" name="delete_log[]" value="'.$row[1].'"></td>');
 	} else if($row[0]=='Input'){
 		echo('<td><input class="w3-check" type="checkbox" name="delete_input_log[]" value="'.$row[1].'"></td>');
@@ -154,12 +157,6 @@ while($row = mysqli_fetch_array($result,MYSQL_NUM)){
 	echo('<td>'.$row[0].'</td>');
 	echo('<td>'.$row[2].'</td>');
 	echo('<td>'.$row[3].' R'.$row[4].'</td>');
-	if($row[5]=="-1"){
-		$plot_number="All";
-	} else {
-		$plot_number=intval($row[5])+1;
-	}
-	echo('<td>'.$plot_number.'</td>');
 	echo('<td>'.$row[6].'</td>');
 	if($row[0]=="Input"){
 		$link_details="calc_il.php?id=".$row[1]."&task=details";
@@ -194,7 +191,7 @@ if(getTotalItems($dbh,$_SESSION['log_field_filter'],$_SESSION['input_log_field_f
 }
 ?></div></div>
 <br>
-<button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:20%; height:40px; max-width:300px;" type="button" id="delete_selected" name="delete_selected" onclick="confirmDelete()">Delete selected</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" id="filters" name="filters" style="width:20%; height:40px; max-width:300px;" onclick="return showPopup('filters.php',800,700)">Filters</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" id="menu" name="menu" type="button" style="width:20%; height:40px; max-width:300px;" onclick="goToMenu()">Menu</button><br><br>
+<button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:20%; height:40px; max-width:300px;" type="button" id="refresh" name="refresh" onclick="refresh()">Refresh</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:20%; height:40px; max-width:300px;" type="button" id="delete_selected" name="delete_selected" onclick="confirmDelete()">Delete selected</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" id="filters" name="filters" style="width:20%; height:40px; max-width:300px;" onclick="return showPopup('filters.php',800,700)">Filters</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" id="menu" name="menu" type="button" style="width:20%; height:40px; max-width:300px;" onclick="goToMenu()">Menu</button><br><br>
 </body>
 </html>
 <?php

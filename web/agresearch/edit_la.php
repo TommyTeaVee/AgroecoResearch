@@ -15,6 +15,8 @@ if(isset($_POST['edit'])){
 	$date=$yyyy."-".$mm."-".$dd;
 	$value=floatval($_POST['value']);
 	$units=$_POST['units'];
+	$laborers=$_POST['laborers'];
+	$cost=floatval($_POST['cost']);
 	$comments=$_POST['comments'];
 	if(isset($_FILES['log_picture']['name'])){
 		$image_file=$_FILES['log_picture']['name'];
@@ -29,7 +31,7 @@ if(isset($_POST['edit'])){
 		$update_picture="";
 	}
 	
-	$query="UPDATE log SET log_date='$date', log_value_number=$value, log_value_units='$units', log_comments='$comments'".$update_picture." WHERE log_id=$id";
+	$query="UPDATE log SET log_date='$date', log_value_number=$value, log_value_units='$units', log_number_of_laborers=$laborers, log_cost=$cost, log_comments='$comments'".$update_picture." WHERE log_id=$id";
 	$result = mysqli_query($dbh,$query);
 	echo "<script type='text/javascript'>";
 	echo "window.opener.location.reload(false);";
@@ -39,15 +41,11 @@ if(isset($_POST['edit'])){
 } else if(isset($_SESSION['admin']) && $_SESSION['admin']==true && isset($_GET['id'])){
 	
 	$id=$_GET['id'];
-	$query="SELECT log_id, log_date, field_name, field_replication_number, plot_number, activity_name, log_value_units, log_value_number, log_comments, log_picture FROM log, field, activity WHERE log_id=$id AND field.field_id = log.field_id AND activity.activity_id = log.activity_id";
+	$query="SELECT log_id, log_date, field_name, field_replication_number, plots, activity_name, log_value_units, log_value_number, log_comments, log_picture, log_number_of_laborers, log_cost, field.field_id FROM log, field, activity WHERE log_id=$id AND field.field_id = log.field_id AND activity.activity_id = log.activity_id";
 	$result = mysqli_query($dbh,$query);
 	$row = mysqli_fetch_array($result,MYSQL_NUM);
 	
-	if($row[4]=="-1"){
-		$plot_number="All";
-	} else {
-		$plot_number=intval($row[4])+1;
-	}
+	$plot_labels = calculatePlotLabels($dbh,$row[12],$row[4]);
 	
 	$date=$row[1];
 	$date_parts=explode("-",$date);
@@ -83,7 +81,7 @@ if(isset($_POST['edit'])){
 <input name="id" type="hidden" id="id" value="<? echo($id); ?>">
 <p><div class="w3-text-green">
 <b>Field:</b> <?php echo($row[2]." replication ".$row[3]); ?><br>
-<b>Plot:</b> <?php echo($plot_number); ?><br>
+<b>Plots:</b> <?php echo($plot_labels); ?> <a href="edit_plots.php?task=la&id=<?php echo($id); ?>">Edit</a><br>
 <b>Activity:</b> <?php echo($row[5]); ?><br><br>
 <b>Date:</b>
 <div class="w3-row-padding">
@@ -133,6 +131,8 @@ if(isset($_POST['edit'])){
 </div>
 <b>Value:</b> <input class="w3-input w3-border-green w3-text-green" name="value" type="text" value="<?php echo($row[7]); ?>" onkeypress="return isNumberKey(event)">
 <b>Units:</b> <input class="w3-input w3-border-green w3-text-green" name="units" type="text" value="<?php echo($row[6]); ?>">
+<b>Number of laborers:</b> <input class="w3-input w3-border-green w3-text-green" name="laborers" type="text" value="<?php echo($row[10]); ?>">
+<b>Cost:</b> <input class="w3-input w3-border-green w3-text-green" name="cost" type="text" value="<?php echo($row[11]); ?>">
 <?php
 if($row[9]!=""){
 	$filename=$row[9];

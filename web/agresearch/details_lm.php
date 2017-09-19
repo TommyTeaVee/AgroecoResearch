@@ -9,15 +9,11 @@ session_start();
 if(isset($_SESSION['admin']) && $_SESSION['admin']==true && isset($_GET['id'])){
 	
 	$id=$_GET['id'];
-	$query="SELECT log_id, log_date, field_name, field_replication_number, plot_number, measurement_name, log_value_units, measurement_type, log_value_number, log_value_text, log_comments, log_picture FROM log, field, measurement WHERE log_id=$id AND field.field_id = log.field_id AND measurement.measurement_id = log.measurement_id";
+	$query="SELECT log_id, log_date, field_name, field_replication_number, plots, measurement_name, log_value_units, measurement_type, log_value_number, log_value_text, log_comments, log_picture, field.field_id, measurement_has_sample_number FROM log, field, measurement WHERE log_id=$id AND field.field_id = log.field_id AND measurement.measurement_id = log.measurement_id";
 	$result = mysqli_query($dbh,$query);
 	$row = mysqli_fetch_array($result,MYSQL_NUM);
 	
-	if($row[4]=="-1"){
-		$plot_number="All";
-	} else {
-		$plot_number=intval($row[4])+1;
-	}
+	$plot_labels = calculatePlotLabels($dbh,$row[12],$row[4]);
 	
 ?>
 <!DOCTYPE html>
@@ -32,18 +28,31 @@ if(isset($_SESSION['admin']) && $_SESSION['admin']==true && isset($_GET['id'])){
 <h2 class="w3-green">Item details</h2>
 <p><div class="w3-text-green">
 <b>Field:</b> <?php echo($row[2]." replication ".$row[3]); ?><br>
-<b>Plot:</b> <?php echo($plot_number); ?><br>
+<b>Plots:</b> <?php echo($plot_labels); ?><br>
 <b>Measurement:</b> <?php echo($row[5]); ?><br>
 <b>Date:</b> <?php echo($row[1]); ?> <br>
 <?php
-if($row[7]==0){
-?>
+if($row[13]==0){
+	if($row[7]==0){
+	?>
 <b>Value:</b> <?php echo($row[9]); ?><br>
 <?php
-} else {
+	} else {
 ?>
 <b>Value (<?php echo($row[6]); ?>):</b> <?php echo($row[8]); ?><br>
 <?php
+	}
+} else {
+	$values=parseSampleValues($row[9]);
+	if($row[7]==0){
+	?>
+<b>Values (sample:value)</b> <?php echo($values); ?><br>
+<?php	
+	} else {
+	?>
+<b>Values (sample:value in <?php echo($row[6]); ?>)</b> <?php echo($values); ?><br>
+<?php
+	}
 }
 ?>
 <?php

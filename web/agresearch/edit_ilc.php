@@ -41,15 +41,11 @@ if(isset($_POST['edit'])){
 } else if(isset($_SESSION['admin']) && $_SESSION['admin']==true && isset($_GET['id'])){
 	
 	$id=$_GET['id'];
-	$query="SELECT input_log_id, input_log_date, field_name, field_replication_number, plot_number, crop_name, crop_variety_name, input_age, input_origin, input_quantity, input_cost, input_comments, input_picture FROM input_log, field, crop WHERE input_log_id=$id AND field.field_id = input_log.field_id AND crop.crop_id = input_log.crop_id";
+	$query="SELECT input_log_id, input_log_date, field_name, field_replication_number, plots, crop_name, crop_variety_name, input_age, input_origin, input_quantity, input_cost, input_comments, input_picture, field.field_id FROM input_log, field, crop WHERE input_log_id=$id AND field.field_id = input_log.field_id AND crop.crop_id = input_log.crop_id";
 	$result = mysqli_query($dbh,$query);
 	$row = mysqli_fetch_array($result,MYSQL_NUM);
 	
-	if($row[4]=="-1"){
-		$plot_number="All";
-	} else {
-		$plot_number=intval($row[4])+1;
-	}
+	$plot_labels = calculatePlotLabels($dbh,$row[13],$row[4]);
 	
 	$date=$row[1];
 	$date_parts=explode("-",$date);
@@ -85,7 +81,7 @@ if(isset($_POST['edit'])){
 <input name="id" type="hidden" id="id" value="<? echo($id); ?>">
 <p><div class="w3-text-green">
 <b>Field:</b> <?php echo($row[2]." replication ".$row[3]); ?><br>
-<b>Plot:</b> <?php echo($plot_number); ?><br>
+<b>Plots:</b> <?php echo($plot_labels); ?> <a href="edit_plots.php?task=ic&id=<?php echo($id); ?>">Edit</a><br>
 <b>Crop:</b> <?php echo($row[5]. " (".$row[6].")"); ?><br><br>
 <b>Date:</b>
 <div class="w3-row-padding">

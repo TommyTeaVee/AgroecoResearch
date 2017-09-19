@@ -46,15 +46,11 @@ if(isset($_POST['edit'])){
 } else if(isset($_SESSION['admin']) && $_SESSION['admin']==true && isset($_GET['id'])){
 	
 	$id=$_GET['id'];
-	$query="SELECT log_id, log_date, field_name, field_replication_number, plot_number, measurement_name, measurement_type, log_value_units, measurement_categories, log_value_number, log_value_text, log_comments, log_picture FROM log, field, measurement WHERE log_id=$id AND field.field_id = log.field_id AND measurement.measurement_id = log.measurement_id";
+	$query="SELECT log_id, log_date, field_name, field_replication_number, plots, measurement_name, measurement_type, log_value_units, measurement_categories, log_value_number, log_value_text, log_comments, log_picture, field.field_id, measurement_has_sample_number FROM log, field, measurement WHERE log_id=$id AND field.field_id = log.field_id AND measurement.measurement_id = log.measurement_id";
 	$result = mysqli_query($dbh,$query);
 	$row = mysqli_fetch_array($result,MYSQL_NUM);
 	
-	if($row[4]=="-1"){
-		$plot_number="All";
-	} else {
-		$plot_number=intval($row[4])+1;
-	}
+	$plot_labels = calculatePlotLabels($dbh,$row[13],$row[4]);
 	
 	$date=$row[1];
 	$date_parts=explode("-",$date);
@@ -88,9 +84,10 @@ if(isset($_POST['edit'])){
 <h2 class="w3-green">Edit item</h2>
 <form method="post" enctype="multipart/form-data" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 <input name="id" type="hidden" id="id" value="<? echo($id); ?>">
+<input name="type" type="hidden" id="type" value="<? echo($row[6]); ?>">
 <p><div class="w3-text-green">
 <b>Field:</b> <?php echo($row[2]." replication ".$row[3]); ?><br>
-<b>Plot:</b> <?php echo($plot_number); ?><br>
+<b>Plots:</b> <?php echo($plot_labels); ?> <a href="edit_plots.php?task=lm&id=<?php echo($id); ?>">Edit</a><br>
 <b>Measurement:</b> <?php echo($row[5]); ?><br><br>
 <b>Date:</b>
 <div class="w3-row-padding">
@@ -138,27 +135,41 @@ if(isset($_POST['edit'])){
     <input class="w3-input w3-border-teal w3-text-green" type="text" name="yyyy" value="<?php echo($yy); ?>" onkeypress="return isNumberKey(event)">
   </div>
 </div>
-<?php if($row[6]==0){ ?>
+<?php 
+if($row[14]==0){
+	if($row[6]==0){ ?>
 <b>Value:</b>
 <select class="w3-select w3-text-green" name="value">
 <?php
-	$categories=explode(",",$row[8]);
-	for($i=0;$i<sizeof($categories);$i++){
-		if($categories[$i]==$row[10]){
-			$selected=" selected";
-		} else {
-			$selected="";
+		$categories=explode(",",$row[8]);
+		for($i=0;$i<sizeof($categories);$i++){
+			if($categories[$i]==$row[10]){
+				$selected=" selected";
+			} else {
+				$selected="";
+			}
+			echo('<option value="'.$categories[$i].'"'.$selected.'>'.$categories[$i].'</option>');
 		}
-		echo('<option value="'.$categories[$i].'"'.$selected.'>'.$categories[$i].'</option>');
-	}
 ?>
 </select>
 <?php	
-} else {
+	} else {
 ?>
 <b>Value:</b> <input class="w3-input w3-border-green w3-text-green" name="value" type="text" value="<?php echo($row[9]); ?>" onkeypress="return isNumberKey(event)">
 <b>Units:</b> <input class="w3-input w3-border-green w3-text-green" name="units" type="text" value="<?php echo($row[7]); ?>">
 <?php	
+	}
+} else {
+	$values=parseSampleValues($row[10]);
+	if($row[6]==0){
+		?>
+<b><br>Values (sample:value)</b> <?php echo($values); ?><br><a href="edit_samples.php?id=<?php echo($id); ?>">Edit</a><br><br>
+<?php	
+	} else {
+	?>
+<b><br>Values (sample:value in <?php echo($row[7]); ?>)</b> <?php echo($values); ?><br><a href="edit_samples.php?id=<?php echo($id); ?>">Edit</a><br><br>
+<?php
+	}
 }
 ?>
 <?php
