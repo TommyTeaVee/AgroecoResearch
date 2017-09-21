@@ -46,7 +46,7 @@ if(isset($_POST['edit'])){
 } else if(isset($_SESSION['admin']) && $_SESSION['admin']==true && isset($_GET['id'])){
 	
 	$id=$_GET['id'];
-	$query="SELECT log_id, log_date, field_name, field_replication_number, plots, measurement_name, measurement_type, log_value_units, measurement_categories, log_value_number, log_value_text, log_comments, log_picture, field.field_id, measurement_has_sample_number FROM log, field, measurement WHERE log_id=$id AND field.field_id = log.field_id AND measurement.measurement_id = log.measurement_id";
+	$query="SELECT log_id, log_date, field_name, field_replication_number, plots, measurement_name, measurement_type, log_value_units, measurement_categories, log_value_number, log_value_text, log_comments, log_picture, field.field_id, measurement_has_sample_number, log.user_id, measurement.measurement_id FROM log, field, measurement WHERE log_id=$id AND field.field_id = log.field_id AND measurement.measurement_id = log.measurement_id";
 	$result = mysqli_query($dbh,$query);
 	$row = mysqli_fetch_array($result,MYSQL_NUM);
 	
@@ -65,7 +65,7 @@ if(isset($_POST['edit'])){
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="css/w3.css">
 <title>Agroeco Research</title>
-<script language=Javascript>
+<script language="Javascript">
        <!--
        function isNumberKey(evt)
        {
@@ -86,6 +86,7 @@ if(isset($_POST['edit'])){
 <input name="id" type="hidden" id="id" value="<? echo($id); ?>">
 <input name="type" type="hidden" id="type" value="<? echo($row[6]); ?>">
 <p><div class="w3-text-green">
+<b>Registered by:</b> <?php echo(getUserNameFromId($dbh,$row[15])); ?><br>
 <b>Field:</b> <?php echo($row[2]." replication ".$row[3]); ?><br>
 <b>Plots:</b> <?php echo($plot_labels); ?> <a href="edit_plots.php?task=lm&id=<?php echo($id); ?>">Edit</a><br>
 <b>Measurement:</b> <?php echo($row[5]); ?><br><br>
@@ -163,11 +164,11 @@ if($row[14]==0){
 	$values=parseSampleValues($row[10]);
 	if($row[6]==0){
 		?>
-<b><br>Values (sample:value)</b> <?php echo($values); ?><br><a href="edit_samples.php?id=<?php echo($id); ?>">Edit</a><br><br>
+<b><br>Values (sample:value)</b> <?php echo($values); ?><br><a href="edit_samples.php?id=<?php echo($id); ?>&m_id=<?php echo($row[16]); ?>">Edit</a><br><br>
 <?php	
 	} else {
 	?>
-<b><br>Values (sample:value in <?php echo($row[7]); ?>)</b> <?php echo($values); ?><br><a href="edit_samples.php?id=<?php echo($id); ?>">Edit</a><br><br>
+<b><br>Values (sample:value in <?php echo($row[7]); ?>)</b> <?php echo($values); ?><br><a href="edit_samples.php?id=<?php echo($id); ?>&m_id=<?php echo($row[16]); ?>">Edit</a><br><br>
 <?php
 	}
 }
@@ -189,7 +190,7 @@ if($row[12]!=""){
 }
 ?>
 <input class="w3-input w3-border-green w3-text-green" name="log_picture" type="file" id="log_picture" accept=".jpg,.png">
-<b>Comments:</b> <input class="w3-input w3-border-green w3-text-green" name="comments" type="text" value="<?php echo($row[11]); ?>"><br>
+<b>Comments:</b> <input class="w3-input w3-border-green w3-text-green" name="comments" type="text" value="<?php echo($row[11]); ?>">
 </div>
 </p>
 <button class="w3-button w3-green w3-round w3-border w3-border-green w3-large w3-round-large" id="edit" name="edit">Edit</button> <button class="w3-button w3-green w3-round w3-border w3-border-green w3-large w3-round-large" onclick="javascript:window.close();">Close</button><br><br></form>

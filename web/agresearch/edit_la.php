@@ -41,7 +41,7 @@ if(isset($_POST['edit'])){
 } else if(isset($_SESSION['admin']) && $_SESSION['admin']==true && isset($_GET['id'])){
 	
 	$id=$_GET['id'];
-	$query="SELECT log_id, log_date, field_name, field_replication_number, plots, activity_name, log_value_units, log_value_number, log_comments, log_picture, log_number_of_laborers, log_cost, field.field_id FROM log, field, activity WHERE log_id=$id AND field.field_id = log.field_id AND activity.activity_id = log.activity_id";
+	$query="SELECT log_id, log_date, field_name, field_replication_number, plots, activity_name, log_value_units, log_value_number, log_comments, log_picture, log_number_of_laborers, log_cost, field.field_id, log.user_id FROM log, field, activity WHERE log_id=$id AND field.field_id = log.field_id AND activity.activity_id = log.activity_id";
 	$result = mysqli_query($dbh,$query);
 	$row = mysqli_fetch_array($result,MYSQL_NUM);
 	
@@ -80,6 +80,7 @@ if(isset($_POST['edit'])){
 <form method="post" enctype="multipart/form-data" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 <input name="id" type="hidden" id="id" value="<? echo($id); ?>">
 <p><div class="w3-text-green">
+<b>Registered by:</b> <?php echo(getUserNameFromId($dbh,$row[13])); ?><br>
 <b>Field:</b> <?php echo($row[2]." replication ".$row[3]); ?><br>
 <b>Plots:</b> <?php echo($plot_labels); ?> <a href="edit_plots.php?task=la&id=<?php echo($id); ?>">Edit</a><br>
 <b>Activity:</b> <?php echo($row[5]); ?><br><br>
@@ -150,7 +151,7 @@ if($row[9]!=""){
 }
 ?>
 <input class="w3-input w3-border-green w3-text-green" name="log_picture" type="file" id="log_picture" accept=".jpg,.png">
-<b>Comments:</b> <input class="w3-input w3-border-green w3-text-green" name="comments" type="text" value="<?php echo($row[8]); ?>"><br>
+<b>Comments:</b> <input class="w3-input w3-border-green w3-text-green" name="comments" type="text" value="<?php echo($row[8]); ?>">
 </div>
 </p>
 <button class="w3-button w3-green w3-round w3-border w3-border-green w3-large w3-round-large" id="edit" name="edit">Edit</button> <button class="w3-button w3-green w3-round w3-border w3-border-green w3-large w3-round-large" onclick="javascript:window.close();">Close</button><br><br></form>

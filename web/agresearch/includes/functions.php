@@ -215,6 +215,28 @@ function calculatePlotLabels($dbh,$field_id,$plotsCSV){
 	return $ret;
 }
 
+function getRemainingPlots($dbh,$field_id,$plots){
+	$ret="";
+	$query="SELECT field_configuration FROM field WHERE field_id=$field_id";
+	$result = mysqli_query($dbh,$query);
+	if($row = mysqli_fetch_array($result,MYSQL_NUM)){
+		$field_configuration=$row[0];
+		$elements=explode(";",$field_configuration);
+		if((sizeof($elements)-3)>sizeof($plots)){
+			for($i=2;$i<(sizeof($elements)-3);$i++){
+				if(!in_array($i,$plots)){
+					if($ret==""){
+						$ret=$i;
+					} else {
+						$ret.=",".$i;
+					}
+				}
+			}
+		}
+	}
+	return $ret;
+}
+
 function getCropSymbolFromId($dbh,$crop_id){
 	$ret="";
 	$query="SELECT crop_symbol FROM crop WHERE crop_id=$crop_id";
@@ -528,13 +550,20 @@ function markNotificationAsSent($dbh,$id){
 function parseSampleValues($sample_values){
 	$ret="";
 	$elements=explode("*",$sample_values);
-	for($i=0;$i<sizeof($elements);$i+=2){
+	if(sizeof($elements)>10){
+		$n=5;
+		$tail=" ...";
+	} else {
+		$n=sizeof($elements);
+		$tail="";
+	}
+	for($i=0;$i<$n;$i+=2){
 		if($ret==""){
 			$ret=$elements[$i].":".$elements[$i+1];
 		} else {
 			$ret.=", ".$elements[$i].":".$elements[$i+1];
 		}
 	}
-	return $ret;
+	return $ret.$tail;
 }
 ?>

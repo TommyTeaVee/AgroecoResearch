@@ -9,7 +9,7 @@ session_start();
 if(isset($_SESSION['admin']) && $_SESSION['admin']==true && isset($_GET['id'])){
 	
 	$id=$_GET['id'];
-	$query="SELECT log_id, log_date, field_name, field_replication_number, plots, measurement_name, log_value_units, measurement_type, log_value_number, log_value_text, log_comments, log_picture, field.field_id, measurement_has_sample_number FROM log, field, measurement WHERE log_id=$id AND field.field_id = log.field_id AND measurement.measurement_id = log.measurement_id";
+	$query="SELECT log_id, log_date, field_name, field_replication_number, plots, measurement_name, log_value_units, measurement_type, log_value_number, log_value_text, log_comments, log_picture, field.field_id, measurement_has_sample_number, log.user_id FROM log, field, measurement WHERE log_id=$id AND field.field_id = log.field_id AND measurement.measurement_id = log.measurement_id";
 	$result = mysqli_query($dbh,$query);
 	$row = mysqli_fetch_array($result,MYSQL_NUM);
 	
@@ -27,6 +27,7 @@ if(isset($_SESSION['admin']) && $_SESSION['admin']==true && isset($_GET['id'])){
 <div class="w3-container w3-card-4">
 <h2 class="w3-green">Item details</h2>
 <p><div class="w3-text-green">
+<b>Registered by:</b> <?php echo(getUserNameFromId($dbh,$row[14])); ?><br>
 <b>Field:</b> <?php echo($row[2]." replication ".$row[3]); ?><br>
 <b>Plots:</b> <?php echo($plot_labels); ?><br>
 <b>Measurement:</b> <?php echo($row[5]); ?><br>
