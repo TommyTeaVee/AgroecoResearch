@@ -501,11 +501,12 @@ public class agroecoHelper {
                 ret=true;
             } else {
                 oCrop plotCrop = p.primaryCrop;
+                oCrop plotCropIntercropping = p.intercroppingCrop;
                 ArrayList<oCrop> appliedCrops = a.activityAppliesToCrops;
                 Iterator<oCrop> iteratorCrop = appliedCrops.iterator();
                 while (iteratorCrop.hasNext()) {
                     oCrop aC = iteratorCrop.next();
-                    if (aC.cropId == plotCrop.cropId) {
+                    if (aC.cropId == plotCrop.cropId || (plotCropIntercropping!=null && aC.cropId==plotCropIntercropping.cropId)) {
                         ret=true;
                         break;
                     }

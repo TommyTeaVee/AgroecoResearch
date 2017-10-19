@@ -16,6 +16,7 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
+        android:baselineAligned="false"
         tools:context=".mainMenu"
         android:focusableInTouchMode="true">
 
@@ -25,11 +26,8 @@
             android:text="@string/registerInputButton"
             android:id="@+id/registerInput"
             android:onClick="addInput"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentStart="true"
-            android:height="40dp"
-            android:textSize="20dp"
+            android:textSize="20sp"
+            android:padding="10dp"
             android:background="@drawable/button_background"
             android:textColor="@color/colorWhite" />
 
@@ -39,12 +37,9 @@
             android:text="@string/registerActivityButtonText"
             android:id="@+id/registerActivity"
             android:onClick="addActivity"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentStart="true"
             android:layout_marginTop="34dp"
-            android:height="40dp"
-            android:textSize="20dp"
+            android:textSize="20sp"
+            android:padding="10dp"
             android:background="@drawable/button_background"
             android:textColor="@color/colorWhite" />
 
@@ -54,12 +49,9 @@
             android:text="@string/registerMeasurementButtonText"
             android:id="@+id/registerMeasurement"
             android:onClick="addMeasurement"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentStart="true"
             android:layout_marginTop="34dp"
-            android:height="40dp"
-            android:textSize="20dp"
+            android:textSize="20sp"
+            android:padding="10dp"
             android:background="@drawable/button_background"
             android:textColor="@color/colorWhite" />
 
@@ -69,12 +61,9 @@
             android:text="@string/manageDataButtonText"
             android:id="@+id/manageData"
             android:onClick="manageData"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentStart="true"
             android:layout_marginTop="34dp"
-            android:height="40dp"
-            android:textSize="20dp"
+            android:textSize="20sp"
+            android:padding="10dp"
             android:background="@drawable/button_background"
             android:textColor="@color/colorWhite" />
 
@@ -84,12 +73,9 @@
             android:text="@string/settingsButtonText"
             android:id="@+id/settings"
             android:onClick="settings"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentStart="true"
             android:layout_marginTop="34dp"
-            android:height="40dp"
-            android:textSize="20dp"
+            android:textSize="20sp"
+            android:padding="10dp"
             android:background="@drawable/button_background"
             android:textColor="@color/colorWhite" />
 
@@ -107,8 +93,8 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentStart="true"
             android:layout_marginTop="34dp"
-            android:height="40dp"
-            android:textSize="20dp"
+            android:textSize="20sp"
+            android:padding="10dp"
             android:background="@drawable/button_background"
             android:textColor="@color/colorWhite" />
 

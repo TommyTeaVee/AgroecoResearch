@@ -392,6 +392,7 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
                 tv.setText(tvText);
                 tv.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
                 tv.setPadding(0, 10, 0, 10);
+                tv.setMaxWidth(350);
                 tv.setOnClickListener(new View.OnClickListener() {
 
                     @Override
@@ -479,6 +480,7 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
                 tv.setText(tvText);
                 tv.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
                 tv.setPadding(0, 10, 0, 10);
+                tv.setMaxWidth(350);
                 tv.setOnClickListener(new View.OnClickListener() {
 
                     @Override

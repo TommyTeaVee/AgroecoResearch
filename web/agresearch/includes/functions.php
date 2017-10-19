@@ -129,6 +129,16 @@ function getFieldConfiguration($field_id,$dbh){
 	return $ret;
 }
 
+function getFieldNameFromId($dbh,$id){
+	$ret="";
+	$query="SELECT field_name, field_replication_number FROM field WHERE field_id=$id";
+	$result = mysqli_query($dbh,$query);
+	if($row = mysqli_fetch_array($result,MYSQL_NUM)){
+		$ret=$row[0]." R".$row[1];
+	}
+	return $ret;
+}
+
 function getParentField($field_id,$dbh){
 	$ret="";
 	$query="SELECT parent_field_id FROM field WHERE field_id=$field_id";
@@ -212,6 +222,40 @@ function calculatePlotLabels($dbh,$field_id,$plotsCSV){
 		}
 	}
 	
+	return $ret;
+}
+
+function getAllPlots($dbh,$field_id){
+	$ret="";
+	$query="SELECT field_configuration FROM field WHERE field_id=$field_id";
+	$result = mysqli_query($dbh,$query);
+	if($row = mysqli_fetch_array($result,MYSQL_NUM)){
+		$field_configuration=$row[0];
+		$elements=explode(";",$field_configuration);
+		for($i=2;$i<sizeof($elements);$i++){
+			$plot=$elements[$i];
+			$plot_parts=parseConfig($plot);
+			$plot_string=getCropSymbolFromId($dbh,$plot_parts[0]);
+			$plot_treatments="";
+			if($plot_parts[3]!=0){
+				$plot_treatments="P";
+			}
+			if($plot_parts[2]!=0){
+				$plot_treatments.="S";
+			}
+			if($plot_parts[1]!=0){
+				$plot_treatments.="L";
+			}
+			if($plot_treatments!=""){
+				$plot_string=$plot_string."-".$plot_treatments;
+			}
+			if($ret==""){
+				$ret=$plot_string;
+			} else if($plot_string!=""){
+				$ret.=", ".$plot_string;
+			}
+		}
+	}
 	return $ret;
 }
 

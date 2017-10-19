@@ -15,7 +15,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 		$u=validateUser($dbh,$user_alias,$user_password);
 		if($u!=-1){
 			$parts=explode(",",$u);
-			if($parts[1]==2){
+			if($parts[1]==2 || $parts[1]==1){
 				$success=true;
 				$_SESSION['admin']=true;
 				$_SESSION['user_id']=$parts[0];

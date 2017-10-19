@@ -97,8 +97,12 @@ public class chooser extends AppCompatActivity {
                 }
 
                 final TableRow trow = new TableRow(chooser.this);
-                TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f);
-                lp.setMargins(4,4,4,4);
+                TableRow.LayoutParams lpRow = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f);
+                lpRow.setMargins(4, 4, 4, 4);
+                TableRow.LayoutParams lpCb = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 0.2f);
+                lpCb.setMargins(4, 4, 4, 4);
+                TableRow.LayoutParams lpTv = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 0.8f);
+                lpTv.setMargins(4, 4, 4, 4);
 
                 if(n%2==0){
                     trow.setBackgroundColor(ContextCompat.getColor(this,R.color.lightGray));
@@ -111,13 +115,14 @@ public class chooser extends AppCompatActivity {
                 cb.setId(n);
                 cb.setPadding(4, 4, 4, 4);
                 cb.setChecked(false);
+                cb.setMinWidth(60);
                 cb.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
                         showDescription(v.getId(), v);
                     }
                 });
-                trow.addView(cb, lp);
+                trow.addView(cb, lpCb);
 
                 TextView tv = new TextView(chooser.this);
                 tv.setId(n);
@@ -125,7 +130,7 @@ public class chooser extends AppCompatActivity {
                 tv.setText(activity.activityName);
                 tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP,20f);
                 tv.setPadding(4,4,4,4);
-
+                tv.setMaxWidth(350);
                 tv.setOnClickListener(new View.OnClickListener() {
 
                         @Override
@@ -134,9 +139,9 @@ public class chooser extends AppCompatActivity {
                         }
 
                     });
-                trow.addView(tv,lp);
+                trow.addView(tv,lpTv);
                 trow.setGravity(Gravity.CENTER_VERTICAL);
-                chooserTable.addView(trow, lp);
+                chooserTable.addView(trow, lpRow);
 
                 n++;
             }
@@ -162,6 +167,9 @@ public class chooser extends AppCompatActivity {
         } else {
             activityDescription = activityDescription.replaceAll("\\*", "\n");
         }
+
+        activityDescription+="\n";
+
         descriptionText.setText(activityDescription);
 
         dialog.show();

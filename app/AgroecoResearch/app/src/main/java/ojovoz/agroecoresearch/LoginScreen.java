@@ -112,11 +112,11 @@ public class loginScreen extends AppCompatActivity implements httpConnection.Asy
             //delete following block
             //begin
 
-            /*
+
             userId=1;
             userRole=2;
             launchMainMenu();
-            */
+
 
             //end
         }

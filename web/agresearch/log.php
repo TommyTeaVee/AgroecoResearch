@@ -122,7 +122,7 @@ function confirmDelete(){
 <body>
 <div class="w3-container w3-card-4">
 <h2 class="w3-green">Log</h2><br>
-<p><table class="w3-table w3-border w3-bordered w3-striped w3-hoverable">
+<p><table class="w3-table w3-border w3-bordered w3-striped w3-hoverable w3-mobile">
   <thead>
 	<tr class="w3-green">
 	  <th><input class="w3-check" type="checkbox" id="toggle_all" name="toggle_all" onclick="affectAllCheckboxes()"></th>
@@ -191,7 +191,9 @@ if(getTotalItems($dbh,$_SESSION['log_field_filter'],$_SESSION['input_log_field_f
 }
 ?></div></div>
 <br>
-<button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:20%; height:40px; max-width:300px;" type="button" id="refresh" name="refresh" onclick="refresh()">Refresh</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:20%; height:40px; max-width:300px;" type="button" id="delete_selected" name="delete_selected" onclick="confirmDelete()">Delete selected</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" id="filters" name="filters" style="width:20%; height:40px; max-width:300px;" onclick="return showPopup('filters.php',800,700)">Filters</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" id="menu" name="menu" type="button" style="width:20%; height:40px; max-width:300px;" onclick="goToMenu()">Menu</button><br><br>
+<button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:20%; height:40px; max-width:300px;" type="button" id="refresh" name="refresh" onclick="refresh()">Refresh</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:20%; height:40px; max-width:300px;" type="button" id="delete_selected" name="delete_selected" onclick="confirmDelete()">Delete selected</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" id="filters" name="filters" style="width:20%; height:40px; max-width:300px;" onclick="return showPopup('filters.php',800,700)">Filters</button><br><br>
+<button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:20%; height:40px; max-width:300px;" type="button" id="enter_input" name="enter_input" onclick="return showPopup('select_input.php',800,700)">Enter input</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:20%; height:40px; max-width:300px;" type="button" id="enter_activity" name="enter_activity" onclick="">Enter activity</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" id="enter_measurement" name="enter_measurement" style="width:20%; height:40px; max-width:300px;" onclick="return showPopup('filters.php',800,700)">Enter measurement</button><br><br> 
+<button class="w3-button w3-green w3-round w3-border w3-border-green" id="menu" name="menu" type="button" style="width:20%; height:40px; max-width:300px;" onclick="goToMenu()">Menu</button><br><br>
 </body>
 </html>
 <?php
