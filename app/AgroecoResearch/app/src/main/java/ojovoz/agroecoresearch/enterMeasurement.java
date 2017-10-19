@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.renderscript.ScriptGroup;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
@@ -429,8 +430,8 @@ public class enterMeasurement extends AppCompatActivity {
                 sv.setText(sh.value);
                 sv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                 sv.setPadding(0, 10, 0, 10);
-                sv.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
-                sv.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                sv.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                sv.setImeOptions(EditorInfo.IME_ACTION_NEXT);
                 sv.setId(n);
                 sv.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                     @Override
