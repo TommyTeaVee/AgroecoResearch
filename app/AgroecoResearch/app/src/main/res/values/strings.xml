@@ -4,7 +4,7 @@
     <string name="loginButtonText">Log in</string>
     <string name="loginScreenTitle">Agroeco Research</string>
     <string name="userPasswordLabel">Password</string>
-    <string name="registerButtonText">Register</string>
+    <string name="registerButtonText">Save</string>
     <string name="editButtonText">Edit</string>
     <string name="cancelButtonText">Cancel</string>
     <string name="defineServerTitle">Define server</string>
@@ -14,8 +14,8 @@
     <string name="checkConnectionMessage">Check internet connection</string>
     <string name="invalidUserMessage">Invalid user or password</string>
     <string name="mainMenuTitle">Main menu</string>
-    <string name="registerActivityButtonText">REGISTER ACTIVITY</string>
-    <string name="registerMeasurementButtonText">REGISTER MEASUREMENT</string>
+    <string name="registerActivityButtonText">ENTER ACTIVITY</string>
+    <string name="registerMeasurementButtonText">ENTER MEASUREMENT</string>
     <string name="manageDataButtonText">MANAGE DATA</string>
     <string name="settingsButtonText">SETTINGS</string>
     <string name="logoutButtonText">LOG OUT</string>
@@ -33,11 +33,11 @@
     <string name="downloadFieldsText">FIELDS</string>
     <string name="noCatalogsSelectedText">No catalogs selected</string>
     <string name="downloadCatalogsProgressDialogTitle">Downloading</string>
-    <string name="chooseFieldPlotTitle">Register</string>
+    <string name="chooseFieldPlotTitle">Enter</string>
     <string name="chooseFieldPrompt">Choose a field</string>
     <string name="choosePlotPrompt">Choose plots</string>
     <string name="enterDataButton">Enter data</string>
-    <string name="registerInputButton">REGISTER INPUT</string>
+    <string name="registerInputButton">Enter INPUT</string>
     <string name="chooserTitle">Choose</string>
     <string name="logoutAlertTitle">Log out</string>
     <string name="logoutAlertString">Do you want to log out?</string>
@@ -91,7 +91,7 @@
     <string name="otherButtonText">Other (enter below)</string>
     <string name="enterUnitsText">Units</string>
     <string name="chooseCategoryPrompt">Choose category</string>
-    <string name="registerMeasurementLabel">Register measurement</string>
+    <string name="registerMeasurementLabel">Enter measurement</string>
     <string name="chooseMeasurementTitle">Choose measurement</string>
     <string name="chosenXNotApplicable">Chosen x is not applicable to this field</string>
     <string name="noPlotsChosen">Please choose at least one plot</string>
@@ -113,4 +113,10 @@
     <string name="notificationsLabel">Notifications</string>
     <string name="deleteNotificationMessage">Delete notification?</string>
     <string name="deleteNotification">Delete</string>
+    <string name="opEnterActivity">Enter activity</string>
+    <string name="opEnterInput">Enter input</string>
+    <string name="opEnterMeasurement">Enter measurement</string>
+    <string name="opManageData">Manage data</string>
+    <string name="opMainMenu">Main menu</string>
+    <string name="enterValidTextText">Text must not be empty</string>
 </resources>

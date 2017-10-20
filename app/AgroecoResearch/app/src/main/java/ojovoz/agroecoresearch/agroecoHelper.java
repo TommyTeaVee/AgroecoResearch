@@ -313,10 +313,10 @@ public class agroecoHelper {
                 tLog.inputLogCropId = Integer.parseInt(inputLogItemParts[3]);
                 tLog.inputLogTreatmentId = Integer.parseInt(inputLogItemParts[4]);
                 tLog.inputLogDate = stringToDate(inputLogItemParts[5]);
-                tLog.inputLogInputAge = Integer.parseInt(inputLogItemParts[6]);
+                tLog.inputLogInputAge = inputLogItemParts[6];
                 tLog.inputLogInputOrigin = inputLogItemParts[7];
                 tLog.inputLogInputQuantity = Float.parseFloat(inputLogItemParts[8]);
-                tLog.inputLogInputCost = Float.parseFloat(inputLogItemParts[9]);
+                tLog.inputLogInputCost = inputLogItemParts[9];
                 tLog.inputLogTreatmentMaterial = inputLogItemParts[10];
                 tLog.inputLogTreatmentPreparationMethod = inputLogItemParts[11];
                 tLog.inputLogComments = inputLogItemParts[12];
@@ -775,7 +775,7 @@ public class agroecoHelper {
         writeLog();
     }
 
-    public void addCropToInputLog(int fieldId, String plots, int userId, int cropId, String date, int age, String origin, float quantity, float cost, String comments){
+    public void addCropToInputLog(int fieldId, String plots, int userId, int cropId, String date, String age, String origin, float quantity, String cost, String comments){
         //updateCropInputDaysAgo(cropId, plotN, fieldId, date);
         createInputLog();
         oInputLog newEntry = new oInputLog();
@@ -795,7 +795,7 @@ public class agroecoHelper {
         writeInputLog();
     }
 
-    public void addTreatmentToInputLog(int fieldId, String plots, int userId, int treatmentId, String date, String material, float quantity, String method, float cost, String comments){
+    public void addTreatmentToInputLog(int fieldId, String plots, int userId, int treatmentId, String date, String material, float quantity, String method, String cost, String comments){
         //updateTreatmentInputDaysAgo(treatmentId, plotN, fieldId, date);
         createInputLog();
         oInputLog newEntry = new oInputLog();
@@ -903,7 +903,7 @@ public class agroecoHelper {
         }
     }
 
-    public void updateInputLogCropEntry(int inputLogId, String cD, int cA, String cO, float cQ, float cC, String cCC){
+    public void updateInputLogCropEntry(int inputLogId, String cD, String cA, String cO, float cQ, String cC, String cCC){
         Iterator<oInputLog> iterator = inputLog.iterator();
         while(iterator.hasNext()){
             oInputLog l = iterator.next();
@@ -922,7 +922,7 @@ public class agroecoHelper {
         }
     }
 
-    public void updateInputLogTreatmentEntry(int inputLogId, String tD, String tM, float tQ, String tMM, float tC, String tCC){
+    public void updateInputLogTreatmentEntry(int inputLogId, String tD, String tM, float tQ, String tMM, String tC, String tCC){
         Iterator<oInputLog> iterator = inputLog.iterator();
         while(iterator.hasNext()){
             oInputLog l = iterator.next();
@@ -1049,8 +1049,8 @@ public class agroecoHelper {
                 if(l.inputLogId==id){
                     ret+=Integer.toString(l.inputLogId)+";"+Integer.toString(l.inputLogFieldId)+";"+l.inputLogPlots+";"
                             +Integer.toString(l.inputLogUserId)+";"+Integer.toString(l.inputLogCropId)+";"+Integer.toString(l.inputLogTreatmentId)
-                            +";"+dateToString(l.inputLogDate)+";"+Integer.toString(l.inputLogInputAge)+";"+l.inputLogInputOrigin+";"
-                            +Float.toString(l.inputLogInputQuantity)+";"+Float.toString(l.inputLogInputCost)+";"+l.inputLogTreatmentMaterial
+                            +";"+dateToString(l.inputLogDate)+";"+l.inputLogInputAge+";"+l.inputLogInputOrigin+";"
+                            +Float.toString(l.inputLogInputQuantity)+";"+l.inputLogInputCost+";"+l.inputLogTreatmentMaterial
                             +";"+l.inputLogTreatmentPreparationMethod+";"+l.inputLogComments+"|";
                     break;
                 }
@@ -1831,8 +1831,8 @@ public class agroecoHelper {
             oInputLog l = iterator.next();
             data+=Integer.toString(l.inputLogFieldId)+";"+l.inputLogPlots+";"
                     +Integer.toString(l.inputLogUserId)+";"+Integer.toString(l.inputLogCropId)+";"+Integer.toString(l.inputLogTreatmentId)
-                    +";"+dateToString(l.inputLogDate)+";"+Integer.toString(l.inputLogInputAge)+";"+l.inputLogInputOrigin+";"
-                    +Float.toString(l.inputLogInputQuantity)+";"+Float.toString(l.inputLogInputCost)+";"+l.inputLogTreatmentMaterial
+                    +";"+dateToString(l.inputLogDate)+";"+l.inputLogInputAge+";"+l.inputLogInputOrigin+";"
+                    +Float.toString(l.inputLogInputQuantity)+";"+l.inputLogInputCost+";"+l.inputLogTreatmentMaterial
                     +";"+l.inputLogTreatmentPreparationMethod+";"+l.inputLogComments+";"+Integer.toString(l.inputLogId)+"|";
         }
         writeToFile(data,"input_log");

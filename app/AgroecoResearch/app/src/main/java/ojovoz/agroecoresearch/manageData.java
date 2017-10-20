@@ -80,10 +80,10 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
         } else if(update.equals("cropInput")){
             int inputLogId = getIntent().getExtras().getInt("inputLogId");
             String cD = getIntent().getExtras().getString("cropInputDate");
-            int cA = getIntent().getExtras().getInt("cropInputAge");
+            String cA = getIntent().getExtras().getString("cropInputAge");
             String cO = getIntent().getExtras().getString("cropInputOrigin");
             Float cQ = getIntent().getExtras().getFloat("cropInputQuantity");
-            Float cC = getIntent().getExtras().getFloat("cropInputCost");
+            String cC = getIntent().getExtras().getString("cropInputCost");
             String cCC = getIntent().getExtras().getString("cropInputComments");
             agroHelper.updateInputLogCropEntry(inputLogId, cD, cA, cO, cQ, cC, cCC);
         } else if(update.equals("treatmentInput")){
@@ -92,7 +92,7 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
             String tM = getIntent().getExtras().getString("treatmentInputMaterial");
             Float tQ = getIntent().getExtras().getFloat("treatmentInputQuantity");
             String tMM = getIntent().getExtras().getString("treatmentInputMethod");
-            Float tC = getIntent().getExtras().getFloat("treatmentInputCost");
+            String tC = getIntent().getExtras().getString("treatmentInputCost");
             String tCC = getIntent().getExtras().getString("treatmentInputComments");
             agroHelper.updateInputLogTreatmentEntry(inputLogId, tD, tM, tQ, tMM, tC, tCC);
         }
@@ -109,6 +109,7 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
         menu.add(0, 0, 0, R.string.sendMenuText);
         menu.add(1, 1, 1, R.string.deleteMenuText);
         menu.add(2, 2, 2, R.string.invertSelectedMenuText);
+        menu.add(3, 3, 3, R.string.opMainMenu);
         return true;
     }
 
@@ -124,11 +125,22 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
             case 2:
                 invertSelectedCheckboxes();
                 break;
+            case 3:
+                goToMainMenu();
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override public void onBackPressed(){
+        final Context context = this;
+        Intent i = new Intent(context, mainMenu.class);
+        i.putExtra("userId",userId);
+        i.putExtra("userRole",userRole);
+        startActivity(i);
+        finish();
+    }
+
+    public void goToMainMenu(){
         final Context context = this;
         Intent i = new Intent(context, mainMenu.class);
         i.putExtra("userId",userId);

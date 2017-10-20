@@ -10,6 +10,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.ArrayAdapter;
@@ -84,6 +85,45 @@ public class measurementChooser extends AppCompatActivity {
 
     @Override
     public void onBackPressed(){
+        final Context context = this;
+        Intent i = new Intent(context, mainMenu.class);
+        i.putExtra("userId",userId);
+        i.putExtra("userRole",userRole);
+        startActivity(i);
+        finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        menu.add(0, 0, 0, R.string.opManageData);
+        menu.add(1, 1, 1, R.string.opMainMenu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case 0:
+                goToDataManager();
+                break;
+            case 1:
+                goToMainMenu();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void goToDataManager(){
+        final Context context = this;
+        Intent i = new Intent(context, manageData.class);
+        i.putExtra("userId",userId);
+        i.putExtra("userRole",userRole);
+        i.putExtra("update","");
+        startActivity(i);
+        finish();
+    }
+
+    public void goToMainMenu(){
         final Context context = this;
         Intent i = new Intent(context, mainMenu.class);
         i.putExtra("userId",userId);

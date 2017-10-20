@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -68,13 +69,13 @@ public class enterCropInput extends AppCompatActivity {
             cropInputDate = stringToDate(getIntent().getExtras().getString("cropInputDate"));
 
             EditText age = (EditText) findViewById(R.id.cropAge);
-            age.setText(Integer.toString(getIntent().getExtras().getInt("cropInputAge")));
+            age.setText(getIntent().getExtras().getString("cropInputAge"));
 
             EditText quantity = (EditText) findViewById(R.id.cropQuantity);
             quantity.setText(Float.toString(getIntent().getExtras().getFloat("cropInputQuantity")));
 
             EditText cost = (EditText) findViewById(R.id.cropCost);
-            cost.setText(Float.toString(getIntent().getExtras().getFloat("cropInputCost")));
+            cost.setText(getIntent().getExtras().getString("cropInputCost"));
 
             EditText origin = (EditText) findViewById(R.id.cropOrigin);
             origin.setText(getIntent().getExtras().getString("cropInputOrigin"));
@@ -119,6 +120,45 @@ public class enterCropInput extends AppCompatActivity {
             startActivity(i);
             finish();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        menu.add(0, 0, 0, R.string.opManageData);
+        menu.add(1, 1, 1, R.string.opMainMenu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case 0:
+                goToDataManager();
+                break;
+            case 1:
+                goToMainMenu();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void goToDataManager(){
+        final Context context = this;
+        Intent i = new Intent(context, manageData.class);
+        i.putExtra("userId",userId);
+        i.putExtra("userRole",userRole);
+        i.putExtra("update","");
+        startActivity(i);
+        finish();
+    }
+
+    public void goToMainMenu(){
+        final Context context = this;
+        Intent i = new Intent(context, mainMenu.class);
+        i.putExtra("userId",userId);
+        i.putExtra("userRole",userRole);
+        startActivity(i);
+        finish();
     }
 
     public Date stringToDate(String d){
@@ -182,8 +222,8 @@ public class enterCropInput extends AppCompatActivity {
     public void registerCrop(View v) {
         EditText age = (EditText) findViewById(R.id.cropAge);
         String ageValue = String.valueOf(age.getText());
-        if (isNumeric(ageValue)) {
-            int ageNumber = Integer.parseInt(ageValue);
+        if (isNumeric(ageValue) || ageValue.isEmpty()) {
+            String ageNumber = ageValue;
 
             EditText quantity = (EditText) findViewById(R.id.cropQuantity);
             String quantityValue = String.valueOf(quantity.getText());
@@ -193,9 +233,9 @@ public class enterCropInput extends AppCompatActivity {
 
                 EditText cost = (EditText) findViewById(R.id.cropCost);
                 String costValue = String.valueOf(cost.getText());
-                if (isNumeric(costValue)) {
+                if (isNumeric(costValue) || costValue.isEmpty()) {
 
-                    float costNumber = Float.parseFloat(costValue);
+                    String costNumber = costValue;
 
                     EditText origin = (EditText) findViewById(R.id.cropOrigin);
                     String originText = String.valueOf(origin.getText());
@@ -216,6 +256,7 @@ public class enterCropInput extends AppCompatActivity {
                     }
 
                     if (update.equals("")) {
+                        Toast.makeText(this, "Input saved successfully", Toast.LENGTH_SHORT).show();
                         Intent i = new Intent(this, chooseFieldPlot.class);
                         i.putExtra("userId", userId);
                         i.putExtra("userRole", userRole);
@@ -235,6 +276,7 @@ public class enterCropInput extends AppCompatActivity {
                         startActivity(i);
                         finish();
                     } else {
+                        Toast.makeText(this, "Input edited successfully", Toast.LENGTH_SHORT).show();
                         Intent i = new Intent(this, manageData.class);
                         i.putExtra("userId", userId);
                         i.putExtra("userRole", userRole);

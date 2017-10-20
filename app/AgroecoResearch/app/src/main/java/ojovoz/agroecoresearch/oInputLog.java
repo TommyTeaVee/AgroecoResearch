@@ -14,10 +14,10 @@ public class oInputLog {
     public int inputLogUserId;
     public int inputLogCropId;
     public int inputLogTreatmentId;
-    public int inputLogInputAge;
+    public String inputLogInputAge;
     public String inputLogInputOrigin;
     public float inputLogInputQuantity;
-    public float inputLogInputCost;
+    public String inputLogInputCost;
     public String inputLogTreatmentMaterial;
     public String inputLogTreatmentPreparationMethod;
     public String inputLogComments;

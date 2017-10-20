@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -45,50 +46,10 @@ public class inputChooser extends AppCompatActivity {
 
         agroHelper = new agroecoHelper(this, "crops,fields,treatments,input_log");
 
-        /*
-        fieldId = getIntent().getExtras().getInt("field");
-        field = agroHelper.getFieldFromId(fieldId);
-        plotN = getIntent().getExtras().getInt("plot");
-        if(plotN>=0){
-            oPlot plot = field.plots.get(plotN);
-
-            if(plot.hasSoilManagement){
-                plotHasSoilManagement=true;
-            }
-            if(plot.hasPestControl){
-                plotHasPestControl=true;
-            }
-        }
-
-        TextView tt = (TextView)findViewById(R.id.tableTitle);
-        if(plotN>=0) {
-            tt.setText("Plot " + Integer.toString(plotN + 1));
-        } else {
-            tt.setText("Entire field");
-        }
-
-        CharSequence title = getTitle() + " " + task + ": " + field.fieldName + " R" + Integer.toString(field.fieldReplicationN);
-        setTitle(title);
-        */
-
         TextView tt = (TextView)findViewById(R.id.tableTitle);
         tt.setText("Choose input");
 
-        setTitle("Register input");
-
-        /*
-        if(getIntent().getExtras().getBoolean("newCropInput")){
-            agroHelper.addCropToInputLog(fieldId, plotN, userId, getIntent().getExtras().getInt("crop"),
-                    getIntent().getExtras().getString("cropInputDate"), getIntent().getExtras().getInt("cropInputAge"),
-                    getIntent().getExtras().getString("cropInputOrigin"), getIntent().getExtras().getFloat("cropInputQuantity"),
-                    getIntent().getExtras().getFloat("cropInputCost"), getIntent().getExtras().getString("cropInputComments"));
-        } else if(getIntent().getExtras().getBoolean("newTreatmentInput")){
-            agroHelper.addTreatmentToInputLog(fieldId, plotN, userId, getIntent().getExtras().getInt("treatment"),
-                    getIntent().getExtras().getString("treatmentInputDate"), getIntent().getExtras().getString("treatmentInputMaterial"),
-                    getIntent().getExtras().getFloat("treatmentInputQuantity"), getIntent().getExtras().getString("treatmentInputMethod"),
-                    getIntent().getExtras().getFloat("treatmentInputCost"), getIntent().getExtras().getString("treatmentInputComments"));
-        }
-        */
+        setTitle("Enter input");
 
         fillTable();
     }
@@ -99,7 +60,45 @@ public class inputChooser extends AppCompatActivity {
         i.putExtra("userId",userId);
         i.putExtra("userRole",userRole);
         i.putExtra("task",task);
-        //i.putExtra("field", fieldId);
+        startActivity(i);
+        finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        menu.add(0, 0, 0, R.string.opManageData);
+        menu.add(1, 1, 1, R.string.opMainMenu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case 0:
+                goToDataManager();
+                break;
+            case 1:
+                goToMainMenu();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void goToDataManager(){
+        final Context context = this;
+        Intent i = new Intent(context, manageData.class);
+        i.putExtra("userId",userId);
+        i.putExtra("userRole",userRole);
+        i.putExtra("update","");
+        startActivity(i);
+        finish();
+    }
+
+    public void goToMainMenu(){
+        final Context context = this;
+        Intent i = new Intent(context, mainMenu.class);
+        i.putExtra("userId",userId);
+        i.putExtra("userRole",userRole);
         startActivity(i);
         finish();
     }

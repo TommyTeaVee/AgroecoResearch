@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -89,14 +90,14 @@ public class chooseFieldPlot extends AppCompatActivity {
 
         if(getIntent().getExtras().getBoolean("newCropInput")){
             agroHelper.addCropToInputLog(fieldId, plots, userId, getIntent().getExtras().getInt("cropId"),
-                    getIntent().getExtras().getString("cropInputDate"), getIntent().getExtras().getInt("cropInputAge"),
+                    getIntent().getExtras().getString("cropInputDate"), getIntent().getExtras().getString("cropInputAge"),
                     getIntent().getExtras().getString("cropInputOrigin"), getIntent().getExtras().getFloat("cropInputQuantity"),
-                    getIntent().getExtras().getFloat("cropInputCost"), getIntent().getExtras().getString("cropInputComments"));
+                    getIntent().getExtras().getString("cropInputCost"), getIntent().getExtras().getString("cropInputComments"));
         } else if(getIntent().getExtras().getBoolean("newTreatmentInput")){
             agroHelper.addTreatmentToInputLog(fieldId, plots, userId, getIntent().getExtras().getInt("treatmentId"),
                     getIntent().getExtras().getString("treatmentInputDate"), getIntent().getExtras().getString("treatmentInputMaterial"),
                     getIntent().getExtras().getFloat("treatmentInputQuantity"), getIntent().getExtras().getString("treatmentInputMethod"),
-                    getIntent().getExtras().getFloat("treatmentInputCost"), getIntent().getExtras().getString("treatmentInputComments"));
+                    getIntent().getExtras().getString("treatmentInputCost"), getIntent().getExtras().getString("treatmentInputComments"));
         } else if(getIntent().getExtras().getBoolean("newActivity")){
             agroHelper.addActivityToLog(fieldId, plots, userId, getIntent().getExtras().getInt("activity"),
                     getIntent().getExtras().getString("activityDate"), getIntent().getExtras().getFloat("activityValue"),
@@ -159,6 +160,45 @@ public class chooseFieldPlot extends AppCompatActivity {
         i.putExtra("userId",userId);
         i.putExtra("userRole",userRole);
         i.putExtra("task",task);
+        startActivity(i);
+        finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        menu.add(0, 0, 0, R.string.opManageData);
+        menu.add(1, 1, 1, R.string.opMainMenu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case 0:
+                goToDataManager();
+                break;
+            case 1:
+                goToMainMenu();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void goToDataManager(){
+        final Context context = this;
+        Intent i = new Intent(context, manageData.class);
+        i.putExtra("userId",userId);
+        i.putExtra("userRole",userRole);
+        i.putExtra("update","");
+        startActivity(i);
+        finish();
+    }
+
+    public void goToMainMenu(){
+        final Context context = this;
+        Intent i = new Intent(context, mainMenu.class);
+        i.putExtra("userId",userId);
+        i.putExtra("userRole",userRole);
         startActivity(i);
         finish();
     }
