@@ -541,7 +541,7 @@ function checkMessages($mail_server, $mail_user, $mail_password, $dbh){
 								$log_id=$ma_log_entry_part[14];
 								$sample_number=$ma_log_entry_part[15];
 							
-								$query="INSERT INTO log (field_id, plots, user_id, crop_id, sample_number, treatment_id, measurement_id, activity_id, log_date, log_value_number, log_value_units, log_value_text, log_number_of_laborers, log_cost, log_comments) VALUES ($field_id, '$plots', $user_id, $crop_id, $sample_number, $treatment_id, $measurement_id, $activity_id, '$date', $number_value, '$units', '$text_value', $number_of_laborers, $cost, '$comments')";
+								$query="INSERT INTO log (field_id, plots, user_id, crop_id, sample_number, treatment_id, measurement_id, activity_id, log_date, log_value_number, log_value_units, log_value_text, log_number_of_laborers, log_cost, log_comments) VALUES ($field_id, '$plots', $user_id, $crop_id, $sample_number, $treatment_id, $measurement_id, $activity_id, '$date', $number_value, '$units', '$text_value', '$number_of_laborers', '$cost', '$comments')";
 								//echo($query);
 								$result = mysqli_query($dbh,$query);
 							}
@@ -570,7 +570,7 @@ function checkMessages($mail_server, $mail_user, $mail_password, $dbh){
 								$comments=$i_log_entry_part[13];
 								if($comments=="null") { $comments=""; }
 							
-								$query="INSERT INTO input_log (input_log_date, field_id, plots, user_id, crop_id, treatment_id, input_age, input_origin, input_quantity, input_cost, input_treatment_material, input_treatment_preparation_method, input_comments) VALUES ('$date', $field_id, '$plots', $user_id, $crop_id, $treatment_id, $age, '$origin', $quantity, $cost, '$material', '$method', '$comments')";
+								$query="INSERT INTO input_log (input_log_date, field_id, plots, user_id, crop_id, treatment_id, input_age, input_origin, input_quantity, input_cost, input_treatment_material, input_treatment_preparation_method, input_comments) VALUES ('$date', $field_id, '$plots', $user_id, $crop_id, $treatment_id, '$age', '$origin', $quantity, '$cost', '$material', '$method', '$comments')";
 								//echo($query);
 								$result = mysqli_query($dbh,$query);
 							}

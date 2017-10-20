@@ -76,10 +76,10 @@ public class enterActivity extends AppCompatActivity {
             av.setText(Float.toString(getIntent().getExtras().getFloat("activityValue")));
 
             EditText al = (EditText)findViewById(R.id.activityLaborers);
-            al.setText(Integer.toString(getIntent().getExtras().getInt("activityLaborers")));
+            al.setText(getIntent().getExtras().getString("activityLaborers"));
 
             EditText ak = (EditText)findViewById(R.id.activityCost);
-            ak.setText(Float.toString(getIntent().getExtras().getFloat("activityCost")));
+            ak.setText(getIntent().getExtras().getString("activityCost"));
 
             EditText ac = (EditText)findViewById(R.id.activityComments);
             ac.setText(getIntent().getExtras().getString("activityComments"));
@@ -231,73 +231,76 @@ public class enterActivity extends AppCompatActivity {
                 unitsText = unitsText.replaceAll(";"," ");
                 unitsText = unitsText.replaceAll("\\|"," ");
                 unitsText = unitsText.replaceAll("\\*"," ");
-            }
 
-            EditText laborers = (EditText)findViewById(R.id.activityLaborers);
-            String laborersText = String.valueOf(laborers.getText());
-            if(isNumeric(laborersText)) {
-                int laborersNumber = Integer.parseInt(laborersText);
+                EditText laborers = (EditText)findViewById(R.id.activityLaborers);
+                String laborersText = String.valueOf(laborers.getText());
+                if(isNumeric(laborersText) || laborersText.isEmpty()) {
+                    String laborersNumber = laborersText;
 
-                EditText cost = (EditText)findViewById(R.id.activityCost);
-                String costText = String.valueOf(cost.getText());
+                    EditText cost = (EditText)findViewById(R.id.activityCost);
+                    String costText = String.valueOf(cost.getText());
 
-                if(isNumeric(costText)) {
-                    float costValue = Float.parseFloat(costText);
+                    if(isNumeric(costText) || costText.isEmpty()) {
+                        String costValue = costText;
 
-                    EditText comments = (EditText) findViewById(R.id.activityComments);
-                    String commentsText = String.valueOf(comments.getText());
+                        EditText comments = (EditText) findViewById(R.id.activityComments);
+                        String commentsText = String.valueOf(comments.getText());
 
-                    if (!commentsText.isEmpty()) {
-                        commentsText = commentsText.replaceAll(";", " ");
-                        commentsText = commentsText.replaceAll("\\|", " ");
-                        commentsText = commentsText.replaceAll("\\*", " ");
-                    }
+                        if (!commentsText.isEmpty()) {
+                            commentsText = commentsText.replaceAll(";", " ");
+                            commentsText = commentsText.replaceAll("\\|", " ");
+                            commentsText = commentsText.replaceAll("\\*", " ");
+                        }
 
-                    if (update.equals("")) {
-                        Toast.makeText(this, "Activity saved successfully", Toast.LENGTH_SHORT).show();
-                        Intent i = new Intent(this, chooseFieldPlot.class);
-                        i.putExtra("userId", userId);
-                        i.putExtra("userRole", userRole);
-                        i.putExtra("task", task);
-                        i.putExtra("title", shortTitle);
-                        i.putExtra("field", fieldId);
-                        i.putExtra("plots", plots);
-                        i.putExtra("newActivity", true);
-                        i.putExtra("activity", activityId);
-                        i.putExtra("activityDate", dateToString(activityDate));
-                        i.putExtra("activityValue", valueNumber);
-                        i.putExtra("activityUnits", unitsText);
-                        i.putExtra("activityLaborers", laborersNumber);
-                        i.putExtra("activityCost", costValue);
-                        i.putExtra("activityComments", commentsText);
-                        startActivity(i);
-                        finish();
+                        if (update.equals("")) {
+                            Toast.makeText(this, "Activity saved successfully", Toast.LENGTH_SHORT).show();
+                            Intent i = new Intent(this, chooseFieldPlot.class);
+                            i.putExtra("userId", userId);
+                            i.putExtra("userRole", userRole);
+                            i.putExtra("task", task);
+                            i.putExtra("title", shortTitle);
+                            i.putExtra("field", fieldId);
+                            i.putExtra("plots", plots);
+                            i.putExtra("newActivity", true);
+                            i.putExtra("activity", activityId);
+                            i.putExtra("activityDate", dateToString(activityDate));
+                            i.putExtra("activityValue", valueNumber);
+                            i.putExtra("activityUnits", unitsText);
+                            i.putExtra("activityLaborers", laborersNumber);
+                            i.putExtra("activityCost", costValue);
+                            i.putExtra("activityComments", commentsText);
+                            startActivity(i);
+                            finish();
+                        } else {
+                            Toast.makeText(this, "Activity edited successfully", Toast.LENGTH_SHORT).show();
+                            Intent i = new Intent(this, manageData.class);
+                            i.putExtra("userId", userId);
+                            i.putExtra("userRole", userRole);
+                            i.putExtra("task", task);
+                            i.putExtra("logId", logId);
+                            i.putExtra("update", "activity");
+                            i.putExtra("activity", activityId);
+                            i.putExtra("activityDate", dateToString(activityDate));
+                            i.putExtra("activityValue", valueNumber);
+                            i.putExtra("activityUnits", unitsText);
+                            i.putExtra("activityLaborers", laborersNumber);
+                            i.putExtra("activityCost", costValue);
+                            i.putExtra("activityComments", commentsText);
+                            startActivity(i);
+                            finish();
+                        }
                     } else {
-                        Toast.makeText(this, "Activity edited successfully", Toast.LENGTH_SHORT).show();
-                        Intent i = new Intent(this, manageData.class);
-                        i.putExtra("userId", userId);
-                        i.putExtra("userRole", userRole);
-                        i.putExtra("task", task);
-                        i.putExtra("logId", logId);
-                        i.putExtra("update", "activity");
-                        i.putExtra("activity", activityId);
-                        i.putExtra("activityDate", dateToString(activityDate));
-                        i.putExtra("activityValue", valueNumber);
-                        i.putExtra("activityUnits", unitsText);
-                        i.putExtra("activityLaborers", laborersNumber);
-                        i.putExtra("activityCost", costValue);
-                        i.putExtra("activityComments", commentsText);
-                        startActivity(i);
-                        finish();
+                        Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
+                        cost.requestFocus();
+
                     }
                 } else {
                     Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
-                    cost.requestFocus();
-
+                    laborers.requestFocus();
                 }
             } else {
-                Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
-                laborers.requestFocus();
+                Toast.makeText(this, R.string.enterValidTextText, Toast.LENGTH_SHORT).show();
+                units.requestFocus();
             }
         } else {
             Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();

@@ -286,8 +286,8 @@ public class agroecoHelper {
                 tLog.logNumberValue = Float.parseFloat(logItemParts[8]);
                 tLog.logValueUnits = logItemParts[9];
                 tLog.logTextValue = logItemParts[10];
-                tLog.logLaborers = Integer.parseInt(logItemParts[11]);
-                tLog.logCost = Float.parseFloat(logItemParts[12]);
+                tLog.logLaborers = logItemParts[11];
+                tLog.logCost = logItemParts[12];
                 tLog.logComments = logItemParts[13];
                 tLog.logId = Integer.parseInt(logItemParts[14]);
                 tLog.logSampleNumber = Integer.parseInt(logItemParts[15]);
@@ -755,7 +755,7 @@ public class agroecoHelper {
         return cList;
     }
 
-    public void addActivityToLog(int fieldId, String plots, int userId, int activityId, String date, float numberValue, String units, int laborers, float cost, String comments){
+    public void addActivityToLog(int fieldId, String plots, int userId, int activityId, String date, float numberValue, String units, String laborers, String cost, String comments){
         //updateActivityDaysAgo(activityId, plotN, fieldId, date);
         createLog();
         oLog newEntry = new oLog();
@@ -884,7 +884,7 @@ public class agroecoHelper {
         return ret;
     }
 
-    public void updateLogActivityEntry(int logId, String aD, Float aV, String aU, int aL, float aK, String aC){
+    public void updateLogActivityEntry(int logId, String aD, Float aV, String aU, String aL, String aK, String aC){
         Iterator<oLog> iterator = log.iterator();
         while(iterator.hasNext()){
             oLog l = iterator.next();
@@ -1029,8 +1029,8 @@ public class agroecoHelper {
                 if(l.logId==id){
                     ret+=Integer.toString(l.logFieldId)+";"+l.logPlots+";"+Integer.toString(l.logUserId)+";"+Integer.toString(l.logCropId)
                             +";"+Integer.toString(l.logTreatmentId)+";"+Integer.toString(l.logMeasurementId)+";"+Integer.toString(l.logActivityId)
-                            +";"+dateToString(l.logDate)+";"+Float.toString(l.logNumberValue)+";"+l.logValueUnits+";"+l.logTextValue+";"+Integer.toString(l.logLaborers)
-                            +";"+Float.toString(l.logCost)+";"+l.logComments+";"+Integer.toString(l.logId)+";"+Integer.toString(l.logSampleNumber)+"|";
+                            +";"+dateToString(l.logDate)+";"+Float.toString(l.logNumberValue)+";"+l.logValueUnits+";"+l.logTextValue+";"+l.logLaborers
+                            +";"+l.logCost+";"+l.logComments+";"+Integer.toString(l.logId)+";"+Integer.toString(l.logSampleNumber)+"|";
                     break;
                 }
             }
@@ -1818,8 +1818,8 @@ public class agroecoHelper {
             oLog l = iterator.next();
             data+=Integer.toString(l.logFieldId)+";"+l.logPlots+";"+Integer.toString(l.logUserId)+";"+Integer.toString(l.logCropId)
                     +";"+Integer.toString(l.logTreatmentId)+";"+Integer.toString(l.logMeasurementId)+";"+Integer.toString(l.logActivityId)
-                    +";"+dateToString(l.logDate)+";"+Float.toString(l.logNumberValue)+";"+l.logValueUnits+ ";"+l.logTextValue+";"+Integer.toString(l.logLaborers)
-                    +";"+Float.toString(l.logCost)+";"+l.logComments+";"+Integer.toString(l.logId)+";"+Integer.toString(l.logSampleNumber)+"|";
+                    +";"+dateToString(l.logDate)+";"+Float.toString(l.logNumberValue)+";"+l.logValueUnits+ ";"+l.logTextValue+";"+l.logLaborers
+                    +";"+l.logCost+";"+l.logComments+";"+Integer.toString(l.logId)+";"+Integer.toString(l.logSampleNumber)+"|";
         }
         writeToFile(data,"log");
     }

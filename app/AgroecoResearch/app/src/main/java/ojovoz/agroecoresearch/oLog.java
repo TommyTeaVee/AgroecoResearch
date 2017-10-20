@@ -20,8 +20,8 @@ public class oLog {
     public float logNumberValue;
     public String logValueUnits="";
     public String logTextValue="";
-    public int logLaborers;
-    public float logCost;
+    public String logLaborers="";
+    public String logCost="";
     public String logComments="";
 
     oLog(){

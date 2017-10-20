@@ -31,7 +31,7 @@ if(isset($_POST['edit'])){
 		$update_picture="";
 	}
 	
-	$query="UPDATE input_log SET input_log_date='$date', input_age=$age, input_origin='$origin', input_quantity=$quantity, input_cost=$cost, input_comments='$comments'".$update_picture." WHERE input_log_id=$id";
+	$query="UPDATE input_log SET input_log_date='$date', input_age='$age', input_origin='$origin', input_quantity=$quantity, input_cost='$cost', input_comments='$comments'".$update_picture." WHERE input_log_id=$id";
 	$result = mysqli_query($dbh,$query);
 	echo "<script type='text/javascript'>";
 	echo "window.opener.location.reload(false);";

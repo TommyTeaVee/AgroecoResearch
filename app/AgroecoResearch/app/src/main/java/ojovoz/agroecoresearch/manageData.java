@@ -64,8 +64,8 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
             String aD = getIntent().getExtras().getString("activityDate");
             Float aV = getIntent().getExtras().getFloat("activityValue");
             String aU = getIntent().getExtras().getString("activityUnits");
-            int aL = getIntent().getExtras().getInt("activityLaborers");
-            float aK = getIntent().getExtras().getFloat("activityCost");
+            String aL = getIntent().getExtras().getString("activityLaborers");
+            String aK = getIntent().getExtras().getString("activityCost");
             String aC = getIntent().getExtras().getString("activityComments");
             agroHelper.updateLogActivityEntry(logId, aD, aV, aU, aL, aK, aC);
         } else if(update.equals("measurement")){
