@@ -535,7 +535,11 @@ public class enterMeasurement extends AppCompatActivity {
                 Button sb = new Button(enterMeasurement.this);
                 sb.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17f);
                 if(!sh.value.isEmpty()) {
-                    sb.setText(sh.value);
+                    String display=sh.value;
+                    if(display.length()>10){
+                        display=display.substring(0,9)+"…";
+                    }
+                    sb.setText(display);
                 } else {
                     sb.setText(R.string.chooseValueSampleTable);
                 }
@@ -784,6 +788,7 @@ public class enterMeasurement extends AppCompatActivity {
     }
 
     public void showMeasurementCategoriesSampleTable(){
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setNegativeButton(R.string.cancelButtonText, new DialogInterface.OnClickListener() {
@@ -803,10 +808,16 @@ public class enterMeasurement extends AppCompatActivity {
                         dlg = new promptDialog(enterMeasurement.this, R.string.emptyString, R.string.enterOtherValueLabel, sh.value) {
                             @Override
                             public boolean onOkClicked(String input) {
+                                String display="";
                                 input = input.replaceAll(";","");
                                 input = input.replaceAll("\\|","");
                                 input = input.replaceAll("\\*","");
-                                currentSampleChoiceButton.setText(input);
+                                if(input.length()>10){
+                                    display=input.substring(0,9)+" …";
+                                } else {
+                                    display=input;
+                                }
+                                currentSampleChoiceButton.setText(display);
                                 oSampleHelper sh = samples.get(currentSampleChoiceButton.getId());
                                 sh.value=input;
                                 return true;
@@ -814,7 +825,14 @@ public class enterMeasurement extends AppCompatActivity {
                         };
                         dlg.show();
                     } else {
-                        currentSampleChoiceButton.setText(categoriesArray[i]);
+                        String display="";
+                        String chosen=(String)categoriesArray[i];
+                        if(chosen.length()>10){
+                            display=chosen.substring(0,9)+" …";
+                        } else {
+                            display=chosen;
+                        }
+                        currentSampleChoiceButton.setText(display);
                         oSampleHelper sh = samples.get(currentSampleChoiceButton.getId());
                         sh.value=(String)categoriesArray[i];
                     }
