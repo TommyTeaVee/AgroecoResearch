@@ -1,10 +1,14 @@
 package ojovoz.agroecoresearch;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -39,6 +43,9 @@ public class enterCropInput extends AppCompatActivity {
 
     public Date cropInputDate;
 
+    public boolean changes=false;
+    public int exitAction;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +65,12 @@ public class enterCropInput extends AppCompatActivity {
         TextView tt = (TextView)findViewById(R.id.cropInputTitle);
         tt.setText(inputTitle);
 
+        EditText age = (EditText) findViewById(R.id.cropAge);
+        EditText quantity = (EditText) findViewById(R.id.cropQuantity);
+        EditText cost = (EditText) findViewById(R.id.cropCost);
+        EditText origin = (EditText) findViewById(R.id.cropOrigin);
+        EditText comments = (EditText) findViewById(R.id.inputComments);
+
         if(update.equals("crop")){
             inputLogId = getIntent().getExtras().getInt("inputLogId");
 
@@ -68,23 +81,99 @@ public class enterCropInput extends AppCompatActivity {
             db.setText(getIntent().getExtras().getString("cropInputDate"));
             cropInputDate = stringToDate(getIntent().getExtras().getString("cropInputDate"));
 
-            EditText age = (EditText) findViewById(R.id.cropAge);
             age.setText(getIntent().getExtras().getString("cropInputAge"));
-
-            EditText quantity = (EditText) findViewById(R.id.cropQuantity);
             quantity.setText(Float.toString(getIntent().getExtras().getFloat("cropInputQuantity")));
-
-            EditText cost = (EditText) findViewById(R.id.cropCost);
             cost.setText(getIntent().getExtras().getString("cropInputCost"));
-
-            EditText origin = (EditText) findViewById(R.id.cropOrigin);
             origin.setText(getIntent().getExtras().getString("cropInputOrigin"));
-
-            EditText comments = (EditText) findViewById(R.id.inputComments);
             comments.setText(getIntent().getExtras().getString("cropInputComments"));
         } else {
             cropInputDate = new Date();
         }
+
+        age.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                changes=true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        quantity.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                changes=true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        cost.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                changes=true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        origin.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                changes=true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        comments.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                changes=true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
         Button cb = (Button)findViewById(R.id.dateButton);
         cb.setText(dateToString(cropInputDate));
@@ -98,6 +187,70 @@ public class enterCropInput extends AppCompatActivity {
 
     @Override
     public void onBackPressed(){
+        if(changes) {
+            exitAction = 0;
+            confirmExit();
+        } else {
+            goBack();
+        }
+    }
+
+    public void confirmExit(){
+        AlertDialog.Builder logoutDialog = new AlertDialog.Builder(this);
+        logoutDialog.setTitle(R.string.logoutAlertTitle);
+        logoutDialog.setMessage(R.string.exitAlertString);
+        logoutDialog.setNegativeButton(R.string.cancelButtonText,null);
+        logoutDialog.setPositiveButton(R.string.okButtonText, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                switch (exitAction){
+                    case 0:
+                        goBack();
+                        break;
+                    case 1:
+                        goToDataManager();
+                        break;
+                    case 2:
+                        goToMainMenu();
+                        break;
+                }
+            }
+        });
+        logoutDialog.create();
+        logoutDialog.show();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        menu.add(0, 0, 0, R.string.opManageData);
+        menu.add(1, 1, 1, R.string.opMainMenu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case 0:
+                if(changes) {
+                    exitAction = 1;
+                    confirmExit();
+                } else {
+                    goToDataManager();
+                }
+                break;
+            case 1:
+                if(changes) {
+                    exitAction = 2;
+                    confirmExit();
+                } else {
+                    goToMainMenu();
+                }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void goBack(){
         final Context context = this;
         if(update.equals("")) {
             Intent i = new Intent(context, chooseFieldPlot.class);
@@ -120,26 +273,6 @@ public class enterCropInput extends AppCompatActivity {
             startActivity(i);
             finish();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(android.view.Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        menu.add(0, 0, 0, R.string.opManageData);
-        menu.add(1, 1, 1, R.string.opMainMenu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case 0:
-                goToDataManager();
-                break;
-            case 1:
-                goToMainMenu();
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     public void goToDataManager(){
@@ -204,6 +337,7 @@ public class enterCropInput extends AppCompatActivity {
                 Button cb = (Button)findViewById(R.id.dateButton);
                 cb.setText(dateToString(cropInputDate));
                 dialog.dismiss();
+                changes=true;
             }
         });
         dialog.show();

@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.renderscript.ScriptGroup;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -69,6 +71,9 @@ public class enterMeasurement extends AppCompatActivity {
 
     public String update;
 
+    public boolean changes=false;
+    public int exitAction;
+
     public ArrayList<oSampleHelper> samples;
     public int maxSampleNumber = 1;
 
@@ -118,10 +123,12 @@ public class enterMeasurement extends AppCompatActivity {
         EditText tOther = (EditText) findViewById(R.id.measurementOtherTextValue);
         tOther.setVisibility(View.GONE);
 
+        EditText ve = (EditText) findViewById(R.id.measurementValue);
+        EditText mc = (EditText) findViewById(R.id.measurementComments);
+
         if (hasSamples) {
             TextView vt = (TextView) findViewById(R.id.enterValueText);
             vt.setVisibility(View.GONE);
-            EditText ve = (EditText) findViewById(R.id.measurementValue);
             ve.setVisibility(View.GONE);
 
             Button cb = (Button) findViewById(R.id.measurementCategory);
@@ -151,7 +158,6 @@ public class enterMeasurement extends AppCompatActivity {
             } else if (type == 0 && !measurementUnits.equals("date")) {
                 TextView vt = (TextView) findViewById(R.id.enterValueText);
                 vt.setVisibility(View.GONE);
-                EditText ve = (EditText) findViewById(R.id.measurementValue);
                 ve.setVisibility(View.GONE);
 
                 Button cb = (Button) findViewById(R.id.measurementCategory);
@@ -172,7 +178,6 @@ public class enterMeasurement extends AppCompatActivity {
                 cb.setVisibility(View.GONE);
                 TextView vt = (TextView) findViewById(R.id.enterValueText);
                 vt.setVisibility(View.GONE);
-                EditText ve = (EditText) findViewById(R.id.measurementValue);
                 ve.setVisibility(View.GONE);
 
             }
@@ -210,15 +215,13 @@ public class enterMeasurement extends AppCompatActivity {
                     }
                 });
             } else if (type == 1 && !measurementUnits.equals("date")) {
-                EditText ve = (EditText) findViewById(R.id.measurementValue);
                 ve.setText(String.valueOf(getIntent().getExtras().getFloat("measurementValue")));
             } else if (type == 0 && !measurementUnits.equals("date")) {
                 Button cb = (Button) findViewById(R.id.measurementCategory);
                 measurementCategory = getIntent().getExtras().getString("measurementCategory");
                 if (!categories.contains(measurementCategory)) {
-                    EditText tOtherEdit = (EditText) findViewById(R.id.measurementOtherTextValue);
-                    tOtherEdit.setVisibility(View.VISIBLE);
-                    tOtherEdit.setText(measurementCategory);
+                    tOther.setVisibility(View.VISIBLE);
+                    tOther.setText(measurementCategory);
                     cb.setText(getString(R.string.otherButtonText));
                 } else {
                     cb.setText(getIntent().getExtras().getString("measurementCategory"));
@@ -229,7 +232,6 @@ public class enterMeasurement extends AppCompatActivity {
             db.setText(getIntent().getExtras().getString("date"));
             measurementDate = stringToDate(getIntent().getExtras().getString("date"));
 
-            EditText mc = (EditText) findViewById(R.id.measurementComments);
             mc.setText(getIntent().getExtras().getString("measurementComments"));
 
             Button rb = (Button) findViewById(R.id.okButton);
@@ -269,6 +271,40 @@ public class enterMeasurement extends AppCompatActivity {
 
         }
 
+        mc.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                changes=true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        ve.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                changes=true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
         Button cb = (Button) findViewById(R.id.dateButton);
         cb.setText(dateToString(measurementDate));
         cb.setOnClickListener(new View.OnClickListener() {
@@ -280,6 +316,40 @@ public class enterMeasurement extends AppCompatActivity {
     }
 
     @Override public void onBackPressed () {
+        if(changes) {
+            exitAction = 0;
+            confirmExit();
+        } else {
+            goBack();
+        }
+    }
+
+    public void confirmExit(){
+        AlertDialog.Builder logoutDialog = new AlertDialog.Builder(this);
+        logoutDialog.setTitle(R.string.logoutAlertTitle);
+        logoutDialog.setMessage(R.string.exitAlertString);
+        logoutDialog.setNegativeButton(R.string.cancelButtonText,null);
+        logoutDialog.setPositiveButton(R.string.okButtonText, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                switch (exitAction){
+                    case 0:
+                        goBack();
+                        break;
+                    case 1:
+                        goToDataManager();
+                        break;
+                    case 2:
+                        goToMainMenu();
+                        break;
+                }
+            }
+        });
+        logoutDialog.create();
+        logoutDialog.show();
+    }
+
+    public void goBack(){
         final Context context = this;
         if (update.equals("")) {
             Intent i = new Intent(context, chooseFieldPlot.class);
@@ -316,10 +386,20 @@ public class enterMeasurement extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case 0:
-                goToDataManager();
+                if(changes) {
+                    exitAction = 1;
+                    confirmExit();
+                } else {
+                    goToDataManager();
+                }
                 break;
             case 1:
-                goToMainMenu();
+                if(changes) {
+                    exitAction = 2;
+                    confirmExit();
+                } else {
+                    goToMainMenu();
+                }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -433,6 +513,22 @@ public class enterMeasurement extends AppCompatActivity {
                     return false;
                 }
             });
+            sn.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    changes=true;
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+
+                }
+            });
             trow.addView(sn, lp);
 
             if (type == 0) {
@@ -460,6 +556,7 @@ public class enterMeasurement extends AppCompatActivity {
                     public void onClick(View v) {
                         currentSampleChoiceButton = (Button)v;
                         showMeasurementCategoriesSampleTable();
+                        changes=true;
                     }
                 });
                 trow.addView(sb, lp);
@@ -486,6 +583,22 @@ public class enterMeasurement extends AppCompatActivity {
                     public boolean onTouch(View view, MotionEvent motionEvent) {
                         findViewById(R.id.childScrollView).getParent().requestDisallowInterceptTouchEvent(true);
                         return false;
+                    }
+                });
+                sv.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        changes=true;
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+
                     }
                 });
                 trow.addView(sv, lp);
@@ -576,6 +689,8 @@ public class enterMeasurement extends AppCompatActivity {
         sh.value = "";
         samples.add(sh);
 
+        changes=true;
+
         fillSampleTable();
 
         final ScrollView sv = (ScrollView)findViewById(R.id.childScrollView);
@@ -609,6 +724,7 @@ public class enterMeasurement extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 c.setChecked(false);
+                changes=true;
                 doDelete(deleteId);
             }
         });
@@ -739,6 +855,7 @@ public class enterMeasurement extends AppCompatActivity {
 
                 }
                 dialogInterface.dismiss();
+                changes=true;
 
             }
         });
@@ -777,6 +894,7 @@ public class enterMeasurement extends AppCompatActivity {
                 Button cb = (Button) findViewById(R.id.dateButton);
                 cb.setText(dateToString(measurementDate));
                 dialog.dismiss();
+                changes=true;
             }
         });
         dialog.show();

@@ -119,4 +119,5 @@
     <string name="opManageData">Manage data</string>
     <string name="opMainMenu">Main menu</string>
     <string name="enterValidTextText">Text must not be empty</string>
+    <string name="exitAlertString">Exit without saving?</string>
 </resources>

@@ -1,10 +1,14 @@
 package ojovoz.agroecoresearch;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -40,6 +44,9 @@ public class enterActivity extends AppCompatActivity {
 
     public String update;
 
+    public boolean changes=false;
+    public int exitAction;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +68,10 @@ public class enterActivity extends AppCompatActivity {
 
         EditText et = (EditText)findViewById(R.id.activityUnits);
         et.setText(activityMeasurementUnits);
+        EditText av = (EditText)findViewById(R.id.activityValue);
+        EditText al = (EditText)findViewById(R.id.activityLaborers);
+        EditText ak = (EditText)findViewById(R.id.activityCost);
+        EditText ac = (EditText)findViewById(R.id.activityComments);
 
         if(update.equals("activity")){
             logId = getIntent().getExtras().getInt("logId");
@@ -72,20 +83,98 @@ public class enterActivity extends AppCompatActivity {
             db.setText(getIntent().getExtras().getString("date"));
             activityDate = stringToDate(getIntent().getExtras().getString("date"));
 
-            EditText av = (EditText)findViewById(R.id.activityValue);
             av.setText(Float.toString(getIntent().getExtras().getFloat("activityValue")));
-
-            EditText al = (EditText)findViewById(R.id.activityLaborers);
             al.setText(getIntent().getExtras().getString("activityLaborers"));
-
-            EditText ak = (EditText)findViewById(R.id.activityCost);
             ak.setText(getIntent().getExtras().getString("activityCost"));
-
-            EditText ac = (EditText)findViewById(R.id.activityComments);
             ac.setText(getIntent().getExtras().getString("activityComments"));
         } else {
             activityDate = new Date();
         }
+
+        et.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                changes=true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        av.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                changes=true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        al.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                changes=true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        ak.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                changes=true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        ac.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                changes=true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
         Button cb = (Button)findViewById(R.id.dateButton);
         cb.setText(dateToString(activityDate));
@@ -98,6 +187,40 @@ public class enterActivity extends AppCompatActivity {
     }
 
     @Override public void onBackPressed(){
+        if(changes) {
+            exitAction = 0;
+            confirmExit();
+        } else {
+            goBack();
+        }
+    }
+
+    public void confirmExit(){
+        AlertDialog.Builder logoutDialog = new AlertDialog.Builder(this);
+        logoutDialog.setTitle(R.string.logoutAlertTitle);
+        logoutDialog.setMessage(R.string.exitAlertString);
+        logoutDialog.setNegativeButton(R.string.cancelButtonText,null);
+        logoutDialog.setPositiveButton(R.string.okButtonText, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                switch (exitAction){
+                    case 0:
+                        goBack();
+                        break;
+                    case 1:
+                        goToDataManager();
+                        break;
+                    case 2:
+                        goToMainMenu();
+                        break;
+                }
+            }
+        });
+        logoutDialog.create();
+        logoutDialog.show();
+    }
+
+    public void goBack(){
         final Context context = this;
         if(update.equals("")) {
             Intent i = new Intent(context, chooseFieldPlot.class);
@@ -133,10 +256,20 @@ public class enterActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case 0:
-                goToDataManager();
+                if(changes) {
+                    exitAction = 1;
+                    confirmExit();
+                } else {
+                    goToDataManager();
+                }
                 break;
             case 1:
-                goToMainMenu();
+                if(changes) {
+                    exitAction = 2;
+                    confirmExit();
+                } else {
+                    goToMainMenu();
+                }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -203,6 +336,7 @@ public class enterActivity extends AppCompatActivity {
                 Button cb = (Button)findViewById(R.id.dateButton);
                 cb.setText(dateToString(activityDate));
                 dialog.dismiss();
+                changes=true;
             }
         });
         dialog.show();
