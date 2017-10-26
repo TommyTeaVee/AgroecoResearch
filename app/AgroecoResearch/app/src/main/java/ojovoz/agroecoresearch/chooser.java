@@ -47,11 +47,16 @@ public class chooser extends AppCompatActivity {
         userRole = getIntent().getExtras().getInt("userRole");
         task = getIntent().getExtras().getString("task");
 
-        if(task.equals("activity")) {
-            agroHelper = new agroecoHelper(this, "crops,fields,treatments,activities");
-        } else if(task.equals("measurement")){
-            agroHelper = new agroecoHelper(this, "crops,fields,treatments,measurements");
+        agroHelper = new agroecoHelper(this,"crops,fields,treatments,activities");
+
+        if(getIntent().getExtras().getBoolean("newActivity")){
+            String plots = getIntent().getExtras().getString("plots");
+            agroHelper.addActivityToLog(getIntent().getExtras().getInt("field"), plots, userId, getIntent().getExtras().getInt("activity"),
+                    getIntent().getExtras().getString("activityDate"), getIntent().getExtras().getFloat("activityValue"),
+                    getIntent().getExtras().getString("activityUnits"), getIntent().getExtras().getString("activityLaborers"),
+                    getIntent().getExtras().getString("activityCost"), getIntent().getExtras().getString("activityComments"));
         }
+
         setTitle("Enter "+task);
 
         TextView tt = (TextView)findViewById(R.id.tableTitle);

@@ -46,6 +46,18 @@ public class inputChooser extends AppCompatActivity {
 
         agroHelper = new agroecoHelper(this, "crops,fields,treatments,input_log");
 
+        if(getIntent().getExtras().getBoolean("newCropInput")){
+            agroHelper.addCropToInputLog(getIntent().getExtras().getInt("field"), getIntent().getExtras().getString("plots"), userId, getIntent().getExtras().getInt("cropId"),
+                    getIntent().getExtras().getString("cropInputDate"), getIntent().getExtras().getString("cropInputAge"),
+                    getIntent().getExtras().getString("cropInputOrigin"), getIntent().getExtras().getFloat("cropInputQuantity"),
+                    getIntent().getExtras().getString("cropInputCost"), getIntent().getExtras().getString("cropInputComments"));
+        } else if(getIntent().getExtras().getBoolean("newTreatmentInput")){
+            agroHelper.addTreatmentToInputLog(getIntent().getExtras().getInt("field"), getIntent().getExtras().getString("plots"), userId, getIntent().getExtras().getInt("treatmentId"),
+                    getIntent().getExtras().getString("treatmentInputDate"), getIntent().getExtras().getString("treatmentInputMaterial"),
+                    getIntent().getExtras().getFloat("treatmentInputQuantity"), getIntent().getExtras().getString("treatmentInputMethod"),
+                    getIntent().getExtras().getString("treatmentInputCost"), getIntent().getExtras().getString("treatmentInputComments"));
+        }
+
         TextView tt = (TextView)findViewById(R.id.tableTitle);
         tt.setText("Choose input");
 

@@ -391,7 +391,7 @@ public class enterCropInput extends AppCompatActivity {
 
                     if (update.equals("")) {
                         Toast.makeText(this, "Input saved successfully", Toast.LENGTH_SHORT).show();
-                        Intent i = new Intent(this, chooseFieldPlot.class);
+                        Intent i = new Intent(this, inputChooser.class);
                         i.putExtra("userId", userId);
                         i.putExtra("userRole", userRole);
                         i.putExtra("task", task);

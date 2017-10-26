@@ -20,8 +20,9 @@ public class oField {
     public int rows;
     public int columns;
     public ArrayList<oPlot> plots;
+    public int parentFieldId;
 
-    oField(int id, String name, int rn, Date created, String lat, String lng, int nc, boolean i, boolean s, boolean p, int r, int c, ArrayList<oPlot> pp){
+    oField(int id, String name, int rn, Date created, String lat, String lng, int nc, boolean i, boolean s, boolean p, int r, int c, ArrayList<oPlot> pp, int pf){
         fieldId=id;
         fieldName=name;
         fieldReplicationN=rn;
@@ -35,6 +36,7 @@ public class oField {
         rows=r;
         columns=c;
         plots=pp;
+        pf=parentFieldId;
     }
 
     oField(){

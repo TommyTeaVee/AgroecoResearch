@@ -415,6 +415,7 @@ public class agroecoHelper {
                 String[] record = iterator.next();
                 oField field = new oField();
                 field.fieldId = Integer.parseInt(record[0]);
+                field.parentFieldId = Integer.parseInt(record[1]);
                 field.fieldName = record[4];
                 field.fieldReplicationN = Integer.parseInt(record[5]);
                 field.plots = parsePlots(record[8]);
