@@ -22,7 +22,7 @@
 
         <Button
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="@string/registerInputButton"
             android:id="@+id/registerInput"
             android:onClick="addInput"
@@ -33,7 +33,7 @@
 
         <Button
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="@string/registerActivityButtonText"
             android:id="@+id/registerActivity"
             android:onClick="addActivity"
@@ -45,7 +45,7 @@
 
         <Button
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="@string/registerMeasurementButtonText"
             android:id="@+id/registerMeasurement"
             android:onClick="addMeasurement"
@@ -57,7 +57,7 @@
 
         <Button
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="@string/manageDataButtonText"
             android:id="@+id/manageData"
             android:onClick="manageData"
@@ -69,7 +69,7 @@
 
         <Button
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="@string/settingsButtonText"
             android:id="@+id/settings"
             android:onClick="settings"
@@ -85,7 +85,7 @@
 
             <Button
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:text="@string/logoutButtonText"
                 android:id="@+id/logout"
                 android:onClick="doLogout"
