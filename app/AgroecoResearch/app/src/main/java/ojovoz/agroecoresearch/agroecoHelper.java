@@ -756,7 +756,62 @@ public class agroecoHelper {
         return cList;
     }
 
-    public void addActivityToLog(int fieldId, String plots, int userId, int activityId, String date, float numberValue, String units, String laborers, String cost, String comments){
+    public ArrayList<oField> getReplicationsFromFieldId(int id){
+        ArrayList<oField> ret = new ArrayList<>();
+
+        oField sourceField = getFieldFromId(id);
+
+        Iterator<oField> iterator = fields.iterator();
+        while (iterator.hasNext()) {
+            oField field = iterator.next();
+            if(field.fieldId!=id && field.parentFieldId==sourceField.parentFieldId){
+                ret.add(field);
+            }
+        }
+        return ret;
+    }
+
+    public boolean plotsAreEqual(oPlot source, oPlot dest){
+        boolean ret=false;
+        if(source.primaryCrop.cropId==dest.primaryCrop.cropId){
+            if((source.intercroppingCrop==null && dest.intercroppingCrop!=null) || (source.intercroppingCrop!=null && dest.intercroppingCrop==null)){
+
+            } else {
+                if ((source.intercroppingCrop == null && dest.intercroppingCrop == null) || (source.intercroppingCrop.cropId == dest.intercroppingCrop.cropId)) {
+                    if (source.hasPestControl == dest.hasPestControl && source.hasSoilManagement == dest.hasSoilManagement) {
+                        ret = true;
+                    }
+                }
+            }
+        }
+        return ret;
+    }
+
+
+    public String getDestinationPlots(String sourcePlots, int sourceFieldId, oField field){
+        String ret="";
+        oField sourceField = getFieldFromId(sourceFieldId);
+        String sourcePlotsList[]=sourcePlots.split(",");
+        for(int i=0;i<sourcePlotsList.length;i++) {
+            oPlot sourcePlot = sourceField.plots.get(Integer.valueOf(sourcePlotsList[i]));
+            Iterator<oPlot> iterator = field.plots.iterator();
+            int n = 0;
+            while (iterator.hasNext()) {
+                oPlot destPlot = iterator.next();
+                if (plotsAreEqual(sourcePlot, destPlot)) {
+                    if (ret.isEmpty()) {
+                        ret = String.valueOf(n);
+                    } else {
+                        ret = ret + "," + String.valueOf(n);
+                    }
+                }
+                n++;
+            }
+        }
+        return ret;
+    }
+
+    public void addActivityToLog(int fieldId, String plots, int userId, int activityId, String date, float numberValue, String units, String laborers, String cost, String comments, boolean copy){
         //updateActivityDaysAgo(activityId, plotN, fieldId, date);
         createLog();
         oLog newEntry = new oLog();
@@ -772,11 +827,38 @@ public class agroecoHelper {
         newEntry.logCost = cost;
         newEntry.logComments = comments;
         log.add(newEntry);
+
+        if(copy){
+            ArrayList<oField> replications = getReplicationsFromFieldId(fieldId);
+            if(replications!=null){
+                Iterator<oField> iterator = replications.iterator();
+                while (iterator.hasNext()) {
+                    oField field = iterator.next();
+                    String destPlots = getDestinationPlots(plots, fieldId, field);
+                    if(!destPlots.isEmpty()) {
+                        newEntry = new oLog();
+                        newEntry.logId = getNewLogId();
+                        newEntry.logFieldId = field.fieldId;
+                        newEntry.logPlots = destPlots;
+                        newEntry.logUserId = userId;
+                        newEntry.logActivityId = activityId;
+                        newEntry.logDate = stringToDate(date);
+                        newEntry.logNumberValue = numberValue;
+                        newEntry.logValueUnits = units;
+                        newEntry.logLaborers = laborers;
+                        newEntry.logCost = cost;
+                        newEntry.logComments = comments+" (copied)";
+                        log.add(newEntry);
+                    }
+                }
+            }
+        }
+
         sortLog();
         writeLog();
     }
 
-    public void addCropToInputLog(int fieldId, String plots, int userId, int cropId, String date, String age, String origin, float quantity, String cost, String comments){
+    public void addCropToInputLog(int fieldId, String plots, int userId, int cropId, String date, String age, String origin, float quantity, String cost, String comments, boolean copy){
         //updateCropInputDaysAgo(cropId, plotN, fieldId, date);
         createInputLog();
         oInputLog newEntry = new oInputLog();
@@ -792,11 +874,38 @@ public class agroecoHelper {
         newEntry.inputLogInputCost = cost;
         newEntry.inputLogComments = comments;
         inputLog.add(newEntry);
+
+        if(copy){
+            ArrayList<oField> replications = getReplicationsFromFieldId(fieldId);
+            if(replications!=null) {
+                Iterator<oField> iterator = replications.iterator();
+                while (iterator.hasNext()) {
+                    oField field = iterator.next();
+                    String destPlots = getDestinationPlots(plots, fieldId, field);
+                    if (!destPlots.isEmpty()) {
+                        newEntry = new oInputLog();
+                        newEntry.inputLogId = getNewInputLogId();
+                        newEntry.inputLogFieldId = field.fieldId;
+                        newEntry.inputLogPlots = destPlots;
+                        newEntry.inputLogUserId = userId;
+                        newEntry.inputLogCropId = cropId;
+                        newEntry.inputLogDate = stringToDate(date);
+                        newEntry.inputLogInputAge = age;
+                        newEntry.inputLogInputOrigin = origin;
+                        newEntry.inputLogInputQuantity = quantity;
+                        newEntry.inputLogInputCost = cost;
+                        newEntry.inputLogComments = comments+" (copied)";
+                        inputLog.add(newEntry);
+                    }
+                }
+            }
+        }
+
         sortInputLog();
         writeInputLog();
     }
 
-    public void addTreatmentToInputLog(int fieldId, String plots, int userId, int treatmentId, String date, String material, float quantity, String method, String cost, String comments){
+    public void addTreatmentToInputLog(int fieldId, String plots, int userId, int treatmentId, String date, String material, float quantity, String method, String cost, String comments, boolean copy){
         //updateTreatmentInputDaysAgo(treatmentId, plotN, fieldId, date);
         createInputLog();
         oInputLog newEntry = new oInputLog();
@@ -812,6 +921,33 @@ public class agroecoHelper {
         newEntry.inputLogInputCost = cost;
         newEntry.inputLogComments = comments;
         inputLog.add(newEntry);
+
+        if(copy){
+            ArrayList<oField> replications = getReplicationsFromFieldId(fieldId);
+            if(replications!=null) {
+                Iterator<oField> iterator = replications.iterator();
+                while (iterator.hasNext()) {
+                    oField field = iterator.next();
+                    String destPlots = getDestinationPlots(plots, fieldId, field);
+                    if (!destPlots.isEmpty()) {
+                        newEntry = new oInputLog();
+                        newEntry.inputLogId = getNewInputLogId();
+                        newEntry.inputLogFieldId = field.fieldId;
+                        newEntry.inputLogPlots = destPlots;
+                        newEntry.inputLogUserId = userId;
+                        newEntry.inputLogTreatmentId = treatmentId;
+                        newEntry.inputLogDate = stringToDate(date);
+                        newEntry.inputLogTreatmentMaterial = material;
+                        newEntry.inputLogInputQuantity = quantity;
+                        newEntry.inputLogTreatmentPreparationMethod = method;
+                        newEntry.inputLogInputCost = cost;
+                        newEntry.inputLogComments = comments+" (copied)";
+                        inputLog.add(newEntry);
+                    }
+                }
+            }
+        }
+
         sortInputLog();
         writeInputLog();
     }

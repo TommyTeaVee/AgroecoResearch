@@ -47,6 +47,12 @@ public class enterActivity extends AppCompatActivity {
     public boolean changes=false;
     public int exitAction;
 
+    float valueNumber;
+    String unitsText;
+    String laborersNumber;
+    String costValue;
+    String commentsText;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -197,7 +203,7 @@ public class enterActivity extends AppCompatActivity {
 
     public void confirmExit(){
         AlertDialog.Builder logoutDialog = new AlertDialog.Builder(this);
-        logoutDialog.setTitle(R.string.logoutAlertTitle);
+        logoutDialog.setTitle(R.string.exitAlertTitle);
         logoutDialog.setMessage(R.string.exitAlertString);
         logoutDialog.setNegativeButton(R.string.cancelButtonText,null);
         logoutDialog.setPositiveButton(R.string.okButtonText, new DialogInterface.OnClickListener() {
@@ -356,10 +362,10 @@ public class enterActivity extends AppCompatActivity {
         EditText value = (EditText)findViewById(R.id.activityValue);
         String valueText = String.valueOf(value.getText());
         if(isNumeric(valueText)){
-            float valueNumber = Float.parseFloat(valueText);
+            valueNumber = Float.parseFloat(valueText);
 
             EditText units = (EditText)findViewById(R.id.activityUnits);
-            String unitsText = String.valueOf(units.getText());
+            unitsText = String.valueOf(units.getText());
 
             if(!unitsText.isEmpty()){
                 unitsText = unitsText.replaceAll(";"," ");
@@ -369,16 +375,16 @@ public class enterActivity extends AppCompatActivity {
                 EditText laborers = (EditText)findViewById(R.id.activityLaborers);
                 String laborersText = String.valueOf(laborers.getText());
                 if(isNumeric(laborersText) || laborersText.isEmpty()) {
-                    String laborersNumber = laborersText;
+                    laborersNumber = laborersText;
 
                     EditText cost = (EditText)findViewById(R.id.activityCost);
                     String costText = String.valueOf(cost.getText());
 
                     if(isNumeric(costText) || costText.isEmpty()) {
-                        String costValue = costText;
+                        costValue = costText;
 
                         EditText comments = (EditText) findViewById(R.id.activityComments);
-                        String commentsText = String.valueOf(comments.getText());
+                        commentsText = String.valueOf(comments.getText());
 
                         if (!commentsText.isEmpty()) {
                             commentsText = commentsText.replaceAll(";", " ");
@@ -387,24 +393,7 @@ public class enterActivity extends AppCompatActivity {
                         }
 
                         if (update.equals("")) {
-                            Toast.makeText(this, "Activity saved successfully", Toast.LENGTH_SHORT).show();
-                            Intent i = new Intent(this, chooser.class);
-                            i.putExtra("userId", userId);
-                            i.putExtra("userRole", userRole);
-                            i.putExtra("task", task);
-                            i.putExtra("title", shortTitle);
-                            i.putExtra("field", fieldId);
-                            i.putExtra("plots", plots);
-                            i.putExtra("newActivity", true);
-                            i.putExtra("activity", activityId);
-                            i.putExtra("activityDate", dateToString(activityDate));
-                            i.putExtra("activityValue", valueNumber);
-                            i.putExtra("activityUnits", unitsText);
-                            i.putExtra("activityLaborers", laborersNumber);
-                            i.putExtra("activityCost", costValue);
-                            i.putExtra("activityComments", commentsText);
-                            startActivity(i);
-                            finish();
+                            requestCopyToReplications();
                         } else {
                             Toast.makeText(this, "Activity edited successfully", Toast.LENGTH_SHORT).show();
                             Intent i = new Intent(this, manageData.class);
@@ -423,6 +412,7 @@ public class enterActivity extends AppCompatActivity {
                             startActivity(i);
                             finish();
                         }
+
                     } else {
                         Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
                         cost.requestFocus();
@@ -440,5 +430,48 @@ public class enterActivity extends AppCompatActivity {
             Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
             value.requestFocus();
         }
+    }
+
+    public void requestCopyToReplications() {
+
+        AlertDialog.Builder logoutDialog = new AlertDialog.Builder(this);
+        logoutDialog.setTitle(R.string.copyRequestTitle);
+        logoutDialog.setMessage(R.string.copyRequestString);
+        logoutDialog.setNegativeButton(R.string.noButtonText, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                doSave(false);
+            }
+        });
+        logoutDialog.setPositiveButton(R.string.yesButtonText, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                doSave(true);
+            }
+        });
+        logoutDialog.create();
+        logoutDialog.show();
+    }
+
+    void doSave(boolean copy) {
+        Toast.makeText(this, "Activity saved successfully", Toast.LENGTH_SHORT).show();
+        Intent i = new Intent(this, chooser.class);
+        i.putExtra("userId", userId);
+        i.putExtra("userRole", userRole);
+        i.putExtra("task", task);
+        i.putExtra("title", shortTitle);
+        i.putExtra("field", fieldId);
+        i.putExtra("plots", plots);
+        i.putExtra("newActivity", true);
+        i.putExtra("activity", activityId);
+        i.putExtra("activityDate", dateToString(activityDate));
+        i.putExtra("activityValue", valueNumber);
+        i.putExtra("activityUnits", unitsText);
+        i.putExtra("activityLaborers", laborersNumber);
+        i.putExtra("activityCost", costValue);
+        i.putExtra("activityComments", commentsText);
+        i.putExtra("copy",copy);
+        startActivity(i);
+        finish();
     }
 }

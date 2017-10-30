@@ -120,4 +120,9 @@
     <string name="opMainMenu">Main menu</string>
     <string name="enterValidTextText">Text must not be empty</string>
     <string name="exitAlertString">Exit without saving?</string>
+    <string name="exitAlertTitle">Exit</string>
+    <string name="copyRequestTitle">Copy</string>
+    <string name="copyRequestString">Copy to other replications?</string>
+    <string name="yesButtonText">Yes</string>
+    <string name="noButtonText">No</string>
 </resources>

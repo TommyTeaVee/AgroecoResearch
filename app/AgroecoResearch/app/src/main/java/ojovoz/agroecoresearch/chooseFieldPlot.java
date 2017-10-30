@@ -89,20 +89,26 @@ public class chooseFieldPlot extends AppCompatActivity {
         fields = agroHelper.fields;
 
         if(getIntent().getExtras().getBoolean("newCropInput")){
+            /*
             agroHelper.addCropToInputLog(fieldId, plots, userId, getIntent().getExtras().getInt("cropId"),
                     getIntent().getExtras().getString("cropInputDate"), getIntent().getExtras().getString("cropInputAge"),
                     getIntent().getExtras().getString("cropInputOrigin"), getIntent().getExtras().getFloat("cropInputQuantity"),
                     getIntent().getExtras().getString("cropInputCost"), getIntent().getExtras().getString("cropInputComments"));
+                    */
         } else if(getIntent().getExtras().getBoolean("newTreatmentInput")){
+            /*
             agroHelper.addTreatmentToInputLog(fieldId, plots, userId, getIntent().getExtras().getInt("treatmentId"),
                     getIntent().getExtras().getString("treatmentInputDate"), getIntent().getExtras().getString("treatmentInputMaterial"),
                     getIntent().getExtras().getFloat("treatmentInputQuantity"), getIntent().getExtras().getString("treatmentInputMethod"),
                     getIntent().getExtras().getString("treatmentInputCost"), getIntent().getExtras().getString("treatmentInputComments"));
+                    */
         } else if(getIntent().getExtras().getBoolean("newActivity")){
+            /*
             agroHelper.addActivityToLog(fieldId, plots, userId, getIntent().getExtras().getInt("activity"),
                     getIntent().getExtras().getString("activityDate"), getIntent().getExtras().getFloat("activityValue"),
                     getIntent().getExtras().getString("activityUnits"), getIntent().getExtras().getString("activityLaborers"),
                     getIntent().getExtras().getString("activityCost"), getIntent().getExtras().getString("activityComments"));
+                    */
         } else if(getIntent().getExtras().getBoolean("newMeasurement")){
             agroHelper.addMeasurementToLog(fieldId, plots, userId, getIntent().getExtras().getInt("measurement"),
                     getIntent().getExtras().getString("measurementDate"), getIntent().getExtras().getFloat("measurementValue"),

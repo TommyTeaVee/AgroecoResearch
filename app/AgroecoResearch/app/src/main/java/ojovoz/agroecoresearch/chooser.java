@@ -54,7 +54,8 @@ public class chooser extends AppCompatActivity {
             agroHelper.addActivityToLog(getIntent().getExtras().getInt("field"), plots, userId, getIntent().getExtras().getInt("activity"),
                     getIntent().getExtras().getString("activityDate"), getIntent().getExtras().getFloat("activityValue"),
                     getIntent().getExtras().getString("activityUnits"), getIntent().getExtras().getString("activityLaborers"),
-                    getIntent().getExtras().getString("activityCost"), getIntent().getExtras().getString("activityComments"));
+                    getIntent().getExtras().getString("activityCost"), getIntent().getExtras().getString("activityComments"),
+                    getIntent().getExtras().getBoolean("copy"));
         }
 
         setTitle("Enter "+task);

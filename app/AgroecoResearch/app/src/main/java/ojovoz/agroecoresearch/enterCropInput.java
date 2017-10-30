@@ -46,6 +46,12 @@ public class enterCropInput extends AppCompatActivity {
     public boolean changes=false;
     public int exitAction;
 
+    String ageNumber;
+    String originText;
+    float quantityNumber;
+    String costNumber;
+    String commentsText;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -197,7 +203,7 @@ public class enterCropInput extends AppCompatActivity {
 
     public void confirmExit(){
         AlertDialog.Builder logoutDialog = new AlertDialog.Builder(this);
-        logoutDialog.setTitle(R.string.logoutAlertTitle);
+        logoutDialog.setTitle(R.string.exitAlertTitle);
         logoutDialog.setMessage(R.string.exitAlertString);
         logoutDialog.setNegativeButton(R.string.cancelButtonText,null);
         logoutDialog.setPositiveButton(R.string.okButtonText, new DialogInterface.OnClickListener() {
@@ -357,22 +363,22 @@ public class enterCropInput extends AppCompatActivity {
         EditText age = (EditText) findViewById(R.id.cropAge);
         String ageValue = String.valueOf(age.getText());
         if (isNumeric(ageValue) || ageValue.isEmpty()) {
-            String ageNumber = ageValue;
+            ageNumber = ageValue;
 
             EditText quantity = (EditText) findViewById(R.id.cropQuantity);
             String quantityValue = String.valueOf(quantity.getText());
             if (isNumeric(quantityValue)) {
 
-                float quantityNumber = Float.parseFloat(quantityValue);
+                quantityNumber = Float.parseFloat(quantityValue);
 
                 EditText cost = (EditText) findViewById(R.id.cropCost);
                 String costValue = String.valueOf(cost.getText());
                 if (isNumeric(costValue) || costValue.isEmpty()) {
 
-                    String costNumber = costValue;
+                    costNumber = costValue;
 
                     EditText origin = (EditText) findViewById(R.id.cropOrigin);
-                    String originText = String.valueOf(origin.getText());
+                    originText = String.valueOf(origin.getText());
 
                     if (!originText.isEmpty()) {
                         originText = originText.replaceAll(";", " ");
@@ -381,7 +387,7 @@ public class enterCropInput extends AppCompatActivity {
                     }
 
                     EditText comments = (EditText) findViewById(R.id.inputComments);
-                    String commentsText = String.valueOf(comments.getText());
+                    commentsText = String.valueOf(comments.getText());
 
                     if (!commentsText.isEmpty()) {
                         commentsText = commentsText.replaceAll(";", " ");
@@ -390,25 +396,7 @@ public class enterCropInput extends AppCompatActivity {
                     }
 
                     if (update.equals("")) {
-                        Toast.makeText(this, "Input saved successfully", Toast.LENGTH_SHORT).show();
-                        Intent i = new Intent(this, inputChooser.class);
-                        i.putExtra("userId", userId);
-                        i.putExtra("userRole", userRole);
-                        i.putExtra("task", task);
-                        i.putExtra("title", shortTitle);
-                        i.putExtra("field", fieldId);
-                        i.putExtra("plots", plots);
-                        i.putExtra("newCropInput", true);
-                        i.putExtra("cropId", cropId);
-                        i.putExtra("treatmentId", -1);
-                        i.putExtra("cropInputDate", dateToString(cropInputDate));
-                        i.putExtra("cropInputAge", ageNumber);
-                        i.putExtra("cropInputOrigin", originText);
-                        i.putExtra("cropInputQuantity", quantityNumber);
-                        i.putExtra("cropInputCost", costNumber);
-                        i.putExtra("cropInputComments", commentsText);
-                        startActivity(i);
-                        finish();
+                        requestCopyToReplications();
                     } else {
                         Toast.makeText(this, "Input edited successfully", Toast.LENGTH_SHORT).show();
                         Intent i = new Intent(this, manageData.class);
@@ -439,5 +427,49 @@ public class enterCropInput extends AppCompatActivity {
             Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
             age.requestFocus();
         }
+    }
+
+    public void requestCopyToReplications() {
+
+        AlertDialog.Builder logoutDialog = new AlertDialog.Builder(this);
+        logoutDialog.setTitle(R.string.copyRequestTitle);
+        logoutDialog.setMessage(R.string.copyRequestString);
+        logoutDialog.setNegativeButton(R.string.noButtonText, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                doSave(false);
+            }
+        });
+        logoutDialog.setPositiveButton(R.string.yesButtonText, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                doSave(true);
+            }
+        });
+        logoutDialog.create();
+        logoutDialog.show();
+    }
+
+    public void doSave(boolean copy){
+        Toast.makeText(this, "Input saved successfully", Toast.LENGTH_SHORT).show();
+        Intent i = new Intent(this, inputChooser.class);
+        i.putExtra("userId", userId);
+        i.putExtra("userRole", userRole);
+        i.putExtra("task", task);
+        i.putExtra("title", shortTitle);
+        i.putExtra("field", fieldId);
+        i.putExtra("plots", plots);
+        i.putExtra("newCropInput", true);
+        i.putExtra("cropId", cropId);
+        i.putExtra("treatmentId", -1);
+        i.putExtra("cropInputDate", dateToString(cropInputDate));
+        i.putExtra("cropInputAge", ageNumber);
+        i.putExtra("cropInputOrigin", originText);
+        i.putExtra("cropInputQuantity", quantityNumber);
+        i.putExtra("cropInputCost", costNumber);
+        i.putExtra("cropInputComments", commentsText);
+        i.putExtra("copy",copy);
+        startActivity(i);
+        finish();
     }
 }

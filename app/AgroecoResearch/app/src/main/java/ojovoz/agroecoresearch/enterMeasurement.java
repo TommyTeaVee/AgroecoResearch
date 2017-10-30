@@ -326,7 +326,7 @@ public class enterMeasurement extends AppCompatActivity {
 
     public void confirmExit(){
         AlertDialog.Builder logoutDialog = new AlertDialog.Builder(this);
-        logoutDialog.setTitle(R.string.logoutAlertTitle);
+        logoutDialog.setTitle(R.string.exitAlertTitle);
         logoutDialog.setMessage(R.string.exitAlertString);
         logoutDialog.setNegativeButton(R.string.cancelButtonText,null);
         logoutDialog.setPositiveButton(R.string.okButtonText, new DialogInterface.OnClickListener() {
