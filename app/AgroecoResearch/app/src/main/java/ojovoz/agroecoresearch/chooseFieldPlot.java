@@ -42,6 +42,8 @@ public class chooseFieldPlot extends AppCompatActivity {
     oField field;
 
     ArrayList<oPlotHelper> plotsInGrid;
+    public View previousPlot=null;
+    public int previousPlotN=-1;
 
     public String legend;
     public String measurementCategory;
@@ -263,6 +265,7 @@ public class chooseFieldPlot extends AppCompatActivity {
                 oPlot plot = plots.get(n);
 
                 boolean isChooseable=agroHelper.isPlotChooseable(plot,task,subTask,taskId);
+                boolean state;
 
                 Button b = new Button(chooseFieldPlot.this);
                 b.setId(n);
@@ -271,11 +274,17 @@ public class chooseFieldPlot extends AppCompatActivity {
                 GradientDrawable drawable = new GradientDrawable();
                 drawable.setShape(GradientDrawable.RECTANGLE);
 
-                if(isChooseable) {
+                if((isChooseable && !task.equals("measurement")) || (isChooseable && task.equals("measurement") && preChosenPlots==0)) {
                     drawable.setStroke(5, Color.RED);
                     preChosenPlots++;
+                    state=true;
+                    if(task.equals("measurement")){
+                        previousPlot=b;
+                        previousPlotN=n;
+                    }
                 } else {
-                    drawable.setStroke(0, Color.WHITE);
+                    drawable.setStroke(5, Color.WHITE);
+                    state=false;
                 }
 
                 if(!plot.hasPestControl && !plot.hasSoilManagement){
@@ -333,7 +342,7 @@ public class chooseFieldPlot extends AppCompatActivity {
                 }
                 trow.addView(b,lp);
 
-                oPlotHelper np = new oPlotHelper(plot,n,isChooseable,isChooseable);
+                oPlotHelper np = new oPlotHelper(plot,n,state,isChooseable);
                 plotsInGrid.add(np);
 
                 n++;
@@ -434,8 +443,17 @@ public class chooseFieldPlot extends AppCompatActivity {
 
         if(getPlotState(n)) {
             d.setStroke(5, Color.RED);
+            if(task.equals("measurement")){
+                Button pb = (Button)previousPlot;
+                GradientDrawable pd = (GradientDrawable) pb.getBackground();
+                pd.setStroke(5, Color.WHITE);
+                pb.setBackground(pd);
+                getPlotState(previousPlotN);
+                previousPlot=b;
+                previousPlotN=n;
+            }
         } else {
-            d.setStroke(0, Color.WHITE);
+            d.setStroke(5, Color.WHITE);
         }
 
         b.setBackground(d);
