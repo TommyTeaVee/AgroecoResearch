@@ -1097,6 +1097,21 @@ public class agroecoHelper {
         }
     }
 
+    public oMeasuredPlotHelper getMeasuredPlotFromLogId(int id){
+        oMeasuredPlotHelper mp = new oMeasuredPlotHelper(-1,-1,-1);
+        Iterator<oLog> iterator = log.iterator();
+        while(iterator.hasNext()) {
+            oLog l = iterator.next();
+            if(l.logId==id){
+                mp.fieldId=l.logFieldId;
+                mp.plotNumber=Integer.valueOf(l.logPlots);
+                mp.measurementId=l.logMeasurementId;
+                break;
+            }
+        }
+        return mp;
+    }
+
     public void deleteLogEntries(String e, boolean deleteFromCalendar){
         boolean bWriteActivitiesCalendar=false;
         boolean bWriteMeasurementsCalendar=false;

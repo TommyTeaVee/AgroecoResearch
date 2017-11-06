@@ -51,6 +51,8 @@ public class chooseFieldPlot extends AppCompatActivity {
     public int taskId;
     public String subTask="";
 
+    ArrayList<oMeasuredPlotHelper> measuredPlots;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +67,7 @@ public class chooseFieldPlot extends AppCompatActivity {
         if(task.equals("measurement")){
             measurementCategory = getIntent().getExtras().getString("measurementChosenCategory");
             taskId = getIntent().getExtras().getInt("measurement");
+            getMeasuredPlots();
         } else if (task.equals("activity")){
             taskId = getIntent().getExtras().getInt("activity");
         } else if (task.equals("input")){
@@ -116,6 +119,7 @@ public class chooseFieldPlot extends AppCompatActivity {
                     getIntent().getExtras().getString("measurementDate"), getIntent().getExtras().getFloat("measurementValue"),
                     getIntent().getExtras().getString("measurementUnits"), getIntent().getExtras().getString("measurementCategory"),
                     getIntent().getExtras().getString("measurementComments"));
+            updateMeasuredPlots(fieldId,plots,getIntent().getExtras().getInt("measurement"));
         }
 
 
@@ -192,6 +196,46 @@ public class chooseFieldPlot extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void getMeasuredPlots(){
+        measuredPlots = new ArrayList<>();
+        String mp = prefs.getPreference("measuredPlots");
+        if(!mp.isEmpty()){
+            String mpList[] = mp.split(";");
+            for(int i=0;i<mpList.length;i++){
+                String mpElements[] = mpList[i].split(",");
+                oMeasuredPlotHelper measuredPlot = new oMeasuredPlotHelper(Integer.valueOf(mpElements[0]),Integer.valueOf(mpElements[1]),Integer.valueOf(mpElements[2]));
+                measuredPlots.add(measuredPlot);
+            }
+        }
+    }
+
+    public void updateMeasuredPlots(int f, String p, int m){
+        int plot = Integer.valueOf(p);
+        oMeasuredPlotHelper measuredPlot = new oMeasuredPlotHelper(f,plot,m);
+        measuredPlots.add(measuredPlot);
+        String mp = prefs.getPreference("measuredPlots");
+        if(mp.isEmpty()){
+            mp=String.valueOf(f)+","+p+","+String.valueOf(m);
+        } else {
+            mp=mp+";"+String.valueOf(f)+","+p+","+String.valueOf(m);
+        }
+        prefs.savePreference("measuredPlots",mp);
+    }
+
+    public boolean hasPlotBeenMeasured(int p){
+        boolean ret=false;
+        int f = field.fieldId;
+        Iterator<oMeasuredPlotHelper> iterator = measuredPlots.iterator();
+        while (iterator.hasNext()) {
+            oMeasuredPlotHelper mp = iterator.next();
+            if(mp.fieldId==f && mp.plotNumber==p && mp.measurementId==taskId){
+                ret=true;
+                break;
+            }
+        }
+        return ret;
+    }
+
     public void goToDataManager(){
         final Context context = this;
         Intent i = new Intent(context, manageData.class);
@@ -266,6 +310,7 @@ public class chooseFieldPlot extends AppCompatActivity {
 
                 boolean isChooseable=agroHelper.isPlotChooseable(plot,task,subTask,taskId);
                 boolean state;
+                boolean hasBeenMeasured=hasPlotBeenMeasured(n);
 
                 Button b = new Button(chooseFieldPlot.this);
                 b.setId(n);
@@ -274,7 +319,10 @@ public class chooseFieldPlot extends AppCompatActivity {
                 GradientDrawable drawable = new GradientDrawable();
                 drawable.setShape(GradientDrawable.RECTANGLE);
 
-                if((isChooseable && !task.equals("measurement")) || (isChooseable && task.equals("measurement") && preChosenPlots==0)) {
+                if(hasBeenMeasured){
+                    drawable.setStroke(5, ContextCompat.getColor(this,R.color.colorBlack));
+                    state=false;
+                } else if((isChooseable && !task.equals("measurement")) || (isChooseable && task.equals("measurement") && preChosenPlots==0)) {
                     drawable.setStroke(5, Color.RED);
                     preChosenPlots++;
                     state=true;
@@ -330,7 +378,7 @@ public class chooseFieldPlot extends AppCompatActivity {
                 }
 
                 b.setText(cropsInPlot);
-                if(isChooseable) {
+                if(isChooseable && !hasBeenMeasured) {
                     b.setOnClickListener(new View.OnClickListener() {
 
                         @Override

@@ -168,6 +168,7 @@ public class loginScreen extends AppCompatActivity implements httpConnection.Asy
     }
 
     public void launchMainMenu(){
+        prefs.savePreference("measuredPlots","");
         final Context context = this;
         Intent i = new Intent(context, mainMenu.class);
         i.putExtra("userId",userId);
