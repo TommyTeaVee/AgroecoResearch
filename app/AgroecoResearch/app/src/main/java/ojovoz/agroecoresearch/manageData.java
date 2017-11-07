@@ -82,19 +82,22 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
             String cD = getIntent().getExtras().getString("cropInputDate");
             String cA = getIntent().getExtras().getString("cropInputAge");
             String cO = getIntent().getExtras().getString("cropInputOrigin");
+            String cV = getIntent().getExtras().getString("cropInputVariety");
             Float cQ = getIntent().getExtras().getFloat("cropInputQuantity");
+            String cU = getIntent().getExtras().getString("cropInputUnits");
             String cC = getIntent().getExtras().getString("cropInputCost");
             String cCC = getIntent().getExtras().getString("cropInputComments");
-            agroHelper.updateInputLogCropEntry(inputLogId, cD, cA, cO, cQ, cC, cCC);
+            agroHelper.updateInputLogCropEntry(inputLogId, cD, cA, cO, cV, cQ, cU, cC, cCC);
         } else if(update.equals("treatmentInput")){
             int inputLogId = getIntent().getExtras().getInt("inputLogId");
             String tD = getIntent().getExtras().getString("treatmentInputDate");
             String tM = getIntent().getExtras().getString("treatmentInputMaterial");
             Float tQ = getIntent().getExtras().getFloat("treatmentInputQuantity");
+            String tU = getIntent().getExtras().getString("treatmentInputUnits");
             String tMM = getIntent().getExtras().getString("treatmentInputMethod");
             String tC = getIntent().getExtras().getString("treatmentInputCost");
             String tCC = getIntent().getExtras().getString("treatmentInputComments");
-            agroHelper.updateInputLogTreatmentEntry(inputLogId, tD, tM, tQ, tMM, tC, tCC);
+            agroHelper.updateInputLogTreatmentEntry(inputLogId, tD, tM, tQ, tU, tMM, tC, tCC);
         }
 
         TextView tt = (TextView)findViewById(R.id.logTableTitle);
@@ -574,7 +577,9 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
             i.putExtra("cropInputDate", agroHelper.dateToString(inputLogItem.inputLogDate));
             i.putExtra("cropInputAge", inputLogItem.inputLogInputAge);
             i.putExtra("cropInputOrigin", inputLogItem.inputLogInputOrigin);
+            i.putExtra("cropInputVariety", inputLogItem.inputLogCropVariety);
             i.putExtra("cropInputQuantity", inputLogItem.inputLogInputQuantity);
+            i.putExtra("cropInputUnits", inputLogItem.inputLogInputUnits);
             i.putExtra("cropInputCost", inputLogItem.inputLogInputCost);
             i.putExtra("cropInputComments", inputLogItem.inputLogComments);
             i.putExtra("title",inputTitle);
@@ -595,6 +600,7 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
             i.putExtra("treatmentInputDate", agroHelper.dateToString(inputLogItem.inputLogDate));
             i.putExtra("treatmentInputMaterial", inputLogItem.inputLogTreatmentMaterial);
             i.putExtra("treatmentInputQuantity", inputLogItem.inputLogInputQuantity);
+            i.putExtra("treatmentInputUnits", inputLogItem.inputLogInputUnits);
             i.putExtra("treatmentInputMethod", inputLogItem.inputLogTreatmentPreparationMethod);
             i.putExtra("treatmentInputCost", inputLogItem.inputLogInputCost);
             i.putExtra("treatmentInputComments", inputLogItem.inputLogComments);

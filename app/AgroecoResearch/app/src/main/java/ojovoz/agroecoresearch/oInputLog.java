@@ -16,7 +16,9 @@ public class oInputLog {
     public int inputLogTreatmentId;
     public String inputLogInputAge="";
     public String inputLogInputOrigin="";
+    public String inputLogCropVariety="";
     public float inputLogInputQuantity;
+    public String inputLogInputUnits="";
     public String inputLogInputCost="";
     public String inputLogTreatmentMaterial="";
     public String inputLogTreatmentPreparationMethod="";

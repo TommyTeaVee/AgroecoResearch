@@ -125,4 +125,7 @@
     <string name="copyRequestString">Copy to other replications?</string>
     <string name="yesButtonText">Yes</string>
     <string name="noButtonText">No</string>
+    <string name="enterCropVarietyText">Variety</string>
+    <string name="enterInputUnitsText">Units</string>
+    <string name="defaultUnits">kg</string>
 </resources>

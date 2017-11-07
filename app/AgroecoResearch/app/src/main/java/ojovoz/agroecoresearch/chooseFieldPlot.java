@@ -310,7 +310,7 @@ public class chooseFieldPlot extends AppCompatActivity {
 
                 boolean isChooseable=agroHelper.isPlotChooseable(plot,task,subTask,taskId);
                 boolean state;
-                boolean hasBeenMeasured=hasPlotBeenMeasured(n);
+                boolean hasBeenMeasured= (task.equals("measurement")) ? hasPlotBeenMeasured(n) : false;
 
                 Button b = new Button(chooseFieldPlot.this);
                 b.setId(n);

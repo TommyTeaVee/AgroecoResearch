@@ -51,6 +51,7 @@ public class enterTreatmentInput extends AppCompatActivity {
     String methodText;
     String costNumber;
     String commentsText;
+    String unitsText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,6 +77,7 @@ public class enterTreatmentInput extends AppCompatActivity {
         EditText material = (EditText) findViewById(R.id.treatmentMaterial);
         EditText method = (EditText) findViewById(R.id.treatmentPreparationMethod);
         EditText comments = (EditText) findViewById(R.id.inputComments);
+        EditText units = (EditText) findViewById(R.id.treatmentUnits);
 
         if(update.equals("treatment")){
             inputLogId = getIntent().getExtras().getInt("inputLogId");
@@ -92,6 +94,7 @@ public class enterTreatmentInput extends AppCompatActivity {
             material.setText(getIntent().getExtras().getString("treatmentInputMaterial"));
             method.setText(getIntent().getExtras().getString("treatmentInputMethod"));
             comments.setText(getIntent().getExtras().getString("treatmentInputComments"));
+            units.setText(getIntent().getExtras().getString("treatmentInputUnits"));
         } else {
             treatmentInputDate = new Date();
         }
@@ -114,6 +117,23 @@ public class enterTreatmentInput extends AppCompatActivity {
         });
 
         quantity.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                changes=true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        units.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -365,62 +385,71 @@ public class enterTreatmentInput extends AppCompatActivity {
         if (isNumeric(quantityValue)) {
             quantityNumber = Float.parseFloat(quantityValue);
 
-            EditText cost = (EditText) findViewById(R.id.treatmentCost);
-            String costValue = String.valueOf(cost.getText());
-            if (isNumeric(costValue) || costValue.isEmpty()) {
+            EditText units = (EditText) findViewById(R.id.treatmentUnits);
+            unitsText = String.valueOf(units.getText());
+            if(!unitsText.isEmpty()) {
 
-                costNumber = costValue;
+                EditText cost = (EditText) findViewById(R.id.treatmentCost);
+                String costValue = String.valueOf(cost.getText());
+                if (isNumeric(costValue) || costValue.isEmpty()) {
 
-                EditText material = (EditText) findViewById(R.id.treatmentMaterial);
-                materialText = String.valueOf(material.getText());
-                if (!materialText.isEmpty()) {
-                    materialText = materialText.replaceAll(";", " ");
-                    materialText = materialText.replaceAll("\\|", " ");
-                    materialText = materialText.replaceAll("\\*", " ");
+                    costNumber = costValue;
 
-                    EditText method = (EditText) findViewById(R.id.treatmentPreparationMethod);
-                    methodText = String.valueOf(method.getText());
-                    if (!methodText.isEmpty()) {
-                        methodText = methodText.replaceAll(";", " ");
-                        methodText = methodText.replaceAll("\\|", " ");
-                        methodText = methodText.replaceAll("\\*", " ");
-                    }
+                    EditText material = (EditText) findViewById(R.id.treatmentMaterial);
+                    materialText = String.valueOf(material.getText());
+                    if (!materialText.isEmpty()) {
+                        materialText = materialText.replaceAll(";", " ");
+                        materialText = materialText.replaceAll("\\|", " ");
+                        materialText = materialText.replaceAll("\\*", " ");
 
-                    EditText comments = (EditText) findViewById(R.id.inputComments);
-                    commentsText = String.valueOf(comments.getText());
-                    if (!commentsText.isEmpty()) {
-                        commentsText = commentsText.replaceAll(";", " ");
-                        commentsText = commentsText.replaceAll("\\|", " ");
-                        commentsText = commentsText.replaceAll("\\*", " ");
-                    }
+                        EditText method = (EditText) findViewById(R.id.treatmentPreparationMethod);
+                        methodText = String.valueOf(method.getText());
+                        if (!methodText.isEmpty()) {
+                            methodText = methodText.replaceAll(";", " ");
+                            methodText = methodText.replaceAll("\\|", " ");
+                            methodText = methodText.replaceAll("\\*", " ");
+                        }
 
-                    if (update.equals("")) {
-                        requestCopyToReplications();
+                        EditText comments = (EditText) findViewById(R.id.inputComments);
+                        commentsText = String.valueOf(comments.getText());
+                        if (!commentsText.isEmpty()) {
+                            commentsText = commentsText.replaceAll(";", " ");
+                            commentsText = commentsText.replaceAll("\\|", " ");
+                            commentsText = commentsText.replaceAll("\\*", " ");
+                        }
+
+                        if (update.equals("")) {
+                            requestCopyToReplications();
+                        } else {
+                            Toast.makeText(this, "Input edited successfully", Toast.LENGTH_SHORT).show();
+                            Intent i = new Intent(this, manageData.class);
+                            i.putExtra("userId", userId);
+                            i.putExtra("userRole", userRole);
+                            i.putExtra("task", task);
+                            i.putExtra("inputLogId", inputLogId);
+                            i.putExtra("update", "treatmentInput");
+                            i.putExtra("treatment", treatmentId);
+                            i.putExtra("treatmentInputDate", dateToString(treatmentInputDate));
+                            i.putExtra("treatmentInputMaterial", materialText);
+                            i.putExtra("treatmentInputQuantity", quantityNumber);
+                            i.putExtra("treatmentInputUnits", unitsText);
+                            i.putExtra("treatmentInputMethod", methodText);
+                            i.putExtra("treatmentInputCost", costNumber);
+                            i.putExtra("treatmentInputComments", commentsText);
+                            startActivity(i);
+                            finish();
+                        }
                     } else {
-                        Toast.makeText(this, "Input edited successfully", Toast.LENGTH_SHORT).show();
-                        Intent i = new Intent(this, manageData.class);
-                        i.putExtra("userId", userId);
-                        i.putExtra("userRole", userRole);
-                        i.putExtra("task", task);
-                        i.putExtra("inputLogId", inputLogId);
-                        i.putExtra("update", "treatmentInput");
-                        i.putExtra("treatment", treatmentId);
-                        i.putExtra("treatmentInputDate", dateToString(treatmentInputDate));
-                        i.putExtra("treatmentInputMaterial", materialText);
-                        i.putExtra("treatmentInputQuantity", quantityNumber);
-                        i.putExtra("treatmentInputMethod", methodText);
-                        i.putExtra("treatmentInputCost", costNumber);
-                        i.putExtra("treatmentInputComments", commentsText);
-                        startActivity(i);
-                        finish();
+                        Toast.makeText(this, R.string.enterValidTextText, Toast.LENGTH_SHORT).show();
+                        material.requestFocus();
                     }
                 } else {
-                    Toast.makeText(this, R.string.enterValidTextText, Toast.LENGTH_SHORT).show();
-                    material.requestFocus();
+                    Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
+                    cost.requestFocus();
                 }
             } else {
-                Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
-                cost.requestFocus();
+                Toast.makeText(this, R.string.enterValidTextText, Toast.LENGTH_SHORT).show();
+                units.requestFocus();
             }
         } else {
             Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
@@ -464,6 +493,7 @@ public class enterTreatmentInput extends AppCompatActivity {
         i.putExtra("treatmentInputDate", dateToString(treatmentInputDate));
         i.putExtra("treatmentInputMaterial", materialText);
         i.putExtra("treatmentInputQuantity", quantityNumber);
+        i.putExtra("treatmentInputUnits", unitsText);
         i.putExtra("treatmentInputMethod", methodText);
         i.putExtra("treatmentInputCost", costNumber);
         i.putExtra("treatmentInputComments", commentsText);

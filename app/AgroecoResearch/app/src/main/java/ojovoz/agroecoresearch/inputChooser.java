@@ -49,13 +49,15 @@ public class inputChooser extends AppCompatActivity {
         if(getIntent().getExtras().getBoolean("newCropInput")){
             agroHelper.addCropToInputLog(getIntent().getExtras().getInt("field"), getIntent().getExtras().getString("plots"), userId, getIntent().getExtras().getInt("cropId"),
                     getIntent().getExtras().getString("cropInputDate"), getIntent().getExtras().getString("cropInputAge"),
-                    getIntent().getExtras().getString("cropInputOrigin"), getIntent().getExtras().getFloat("cropInputQuantity"),
+                    getIntent().getExtras().getString("cropInputOrigin"), getIntent().getExtras().getString("cropInputVariety"),
+                    getIntent().getExtras().getFloat("cropInputQuantity"), getIntent().getExtras().getString("cropInputUnits"),
                     getIntent().getExtras().getString("cropInputCost"), getIntent().getExtras().getString("cropInputComments"),
                     getIntent().getExtras().getBoolean("copy"));
         } else if(getIntent().getExtras().getBoolean("newTreatmentInput")){
             agroHelper.addTreatmentToInputLog(getIntent().getExtras().getInt("field"), getIntent().getExtras().getString("plots"), userId, getIntent().getExtras().getInt("treatmentId"),
                     getIntent().getExtras().getString("treatmentInputDate"), getIntent().getExtras().getString("treatmentInputMaterial"),
-                    getIntent().getExtras().getFloat("treatmentInputQuantity"), getIntent().getExtras().getString("treatmentInputMethod"),
+                    getIntent().getExtras().getFloat("treatmentInputQuantity"), getIntent().getExtras().getString("treatmentInputUnits"),
+                    getIntent().getExtras().getString("treatmentInputMethod"),
                     getIntent().getExtras().getString("treatmentInputCost"), getIntent().getExtras().getString("treatmentInputComments"),
                     getIntent().getExtras().getBoolean("copy"));
         }

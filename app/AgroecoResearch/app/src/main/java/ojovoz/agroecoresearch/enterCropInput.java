@@ -51,6 +51,8 @@ public class enterCropInput extends AppCompatActivity {
     float quantityNumber;
     String costNumber;
     String commentsText;
+    String unitsText;
+    String varietyText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,6 +78,8 @@ public class enterCropInput extends AppCompatActivity {
         EditText cost = (EditText) findViewById(R.id.cropCost);
         EditText origin = (EditText) findViewById(R.id.cropOrigin);
         EditText comments = (EditText) findViewById(R.id.inputComments);
+        EditText variety =(EditText) findViewById(R.id.cropVariety);
+        EditText units = (EditText) findViewById(R.id.cropUnits);
 
         if(update.equals("crop")){
             inputLogId = getIntent().getExtras().getInt("inputLogId");
@@ -92,6 +96,8 @@ public class enterCropInput extends AppCompatActivity {
             cost.setText(getIntent().getExtras().getString("cropInputCost"));
             origin.setText(getIntent().getExtras().getString("cropInputOrigin"));
             comments.setText(getIntent().getExtras().getString("cropInputComments"));
+            variety.setText(getIntent().getExtras().getString("cropInputVariety"));
+            units.setText(getIntent().getExtras().getString("cropInputUnits"));
         } else {
             cropInputDate = new Date();
         }
@@ -165,6 +171,40 @@ public class enterCropInput extends AppCompatActivity {
         });
 
         comments.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                changes=true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        variety.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                changes=true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        units.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -371,53 +411,72 @@ public class enterCropInput extends AppCompatActivity {
 
                 quantityNumber = Float.parseFloat(quantityValue);
 
-                EditText cost = (EditText) findViewById(R.id.cropCost);
-                String costValue = String.valueOf(cost.getText());
-                if (isNumeric(costValue) || costValue.isEmpty()) {
+                EditText units = (EditText) findViewById(R.id.cropUnits);
+                unitsText = String.valueOf(units.getText());
+                if(!unitsText.isEmpty()) {
 
-                    costNumber = costValue;
+                    EditText cost = (EditText) findViewById(R.id.cropCost);
+                    String costValue = String.valueOf(cost.getText());
+                    if (isNumeric(costValue) || costValue.isEmpty()) {
 
-                    EditText origin = (EditText) findViewById(R.id.cropOrigin);
-                    originText = String.valueOf(origin.getText());
+                        costNumber = costValue;
 
-                    if (!originText.isEmpty()) {
-                        originText = originText.replaceAll(";", " ");
-                        originText = originText.replaceAll("\\|", " ");
-                        originText = originText.replaceAll("\\*", " ");
-                    }
+                        EditText origin = (EditText) findViewById(R.id.cropOrigin);
+                        originText = String.valueOf(origin.getText());
 
-                    EditText comments = (EditText) findViewById(R.id.inputComments);
-                    commentsText = String.valueOf(comments.getText());
+                        if (!originText.isEmpty()) {
+                            originText = originText.replaceAll(";", " ");
+                            originText = originText.replaceAll("\\|", " ");
+                            originText = originText.replaceAll("\\*", " ");
+                        }
 
-                    if (!commentsText.isEmpty()) {
-                        commentsText = commentsText.replaceAll(";", " ");
-                        commentsText = commentsText.replaceAll("\\|", " ");
-                        commentsText = commentsText.replaceAll("\\*", " ");
-                    }
+                        EditText variety = (EditText) findViewById(R.id.cropVariety);
+                        varietyText = String.valueOf(variety.getText());
 
-                    if (update.equals("")) {
-                        requestCopyToReplications();
+                        if (!varietyText.isEmpty()) {
+                            varietyText = varietyText.replaceAll(";", " ");
+                            varietyText = varietyText.replaceAll("\\|", " ");
+                            varietyText = varietyText.replaceAll("\\*", " ");
+                        }
+
+                        EditText comments = (EditText) findViewById(R.id.inputComments);
+                        commentsText = String.valueOf(comments.getText());
+
+                        if (!commentsText.isEmpty()) {
+                            commentsText = commentsText.replaceAll(";", " ");
+                            commentsText = commentsText.replaceAll("\\|", " ");
+                            commentsText = commentsText.replaceAll("\\*", " ");
+                        }
+
+                        if (update.equals("")) {
+                            requestCopyToReplications();
+                        } else {
+                            Toast.makeText(this, "Input edited successfully", Toast.LENGTH_SHORT).show();
+                            Intent i = new Intent(this, manageData.class);
+                            i.putExtra("userId", userId);
+                            i.putExtra("userRole", userRole);
+                            i.putExtra("task", task);
+                            i.putExtra("inputLogId", inputLogId);
+                            i.putExtra("update", "cropInput");
+                            i.putExtra("crop", cropId);
+                            i.putExtra("cropInputDate", dateToString(cropInputDate));
+                            i.putExtra("cropInputAge", ageNumber);
+                            i.putExtra("cropInputOrigin", originText);
+                            i.putExtra("cropInputVariety", varietyText);
+                            i.putExtra("cropInputQuantity", quantityNumber);
+                            i.putExtra("cropInputUnits", unitsText);
+                            i.putExtra("cropInputCost", costNumber);
+                            i.putExtra("cropInputComments", commentsText);
+                            startActivity(i);
+                            finish();
+                        }
                     } else {
-                        Toast.makeText(this, "Input edited successfully", Toast.LENGTH_SHORT).show();
-                        Intent i = new Intent(this, manageData.class);
-                        i.putExtra("userId", userId);
-                        i.putExtra("userRole", userRole);
-                        i.putExtra("task", task);
-                        i.putExtra("inputLogId", inputLogId);
-                        i.putExtra("update", "cropInput");
-                        i.putExtra("crop", cropId);
-                        i.putExtra("cropInputDate", dateToString(cropInputDate));
-                        i.putExtra("cropInputAge", ageNumber);
-                        i.putExtra("cropInputOrigin", originText);
-                        i.putExtra("cropInputQuantity", quantityNumber);
-                        i.putExtra("cropInputCost", costNumber);
-                        i.putExtra("cropInputComments", commentsText);
-                        startActivity(i);
-                        finish();
+                        Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
+                        cost.requestFocus();
                     }
                 } else {
-                    Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
-                    cost.requestFocus();
+                    Toast.makeText(this, R.string.enterValidTextText, Toast.LENGTH_SHORT).show();
+                    units.requestFocus();
                 }
             } else {
                 Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
@@ -465,7 +524,9 @@ public class enterCropInput extends AppCompatActivity {
         i.putExtra("cropInputDate", dateToString(cropInputDate));
         i.putExtra("cropInputAge", ageNumber);
         i.putExtra("cropInputOrigin", originText);
+        i.putExtra("cropInputVariety", varietyText);
         i.putExtra("cropInputQuantity", quantityNumber);
+        i.putExtra("cropInputUnits", unitsText);
         i.putExtra("cropInputCost", costNumber);
         i.putExtra("cropInputComments", commentsText);
         i.putExtra("copy",copy);
