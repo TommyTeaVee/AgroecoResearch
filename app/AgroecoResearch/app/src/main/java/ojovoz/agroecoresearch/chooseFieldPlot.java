@@ -501,7 +501,11 @@ public class chooseFieldPlot extends AppCompatActivity {
                 previousPlotN=n;
             }
         } else {
-            d.setStroke(5, Color.WHITE);
+            if(!task.equals("measurement")) {
+                d.setStroke(5, Color.WHITE);
+            } else {
+                getPlotState(n);
+            }
         }
 
         b.setBackground(d);
