@@ -3,6 +3,8 @@ package ojovoz.agroecoresearch;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.ArrayList;
+
 /**
  * Created by Eugenio on 13/03/2017.
  */
@@ -60,6 +62,21 @@ public class preferenceManager {
                 CharSequence parts[] = users[i].toString().split(",");
                 ret=parts[2]+","+parts[3];
                 break;
+            }
+        }
+        return ret;
+    }
+
+    public String getAllUserNames(String keyName){
+        String ret = "";
+        String value = getPreference(keyName);
+        String users[] = value.split(";");
+        for(int i=0; i < users.length; i++) {
+            String parts[] = users[i].split(",");
+            if(ret.isEmpty()){
+                ret=parts[0];
+            } else {
+                ret=ret+","+parts[0];
             }
         }
         return ret;

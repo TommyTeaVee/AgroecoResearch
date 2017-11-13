@@ -6,7 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -54,6 +57,14 @@ public class loginScreen extends AppCompatActivity implements httpConnection.Asy
         if (server.equals("")) {
             defineServer("");
         }
+
+        AutoCompleteTextView a = (AutoCompleteTextView)findViewById(R.id.userAlias);
+        String userNames = prefs.getAllUserNames("users");
+        userNames = userNames.replaceAll("\\*","");
+        String userList[] = userNames.split(",");
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, userList);
+        a.setAdapter(adapter);
+        a.setImeOptions(EditorInfo.IME_ACTION_NEXT);
     }
 
     public void defineServer(String current) {
