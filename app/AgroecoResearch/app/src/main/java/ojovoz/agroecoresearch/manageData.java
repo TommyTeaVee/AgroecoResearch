@@ -342,24 +342,27 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
             String[] entries = e.split(",");
             for (int i = 0; i < entries.length; i++) {
                 int id = Integer.parseInt(entries[i]);
-                oMeasuredPlotHelper mp = agroHelper.getMeasuredPlotFromLogId(id);
-                if (mp.fieldId >= 0) {
-                    mpSaved = prefs.getPreference("measuredPlots");
-                    String mpNew = "";
-                    String mpList[] = mpSaved.split(";");
-                    for (int j = 0; j < mpList.length; j++) {
-                        String mpElements[] = mpList[j].split(",");
-                        if (mp.fieldId == Integer.valueOf(mpElements[0]) && mp.plotNumber == Integer.valueOf(mpElements[1]) && mp.measurementId == Integer.valueOf(mpElements[2])) {
+                oLog l = agroHelper.getLogItemFromId(id);
+                if(l.logMeasurementId>0) {
+                    oMeasuredPlotHelper mp = agroHelper.getMeasuredPlotFromLogId(l.logId, l.logFieldId, l.logMeasurementId, l.logPlots);
+                    if (mp.fieldId >= 0) {
+                        mpSaved = prefs.getPreference("measuredPlots");
+                        String mpNew = "";
+                        String mpList[] = mpSaved.split(";");
+                        for (int j = 0; j < mpList.length; j++) {
+                            String mpElements[] = mpList[j].split(",");
+                            if (mp.fieldId == Integer.valueOf(mpElements[0]) && mp.plotNumber == Integer.valueOf(mpElements[1]) && mp.measurementId == Integer.valueOf(mpElements[2])) {
 
-                        } else {
-                            if (mpNew.isEmpty()) {
-                                mpNew = mpList[j];
                             } else {
-                                mpNew = mpNew + ";" + mpList[j];
+                                if (mpNew.isEmpty()) {
+                                    mpNew = mpList[j];
+                                } else {
+                                    mpNew = mpNew + ";" + mpList[j];
+                                }
                             }
                         }
+                        prefs.savePreference("measuredPlots", mpNew);
                     }
-                    prefs.savePreference("measuredPlots", mpNew);
                 }
             }
         }

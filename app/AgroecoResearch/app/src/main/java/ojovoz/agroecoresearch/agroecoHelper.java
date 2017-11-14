@@ -1108,12 +1108,12 @@ public class agroecoHelper {
         }
     }
 
-    public oMeasuredPlotHelper getMeasuredPlotFromLogId(int id){
+    public oMeasuredPlotHelper getMeasuredPlotFromLogId(int id, int fId, int mId, String p){
         oMeasuredPlotHelper mp = new oMeasuredPlotHelper(-1,-1,-1);
         Iterator<oLog> iterator = log.iterator();
         while(iterator.hasNext()) {
             oLog l = iterator.next();
-            if(l.logId==id){
+            if(l.logId==id && l.logFieldId==fId && l.logMeasurementId==mId && l.logPlots.equals(p)){
                 mp.fieldId=l.logFieldId;
                 mp.plotNumber=Integer.valueOf(l.logPlots);
                 mp.measurementId=l.logMeasurementId;
