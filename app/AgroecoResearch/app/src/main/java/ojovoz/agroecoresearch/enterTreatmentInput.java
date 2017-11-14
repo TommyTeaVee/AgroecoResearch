@@ -12,6 +12,8 @@ import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.EditorInfo;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -20,6 +22,7 @@ import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -52,6 +55,10 @@ public class enterTreatmentInput extends AppCompatActivity {
     String costNumber;
     String commentsText;
     String unitsText;
+
+    public preferenceManager prefs;
+    public ArrayList<String> previousMethods;
+    public ArrayList<String> previousMaterials;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -209,6 +216,23 @@ public class enterTreatmentInput extends AppCompatActivity {
                 displayDatePicker();
             }
         });
+
+        prefs = new preferenceManager(this);
+        previousMethods = prefs.getArrayListPreference("previousMethods");
+        previousMaterials = prefs.getArrayListPreference("previousMaterials");
+
+        if(previousMethods.size()>0) {
+            AutoCompleteAdapter adapter = new AutoCompleteAdapter(this, android.R.layout.simple_dropdown_item_1line, android.R.id.text1, previousMethods);
+            AutoCompleteTextView a = (AutoCompleteTextView) findViewById(R.id.treatmentPreparationMethod);
+            a.setAdapter(adapter);
+            a.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+        }
+        if(previousMaterials.size()>0) {
+            AutoCompleteAdapter adapter = new AutoCompleteAdapter(this, android.R.layout.simple_dropdown_item_1line, android.R.id.text1, previousMaterials);
+            AutoCompleteTextView a = (AutoCompleteTextView) findViewById(R.id.treatmentMaterial);
+            a.setAdapter(adapter);
+            a.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+        }
     }
 
     @Override
@@ -421,6 +445,8 @@ public class enterTreatmentInput extends AppCompatActivity {
                         if (update.equals("")) {
                             requestCopyToReplications();
                         } else {
+                            prefs.appendIfNotExists("previousMethods",methodText);
+                            prefs.appendIfNotExists("previousMaterials",materialText);
                             Toast.makeText(this, "Input edited successfully", Toast.LENGTH_SHORT).show();
                             Intent i = new Intent(this, manageData.class);
                             i.putExtra("userId", userId);
@@ -479,6 +505,8 @@ public class enterTreatmentInput extends AppCompatActivity {
     }
 
     void doSave(boolean copy){
+        prefs.appendIfNotExists("previousMethods",methodText);
+        prefs.appendIfNotExists("previousMaterials",materialText);
         Toast.makeText(this, "Input saved successfully", Toast.LENGTH_SHORT).show();
         Intent i = new Intent(this, inputChooser.class);
         i.putExtra("userId", userId);

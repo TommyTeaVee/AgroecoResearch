@@ -59,7 +59,7 @@ public class loginScreen extends AppCompatActivity implements httpConnection.Asy
         }
 
         AutoCompleteTextView a = (AutoCompleteTextView)findViewById(R.id.userAlias);
-        String userNames = prefs.getAllUserNames("users");
+        String userNames = prefs.getUserNames("users");
         userNames = userNames.replaceAll("\\*","");
         String userList[] = userNames.split(",");
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, userList);

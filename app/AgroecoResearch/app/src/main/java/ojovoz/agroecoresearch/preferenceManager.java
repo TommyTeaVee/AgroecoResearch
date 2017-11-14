@@ -67,7 +67,7 @@ public class preferenceManager {
         return ret;
     }
 
-    public String getAllUserNames(String keyName){
+    public String getUserNames(String keyName){
         String ret = "";
         String value = getPreference(keyName);
         String users[] = value.split(";");
@@ -80,5 +80,45 @@ public class preferenceManager {
             }
         }
         return ret;
+    }
+
+    public ArrayList<String> getArrayListPreference(String keyName){
+        ArrayList<String> ret = new ArrayList<>();
+        String allValues=getPreference(keyName);
+        if(!allValues.isEmpty()) {
+            String valuesArray[] = allValues.split("\\*");
+            if(valuesArray.length>0){
+                for(int i=0;i<valuesArray.length;i++){
+                    ret.add(valuesArray[i]);
+                }
+            } else {
+                ret.add(allValues);
+            }
+        }
+        return ret;
+    }
+
+    public void appendIfNotExists(String keyName, String value){
+        String previousValue = getPreference(keyName);
+        if(!previousValue.isEmpty()) {
+            String previousValues[] = previousValue.split("\\*");
+            if(previousValues.length>0){
+                boolean bFound=false;
+                for(int i=0;i<previousValues.length;i++){
+                    if(previousValues[i].equals(value)){
+                        bFound=true;
+                        break;
+                    }
+                }
+                if(!bFound){
+                    String newValue = previousValue+"*"+value;
+                    savePreference(keyName,newValue);
+                }
+            } else {
+                savePreference(keyName, value);
+            }
+        } else {
+            savePreference(keyName, value);
+        }
     }
 }
