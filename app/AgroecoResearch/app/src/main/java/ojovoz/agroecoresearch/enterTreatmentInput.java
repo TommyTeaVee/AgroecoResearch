@@ -226,11 +226,17 @@ public class enterTreatmentInput extends AppCompatActivity {
             AutoCompleteTextView a = (AutoCompleteTextView) findViewById(R.id.treatmentPreparationMethod);
             a.setAdapter(adapter);
             a.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+        } else {
+            AutoCompleteTextView a = (AutoCompleteTextView) findViewById(R.id.treatmentPreparationMethod);
+            a.setImeOptions(EditorInfo.IME_ACTION_NEXT);
         }
         if(previousMaterials.size()>0) {
             AutoCompleteAdapter adapter = new AutoCompleteAdapter(this, android.R.layout.simple_dropdown_item_1line, android.R.id.text1, previousMaterials);
             AutoCompleteTextView a = (AutoCompleteTextView) findViewById(R.id.treatmentMaterial);
             a.setAdapter(adapter);
+            a.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+        } else {
+            AutoCompleteTextView a = (AutoCompleteTextView) findViewById(R.id.treatmentMaterial);
             a.setImeOptions(EditorInfo.IME_ACTION_NEXT);
         }
     }
