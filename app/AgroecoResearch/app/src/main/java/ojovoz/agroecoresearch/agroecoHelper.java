@@ -38,6 +38,7 @@ public class agroecoHelper {
     ArrayList<oActivityCalendar> activitiesCalendar;
     ArrayList<oMeasurement> measurements;
     ArrayList<oMeasurementCalendar> measurementsCalendar;
+    ArrayList<oHealthReport> healthReportItems;
 
     ArrayList<oLog> log;
     ArrayList<oInputLog> inputLog;
@@ -174,6 +175,21 @@ public class agroecoHelper {
                     mC.date=measurementsCalendarParts[3];
                     measurementsCalendar.add(mC);
                 }
+            }
+        }
+    }
+
+    public void createHealthReportItems(){
+        healthReportItems = new ArrayList<>();
+        List<String[]> healthReportItemsCSV = readCSVFile("health_report_items");
+        if (healthReportItemsCSV != null) {
+            Iterator<String[]> iteratorHealthReport = healthReportItemsCSV.iterator();
+            while (iteratorHealthReport.hasNext()) {
+                String[] record = iteratorHealthReport.next();
+                oHealthReport healthReport = new oHealthReport();
+                healthReport.itemName = record[1];
+                healthReport.categories = record[2].split(",");
+                healthReportItems.add(healthReport);
             }
         }
     }

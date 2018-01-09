@@ -173,6 +173,25 @@ public class enterMeasurement extends AppCompatActivity {
                         }
                     }
                 });
+            } else if (type == 2){
+                TextView vt = (TextView) findViewById(R.id.enterValueText);
+                vt.setVisibility(View.GONE);
+                ve.setVisibility(View.GONE);
+
+                Button cb = (Button) findViewById(R.id.measurementCategory);
+                cb.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        switch (v.getId()) {
+                            case R.id.measurementCategory:
+                                showHealthReport();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                });
+                cb.setText(R.string.healthReportButtonText);
             } else if (measurementUnits.equals("date")) {
                 Button cb = (Button) findViewById(R.id.measurementCategory);
                 cb.setVisibility(View.GONE);
@@ -531,7 +550,7 @@ public class enterMeasurement extends AppCompatActivity {
             });
             trow.addView(sn, lp);
 
-            if (type == 0) {
+            if (type == 0 || type == 2) {
                 Button sb = new Button(enterMeasurement.this);
                 sb.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17f);
                 if(!sh.value.isEmpty()) {
@@ -555,14 +574,25 @@ public class enterMeasurement extends AppCompatActivity {
                         return false;
                     }
                 });
-                sb.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        currentSampleChoiceButton = (Button)v;
-                        showMeasurementCategoriesSampleTable();
-                        changes=true;
-                    }
-                });
+                if(type==0) {
+                    sb.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            currentSampleChoiceButton = (Button) v;
+                            showMeasurementCategoriesSampleTable();
+                            changes = true;
+                        }
+                    });
+                } else {
+                    sb.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            currentSampleChoiceButton = (Button) v;
+                            showHealthReportSampleTable();
+                            changes = true;
+                        }
+                    });
+                }
                 trow.addView(sb, lp);
 
             } else {
@@ -879,6 +909,80 @@ public class enterMeasurement extends AppCompatActivity {
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    public void showHealthReport(){
+        float valueNumber=0.0f;
+
+        EditText c = (EditText)findViewById(R.id.measurementComments);
+        c.requestFocus();
+        String commentsText = String.valueOf(c.getText());
+        if (!commentsText.isEmpty()) {
+            commentsText = commentsText.replaceAll(";", " ");
+            commentsText = commentsText.replaceAll("\\|", " ");
+        }
+
+        EditText value = (EditText) findViewById(R.id.measurementValue);
+        String valueText = String.valueOf(value.getText());
+        if (isNumeric(valueText)) {
+            valueNumber = Float.parseFloat(valueText);
+        }
+
+        final Context context = this;
+        Intent i = new Intent(context, enterHealthReport.class);
+        i.putExtra("userId", userId);
+        i.putExtra("userRole", userRole);
+        i.putExtra("task", task);
+        i.putExtra("title", measurementTitle);
+        i.putExtra("shortTitle",shortTitle);
+        i.putExtra("measurementChosenCategory", measurementChosenCategory);
+        i.putExtra("field", fieldId);
+        i.putExtra("plots", plots);
+        i.putExtra("measurement", measurementId);
+        i.putExtra("type",type);
+        i.putExtra("min",min);
+        i.putExtra("max",max);
+        i.putExtra("measurementDate", dateToString(measurementDate));
+        i.putExtra("measurementValue", valueNumber);
+        i.putExtra("measurementUnits", measurementUnits);
+        i.putExtra("measurementCategory", measurementCategory);
+        i.putExtra("measurementComments", commentsText);
+        startActivity(i);
+        finish();
+    }
+
+    public void showHealthReportSampleTable(){
+        EditText c = (EditText)findViewById(R.id.measurementComments);
+        c.requestFocus();
+        String commentsText = String.valueOf(c.getText());
+        if (!commentsText.isEmpty()) {
+            commentsText = commentsText.replaceAll(";", " ");
+            commentsText = commentsText.replaceAll("\\|", " ");
+        }
+
+        String samplesString=convertSamplesToString();
+
+        final Context context = this;
+        Intent i = new Intent(context, enterHealthReport.class);
+        i.putExtra("userId", userId);
+        i.putExtra("userRole", userRole);
+        i.putExtra("task", task);
+        i.putExtra("title", measurementTitle);
+        i.putExtra("shortTitle",shortTitle);
+        i.putExtra("measurementChosenCategory", measurementChosenCategory);
+        i.putExtra("field", fieldId);
+        i.putExtra("plots", plots);
+        i.putExtra("measurement", measurementId);
+        i.putExtra("type",type);
+        i.putExtra("min",min);
+        i.putExtra("max",max);
+        i.putExtra("measurementDate", dateToString(measurementDate));
+        i.putExtra("measurementCategory", samplesString);
+        i.putExtra("measurementUnits", measurementUnits);
+        i.putExtra("measurementCategory", measurementCategory);
+        i.putExtra("measurementComments", commentsText);
+        startActivity(i);
+        finish();
     }
 
     public void displayDatePicker() {

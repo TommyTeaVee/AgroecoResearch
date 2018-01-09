@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: 192.168.86.55
--- Tiempo de generación: 09-01-2018 a las 17:11:24
+-- Tiempo de generación: 08-01-2018 a las 11:52:29
 -- Versión del servidor: 5.5.57-0+deb7u1-log
 -- Versión de PHP: 5.3.29-1~dotdeb.0
 
@@ -185,28 +185,6 @@ CREATE TABLE IF NOT EXISTS `field_history` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `health_report_item`
---
-
-CREATE TABLE IF NOT EXISTS `health_report_item` (
-`health_report_item_id` int(10) unsigned NOT NULL,
-  `item` varchar(100) NOT NULL,
-  `item_categories` text NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
-
---
--- Volcado de datos para la tabla `health_report_item`
---
-
-INSERT INTO `health_report_item` (`health_report_item_id`, `item`, `item_categories`) VALUES
-(1, 'Disease', 'Don\\''t know,Bacterial,Fungal,Viral'),
-(2, 'Pest', 'Don\\''t know,Ants/Termites,Beetles,Birds,Locusts/Grasshoppers,Mites,Moths,Rats,Worms/Larvae'),
-(3, 'Discoloration', 'Brown,Dark green,Light green,Purple,Yellow'),
-(4, 'Water stress', 'Dry leaves,Folded leaves,Rippled leave margins,Rolled leaves');
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `input_log`
 --
 
@@ -307,33 +285,62 @@ CREATE TABLE IF NOT EXISTS `measurement` (
   `measurement_has_sample_number` tinyint(1) NOT NULL DEFAULT '0',
   `measurement_common_complex` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '0 = common, 1 = complex',
   `measurement_description` text NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=82 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=78 ;
 
 --
 -- Volcado de datos para la tabla `measurement`
 --
 
 INSERT INTO `measurement` (`measurement_id`, `measurement_name`, `measurement_category`, `measurement_subcategory`, `measurement_type`, `measurement_range_min`, `measurement_range_max`, `measurement_units`, `measurement_categories`, `measurement_periodicity`, `measurement_has_sample_number`, `measurement_common_complex`, `measurement_description`) VALUES
-(8, 'Number of planted seeds', 'Maize', 'Development', 1, 0, 1000, 'per plot', '', 0, 0, 0, 'Record how many seeds have been sown per plot.'),
-(9, 'Number of germinated plants', 'Maize', 'Development', 1, 0, 1000, 'per plot', '', 0, 0, 0, 'Count the number of plants which have germinated per plot.'),
-(12, 'Plant size', 'Maize', 'Development', 1, 0, 500, 'cm', '', 0, 1, 1, 'Method 1: measure the height of each plant in a plot from the stem basis/soil surface to the tip of the longest leaf.**Method 2: measure the height of each plant in a plot from the stem basis/soil surface to the highest point of the arch of the uppermost leaf whose tip is pointing down.'),
-(24, 'Weight of harvested plant material', 'Cassava', 'Productivity', 1, 0, 1000, 'kg', '', 0, 0, 1, 'Weigh the dry matter of all remaining plant residuals which can be collected on one plot after harvest and record the mass you get per plot and crop.'),
-(39, 'Number of survived plants', 'Cassava', 'Productivity', 1, 0, 1000, 'per plot', '', 0, 0, 0, 'Count the number of plants which have survived on each plot shortly before harvesting the crops on that plot.'),
-(48, 'Plant size', 'Cassava', 'Development', 1, 0, 500, 'cm', '', 0, 1, 1, 'Plant size is measured by adding the stem heigth plus the height of the longest branch.'),
-(54, 'Number of sprouted plants', 'Cassava', 'Development', 1, 0, 1000, 'per plot', '', 0, 0, 0, 'Count the number of plants which have sprouted per plot.'),
-(55, 'Number of planted sticks', 'Cassava', 'Development', 1, 0, 1000, 'per plot', '', 0, 0, 0, 'Record how many sticks have been planted per plot.'),
-(56, 'Number of survived plants', 'Maize', 'Productivity', 1, 0, 1000, 'per plot', '', 0, 0, 0, 'Count the number of plants which have survived on each plot shortly before harvesting the crops on that plot.'),
-(58, 'Weight of harvested plant material', 'Maize', 'Productivity', 1, 0, 1000, 'kg', '', 0, 0, 1, 'Weigh the dry matter of all remaining plant residuals which can be collected on one plot after harvest and record the mass you get per plot and crop.'),
-(59, 'Number of planted seeds', 'Pulses', 'Development', 1, 0, 1000, 'per plot', '', 0, 0, 0, 'Record how many seeds have been sown per plot.'),
-(60, 'Number of germinated plants', 'Pulses', 'Development', 1, 0, 1000, 'per plot', '', 0, 0, 0, 'Count the number of plants which have germinated per plot.'),
-(61, 'Number of survived plants', 'Pulses', 'Productivity', 1, 0, 1000, 'per plot', '', 0, 0, 0, 'Count the number of plants which have survived on each plot shortly before harvesting the crops on that plot.'),
-(62, 'Weight of harvested plant material', 'Pulses', 'Productivity', 1, 0, 1000, 'kg', '', 0, 0, 0, 'Weigh the dry matter of all remaining plant residuals which can be collected on one plot after harvest and record the mass you get per plot and crop.'),
-(76, 'Health report', 'Maize', 'Health', 2, 0, 0, '', '', 0, 1, 1, '1. Control whether the plants show any stress symptoms. Record for each plant in one plot whether and if so, which stress symptoms occur. There are different categories of stress symptoms: (1) folded, (2) rolled, (3) dry (4) yellowish, (5) light green, (6) dark green or (7) purple leaves.**2. Check each plant for pest signs and categorize the extent of the pest infestion with the following categories: (1) no or little pest signs, (2) clear pest damage but the development/growth is not limited (apex is intact), (3) the development/growth is limited due to heavy pest damage (apex is not intact), (4) the heavy pest infestion kills/killed the plant. **Determine the pest (category) or disease (viral/bacterial) by which the plant is infested and record them for each plant in one plot. If possible specify the pest species or the disease type.'),
-(77, 'Health report', 'Cassava', 'Health', 2, 0, 0, '', '', 0, 1, 1, '1. Control whether the plants show any stress symptoms. Record for each plant in one plot whether and if so, which stress symptoms occur. There are different categories of stress symptoms: (1) folded, (2) rolled, (3) dry (4) yellowish, (5) light green, (6) dark green or (7) purple leaves.**2. Check each plant for pest signs and categorize the extent of the pest infestion with the following categories: (1) no or little pest signs, (2) clear pest damage but the development/growth is not limited (apex is intact), (3) the development/growth is limited due to heavy pest damage (apex is not intact), (4) the heavy pest infestion kills/killed the plant. **Determine the pest (category) or disease (viral/bacterial) by which the plant is infested and record them for each plant in one plot. If possible specify the pest species or the disease type.'),
-(78, 'Number of flowering plants', 'Cassava', 'Development', 1, 0, 1000, 'plants', '', 0, 0, 1, 'Determine the number of plants flowering or tasseling in one plot.'),
-(79, 'Number of harvested tubers per plant', 'Cassava', 'Productivity', 1, 0, 100, 'tubers', '', 0, 1, 0, 'Count all the tubers which can be harvested form one plant.'),
-(80, 'Number of leaves', 'Maize', 'Development', 1, 0, 200, 'leaves', '', 0, 1, 1, 'Determine the growth stage of each plant per plot by counting the number of leaves with visible collars, beginning with the lowermost, short, rounded-tip true leaf and ending with the uppermost leaf with a visible leaf collar.'),
-(81, 'Number of flowering plants', 'Maize', 'Development', 1, 0, 1000, 'plants', '', 0, 0, 1, 'Determine the number of plants flowering or tasseling in one plot.');
+(8, 'Number of planted seeds', 'Maize', 'Sowing/planting - survival', 1, 0, 1000, 'per plot', '', 0, 0, 0, 'Record how many seeds have been sown per plot.'),
+(9, 'Number of germinated plants', 'Maize', 'Sowing/planting - survival', 1, 0, 1000, 'per plot', '', 0, 0, 0, 'Count the number of plants which have germinated per plot.'),
+(10, 'Crop stand', 'Maize', 'Plant growth', 0, 0, 0, '', 'homogeneous,heterogeneous (between 25%-50% var),very heterogeneous (over 50% var)', 0, 0, 0, 'Categorization of the crop stand (homogenous or heterogenous) based on the plant height measurements.'),
+(11, 'Growth stage', 'Maize', 'Plant growth', 0, 0, 0, '', 'VE,V1,V2,V3,V4,V5,V6,V7,V8,V9,V10,V11,V12,V13,V14,V15,V16,V17,V18,V19,V20,V21,V22,V23,R0,R1,R2,R3,R4,R5,R6', 0, 1, 1, 'The growth stages of maize are defined by the number of leaves (Vn) during vegetative growth period and by tassling (VT), pollen shed (R0), silk production (R1), as well as corn filling and kernel development (R2-6) during reproductive period. Determine the growth stage of each plant per plot by using the leaf collar staging method:**Count the number of leaves with visible collars, beginning with the lowermost, short, rounded-tip true leaf and ending with the uppermost leaf with a visible leaf collar.'),
+(12, 'Plant size', 'Maize', 'Plant growth', 1, 0, 500, 'cm', '', 0, 1, 1, 'Method 1: measure the height of each plant in a plot from the stem basis/soil surface to the tip of the longest leaf.**Method 2: measure the height of each plant in a plot from the stem basis/soil surface to the highest point of the arch of the uppermost leaf whose tip is pointing down.'),
+(13, 'Stem diameter', 'Cassava', 'Plant growth', 1, 0, 100, 'mm', '', 0, 1, 1, 'Measure the stem girth of each plant in a plot at the stem basis. The stem diameter can be calculated: diameter = girth / pi.'),
+(17, 'Pest infestation', 'Cassava', 'Plant health', 0, 0, 0, '', '', 0, 1, 1, 'Check each plant for pest signs and categorize the extent of the pest infestion with the following categories: (1) no or little pest signs, (2) clear pest damage but the development/growth is not limited (apex is intact), (3) the development/growth is limited due to heavy pest damage (apex is not intact), (4) the heavy pest infestion which will kill the plant, (5) the plant has been destroyed by pests.'),
+(21, 'Water stress symptoms', 'Cassava', 'Plant health', 0, 0, 0, '', 'no stress,rippled leaf margins,rolled or folded leaves,dried leaves', 0, 1, 1, 'Control whether the plants show any stress symptoms. Record for each plant which stress symptoms occur (if any). There are two categories of stress symptoms: (1) water stress symptoms characterizd by rippled leaf margins, folded, rolled or dry leaves and (2) nutrient deficiency symptoms characterized by a yellowish, light green, dark green or purple discoloration.'),
+(23, '100(0) seed weight', 'Maize', 'Yield', 1, 0, 5000, 'g', '', 0, 1, 1, 'Collect all kernels which can be harvested from one plot, mix them and weigh 10 samples of 100 kernels. Note down the 100-seed-weight of each sample per plot and crop.'),
+(24, 'Total biomass', 'Cassava', 'Yield', 1, 0, 1000, 'kg', '', 0, 0, 1, 'Weigh the dry matter of all remaining plant residuals which can be collected on one plot after harvest and record the mass you get per plot and crop.'),
+(25, 'Weight of kernels', 'Maize', 'Yield', 1, 0, 3000, 'g', '', 0, 0, 1, 'Weigh all the kernels which can be harvested from one plot and note down the mass per plot and crop.'),
+(27, 'Kcal per mass', 'Cassava', 'Quality', 1, 0, 1000, 'kcal', '', 0, 1, 1, 'Anlaysis of the nurtritional quality of the yield by testing at SUA/ETH laboratories different tuber samples harvested on one plot. This measurement focuses on calories (kcal/100g)'),
+(29, 'Disease infestation', 'Cassava', 'Plant health', 0, 0, 0, '', 'Bacterial,Fungal,Viral', 0, 1, 1, ''),
+(35, 'Moisture', 'Soil', 'Soil moisture', 1, 0, 100, '%', '', 0, 1, 1, 'Measure the soil moisture with the soil moisture sensor (type HH2 from Delta-T Devices Ltd) at 10 random evenly distributed spots within a plot and record each soil moisture measurement.'),
+(36, 'pH', 'Soil', 'Soil fertility', 1, 0, 14, 'pH', '', 0, 1, 1, 'Take with the auger ten soil samples per plot on ten random and evenly distributed spots. Seperate the upper soil (0-20 cm depth) from the subsoil (20-40 cm depth). The ten samples of one soil depth should be mixed, dried, sieved and homogenized. The pH (H2O) of each dried and homogenized soil samples - one upper soil and one subsoil sample per plot - will be analysed at the SUA/ETH soil laboratories.'),
+(37, 'CN ratio', 'Soil', 'Soil fertility', 1, 0, 100, '%', '', 0, 1, 1, 'Take with the auger ten soil samples per plot on ten random and evenly distributed spots. Seperate the upper soil (0-20 cm depth) from the subsoil (20-40 cm depth). The ten samples of one soil depth should be mixed, dried, sieved and homogenized. The organic carbon ratio of each dried and homogenized soil samples - one upper soil and one subsoil sample per plot - will be analysed at the SUA/ETH soil laboratories.'),
+(39, 'Number of survived plants', 'Cassava', 'Yield', 1, 0, 1000, 'per plot', '', 0, 0, 0, 'Count the number of plants which have survived on each plot shortly before harvesting the crops on that plot.'),
+(44, 'Growth stage', 'Cassava', 'Plant growth', 0, 0, 0, '', 'GS1,GS2,GS3,GS4,GS5', 0, 1, 1, 'The growth stages of cassava are defined by the emergence of sprouting (GS1), by the expansion of the true leaves (GS2), by the canopy establishment and branching (GS3), by the leaf senesence and stem lignification (GS4) and by leaf fall and growth pause (dormacy; GS5). Thus, to determine the growth stage measure the plant height (given by the stem heigth plus the height of the longest branch), the stem girth and record the date of flowering and fruit development for each plant per plot.'),
+(45, 'Corn moisture', 'Maize', 'Quality', 1, 0, 100, '%', '', 0, 1, 1, 'Analyse the corn moisture of the maize yield is obtained by testing at SUA/ ETH laboratories different kernel samples harvested on one plot. Weight the samples shortly after harvest and, after drying them in an oven, calcultate the moisture % of each sample by dividing the dry mass by the fresh mass, and by subtracting then the division by 100 (percentage)'),
+(46, 'Exchangeable cations', 'Soil', 'Soil fertility', 1, 0, 1000, 'cmol[c]/kg', '', 0, 1, 1, 'Take with the auger ten soil samples per plot on ten random and evenly distributed spots. Seperate the upper soil (0-20 cm depth) from the subsoil (20-40 cm depth). The ten samples of one soil depth should be mixed, dried, sieved and homogenized. The cation exchange capacity of each dried and homogenized soil samples - one upper soil and one subsoil sample per plot - will be analysed at the SUA/ETH soil laboratories.'),
+(47, 'Crop stand', 'Cassava', 'Plant growth', 0, 0, 0, '', 'homogeneous,heterogeneous (between 25%-50% var),very heterogeneous (over 50% var)', 0, 0, 1, 'Categorization of the crop stand (homogenous or heterogenous) based on the plant height measurements.'),
+(48, 'Plant size', 'Cassava', 'Plant growth', 1, 0, 500, 'cm', '', 0, 1, 1, 'Plant size is measured by adding the stem heigth plus the height of the longest branch.'),
+(49, 'Stem diameter', 'Maize', 'Plant growth', 1, 0, 100, 'mm', '', 0, 1, 1, 'Measure the stem girth of each plant in a plot at the stem basis. The stem diameter can be calculated: diameter = girth / pi.'),
+(50, 'Disease infestation', 'Maize', 'Plant health', 0, 0, 0, '', 'Bacterial,Fungal,Viral', 0, 1, 1, ''),
+(51, 'Pest infestation', 'Maize', 'Plant health', 0, 0, 0, '', 'No pest signs,Pest damage but growth not limited,Growth limited due to pest,Heavy pest infestation,Plant destroyed by pests', 0, 1, 1, 'Check each plant for pest signs and categorize the extent of the pest infestion with the following categories: (1) no or little pest signs, (2) clear pest damage but the development/growth is not limited (apex is intact), (3) the development/growth is limited due to heavy pest damage (apex is not intact), (4) the heavy pest infestion which will kill the plant, (5) the plant has been destroyed by pests.'),
+(52, 'Water stress symptoms', 'Maize', 'Plant health', 0, 0, 0, '', 'no stress,rippled leaf margins,rolled or folded leaves,dried leaves', 0, 1, 1, 'Control whether the plants show any stress symptoms. Record for each plant which stress symptoms occur (if any). There are two categories of stress symptoms: (1) water stress symptoms characterizd by rippled leaf margins, folded, rolled or dry leaves and (2) nutrient deficiency symptoms characterized by a yellowish, light green, dark green or purple discoloration.'),
+(53, 'Kcal per mass', 'Maize', 'Quality', 1, 0, 1000, 'kcal', '', 0, 1, 1, 'Anlaysis of the nurtritional quality of the yield by testing at SUA/ETH laboratories different kernel samples harvested on one plot. This measurement focuses on calories (kcal/100g)'),
+(54, 'Number of sprouted plants', 'Cassava', 'Sowing/planting - survival', 1, 0, 1000, 'per plot', '', 0, 0, 0, 'Count the number of plants which have sprouted per plot.'),
+(55, 'Number of planted sticks', 'Cassava', 'Sowing/planting - survival', 1, 0, 1000, 'per plot', '', 0, 0, 0, 'Record how many sticks have been planted per plot.'),
+(56, 'Number of survived plants', 'Maize', 'Yield', 1, 0, 1000, 'per plot', '', 0, 0, 0, 'Count the number of plants which have survived on each plot shortly before harvesting the crops on that plot.'),
+(57, 'Weight of tubers', 'Cassava', 'Yield', 1, 0, 3000, 'g', '', 0, 0, 1, 'Weigh all the tubers which can be harvested from one plot and note down the mass per plot and crop.'),
+(58, 'Total biomass', 'Maize', 'Yield', 1, 0, 1000, 'kg', '', 0, 0, 1, 'Weigh the dry matter of all remaining plant residuals which can be collected on one plot after harvest and record the mass you get per plot and crop.'),
+(59, 'Number of planted seeds', 'Pulses', 'Sowing/planting - survival', 1, 0, 1000, 'per plot', '', 0, 0, 0, 'Record how many seeds have been sown per plot.'),
+(60, 'Number of germinated plants', 'Pulses', 'Sowing/planting - survival', 1, 0, 1000, 'per plot', '', 0, 0, 0, 'Count the number of plants which have germinated per plot.'),
+(61, 'Number of survived plants', 'Pulses', 'Yield', 1, 0, 1000, 'per plot', '', 0, 0, 0, 'Count the number of plants which have survived on each plot shortly before harvesting the crops on that plot.'),
+(62, 'Total biomass', 'Pulses', 'Yield', 1, 0, 1000, 'kg', '', 0, 0, 0, 'Weigh the dry matter of all remaining plant residuals which can be collected on one plot after harvest and record the mass you get per plot and crop.'),
+(63, 'Weight of pulses', 'Pulses', 'Yield', 1, 0, 3000, 'g', '', 0, 0, 0, 'Weigh all the pulses which can be harvested from one plot and note down the mass per plot and crop.'),
+(66, 'Content of Nitrogen', 'Maize', 'Quality', 1, 0, 100, '%', '', 0, 0, 1, 'Anlaysis of the nurtritional quality of the yield by testing at SUA/ETH laboratories different kernel samples harvested on one plot. This measurement focuses on nitrogen (%)'),
+(67, 'Content of Phosphorous', 'Maize', 'Quality', 1, 200, 300, 'mg/100g', '', 0, 0, 1, 'Anlaysis of the nurtritional quality of the yield by testing at SUA/ETH laboratories different kernel samples harvested on one plot. This measurement focuses on phosphorous (mg/100g)'),
+(68, 'Starch content', 'Cassava', 'Quality', 1, 60, 95, '%', '', 0, 0, 1, 'Anlaysis of the nurtritional quality of the yield by testing at SUA/ETH laboratories different tuber samples harvested on one plot. This measurement focuses on starch content (%)'),
+(69, 'Ash content in starch', 'Cassava', 'Quality', 1, 0, 1000, 'g/kg', '', 0, 0, 1, 'Anlaysis of the nurtritional quality of the yield by testing at SUA/ETH laboratories different tuber samples harvested on one plot. This measurement focuses on ash content in starch (g/kg)'),
+(70, 'Protein content in starch', 'Cassava', 'Quality', 1, 0, 100, '%', '', 0, 0, 1, 'Anlaysis of the nurtritional quality of the yield by testing at SUA/ETH laboratories different tuber samples harvested on one plot. This measurement focuses on protein content in starch (%)'),
+(71, 'Pest type', 'Cassava', 'Plant health', 0, 0, 0, '', 'Bird,Insect,Insect larvae,Vertebrate,Worm', 0, 1, 1, ''),
+(72, 'Pest type', 'Maize', 'Plant health', 0, 0, 0, '', 'Bird,Insect,Insect larvae,Vertebrate,Worm', 0, 1, 1, ''),
+(73, '100(0) seed weight', 'Pulses', 'Yield', 1, 0, 5000, 'g', '', 0, 1, 1, 'Collect all pulses which can be harvested from one plot, mix them and weigh 10 samples of 100 pulses. Note down the 100-seed-weight of each sample per plot and crop.'),
+(74, 'Weight of good kernels', 'Maize', 'Quality', 1, 0, 10000, 'g', '', 0, 0, 0, 'After sorting out the good kernels from the bad ones, weigh the good kernels which can be harvested from one plot and note down the mass in grams.'),
+(75, 'Weight of good pulses', 'Pulses', 'Quality', 1, 0, 10000, 'g', '', 0, 0, 0, 'After sorting out the good pulses from the bad ones, weigh the good pulses which can be harvested from one plot and note down the mass in grams.'),
+(76, 'Discoloration stress symptoms', 'Maize', 'Plant health', 0, 0, 0, '', 'no stress,dark green,light green,yellowish', 0, 1, 1, ''),
+(77, 'Discoloration stress symptoms', 'Cassava', 'Plant health', 0, 0, 0, '', 'no stress,dark green,light green,yellowish', 0, 1, 1, 'Control whether the plants show any stress symptoms. Record for each plant which stress symptoms occur (if any). There are two categories of stress symptoms: (1) water stress symptoms characterizd by rippled leaf margins, folded, rolled or dry leaves and (2) nutrient deficiency symptoms characterized by a yellowish, light green, dark green or purple discoloration.');
 
 -- --------------------------------------------------------
 
@@ -346,7 +353,7 @@ CREATE TABLE IF NOT EXISTS `measurement_x_crop_or_treatment` (
   `measurement_id` int(10) unsigned NOT NULL,
   `crop_id` int(10) unsigned DEFAULT NULL,
   `treatment_id` int(10) unsigned DEFAULT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=65 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=61 ;
 
 --
 -- Volcado de datos para la tabla `measurement_x_crop_or_treatment`
@@ -410,11 +417,7 @@ INSERT INTO `measurement_x_crop_or_treatment` (`measurement_x_crop_or_treatment_
 (57, 75, 8, NULL),
 (58, 74, 1, NULL),
 (59, 76, 1, NULL),
-(60, 77, 2, NULL),
-(61, 78, 2, NULL),
-(62, 79, 2, NULL),
-(63, 81, 1, NULL),
-(64, 80, 1, NULL);
+(60, 77, 2, NULL);
 
 -- --------------------------------------------------------
 
@@ -481,13 +484,15 @@ CREATE TABLE IF NOT EXISTS `treatment` (
 --
 
 INSERT INTO `treatment` (`treatment_id`, `treatment_name`, `treatment_category`, `primary_crop_id`, `intercropping_crop_id`) VALUES
-(5, 'Compost', 'Soil management', NULL, NULL),
+(5, 'Composting', 'Soil management', NULL, NULL),
+(6, 'Neem mix', 'Pest control', NULL, NULL),
 (10, 'Mulching', 'Soil management', NULL, NULL),
 (12, 'Intercropping', 'Intercropping', 1, 4),
 (14, 'Top dressing', 'Soil management', NULL, NULL),
-(16, 'Neem based', 'Pest control', NULL, NULL),
-(18, 'Ash based', 'Pest control', NULL, NULL),
-(19, 'Cattle urine based', 'Pest control', NULL, NULL);
+(16, 'Neem leaves', 'Pest control', NULL, NULL),
+(17, 'Mucuna beans', 'Pest control', NULL, NULL),
+(18, 'Ash', 'Pest control', NULL, NULL),
+(19, 'Cattle urine', 'Pest control', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -582,12 +587,6 @@ ALTER TABLE `field_history`
  ADD PRIMARY KEY (`field_history_id`);
 
 --
--- Indices de la tabla `health_report_item`
---
-ALTER TABLE `health_report_item`
- ADD PRIMARY KEY (`health_report_item_id`);
-
---
 -- Indices de la tabla `input_log`
 --
 ALTER TABLE `input_log`
@@ -671,11 +670,6 @@ MODIFY `field_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=37;
 ALTER TABLE `field_history`
 MODIFY `field_history_id` int(10) unsigned NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT de la tabla `health_report_item`
---
-ALTER TABLE `health_report_item`
-MODIFY `health_report_item_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
---
 -- AUTO_INCREMENT de la tabla `input_log`
 --
 ALTER TABLE `input_log`
@@ -689,12 +683,12 @@ MODIFY `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
 -- AUTO_INCREMENT de la tabla `measurement`
 --
 ALTER TABLE `measurement`
-MODIFY `measurement_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=82;
+MODIFY `measurement_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=78;
 --
 -- AUTO_INCREMENT de la tabla `measurement_x_crop_or_treatment`
 --
 ALTER TABLE `measurement_x_crop_or_treatment`
-MODIFY `measurement_x_crop_or_treatment_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=65;
+MODIFY `measurement_x_crop_or_treatment_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=61;
 --
 -- AUTO_INCREMENT de la tabla `notification`
 --

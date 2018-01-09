@@ -20,6 +20,17 @@
             android:paddingLeft="15dp"
             android:textSize="20dp"
             android:textColor="@color/colorPrimary"
+            android:text="@string/downloadActivitiesText"
+            android:id="@+id/downloadActivities"
+            android:button="@drawable/custom_checkbox"/>
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="15dp"
+            android:layout_marginTop="25dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorPrimary"
             android:text="@string/downloadCropsText"
             android:id="@+id/downloadCrops"
             android:button="@drawable/custom_checkbox"/>
@@ -31,8 +42,8 @@
             android:layout_marginTop="25dp"
             android:textSize="20dp"
             android:textColor="@color/colorPrimary"
-            android:text="@string/downloadTreatmentsText"
-            android:id="@+id/downloadTreatments"
+            android:text="@string/downloadFieldsText"
+            android:id="@+id/downloadFields"
             android:button="@drawable/custom_checkbox"/>
 
         <CheckBox
@@ -53,19 +64,8 @@
             android:layout_marginTop="25dp"
             android:textSize="20dp"
             android:textColor="@color/colorPrimary"
-            android:text="@string/downloadActivitiesText"
-            android:id="@+id/downloadActivities"
-            android:button="@drawable/custom_checkbox"/>
-
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="15dp"
-            android:layout_marginTop="25dp"
-            android:textSize="20dp"
-            android:textColor="@color/colorPrimary"
-            android:text="@string/downloadFieldsText"
-            android:id="@+id/downloadFields"
+            android:text="@string/downloadTreatmentsText"
+            android:id="@+id/downloadTreatments"
             android:button="@drawable/custom_checkbox"/>
 
         <Button

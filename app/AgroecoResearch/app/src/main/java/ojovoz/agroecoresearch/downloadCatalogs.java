@@ -94,6 +94,7 @@ public class downloadCatalogs extends AppCompatActivity implements httpConnectio
             if (measurements.isChecked()) {
                 download.add("measurements");
                 download.add("measurements_applied");
+                download.add("health_report_items");
             }
             CheckBox activities = (CheckBox) findViewById(R.id.downloadActivities);
             if (activities.isChecked()) {

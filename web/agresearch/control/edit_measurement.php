@@ -34,6 +34,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 			$measurement_range_max=$_POST['measurement_range_max'];
 			$measurement_units=normalize($_POST['measurement_units']);
 			$measurement_categories="";
+		} else if($measurement_type==2) {
+			$measurement_range_min=0;
+			$measurement_range_max=0;
+			$measurement_units="";
+			$measurement_categories="";
 		} else {
 			$measurement_type=1;
 			$measurement_range_min=0;
@@ -142,6 +147,7 @@ for($i=0;$i<sizeof($measurement_subcategories_catalog);$i++){
   <option value="" disabled>Type:</option>
   <option value="0" <?php echo($measurement_type == 0 ? 'selected' : ''); ?>>Qualitative</option>
   <option value="1" <?php echo($measurement_type == 1 ? 'selected' : ''); ?>>Quantitative</option>
+  <option value="2" <?php echo($measurement_type == 2 ? 'selected' : ''); ?>>Health report</option>
 </select>
 <div id="quantiquali"></div></p>
 <script type="text/javascript">

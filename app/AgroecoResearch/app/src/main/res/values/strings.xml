@@ -129,4 +129,8 @@
     <string name="enterCropVarietyText">Variety</string>
     <string name="enterInputUnitsText">Units</string>
     <string name="defaultUnits">kg</string>
+    <string name="healthReportButtonText">Health report</string>
+    <string name="enterHealthReportText">Health report</string>
+    <string name="healthReportItemsTitle">Item</string>
+    <string name="healthReportLabel">Health report</string>
 </resources>

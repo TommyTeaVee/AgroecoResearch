@@ -10,7 +10,7 @@ session_start();
 if($_SERVER["REQUEST_METHOD"] == "POST") {
 	if(isset($_POST['add_treatment'])){
 		$treatment_name=$_POST['treatment_name'];
-		$c=$_POST['treatment_name'];
+		$c=$_POST['treatment_category'];
 		$primary_crop_id="NULL";
 		$intercropping_crop_id="NULL";
 		if($c=="-1"){
