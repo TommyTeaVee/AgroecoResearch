@@ -36,6 +36,7 @@
     <string name="chooseFieldPlotTitle">Enter</string>
     <string name="chooseFieldPrompt">Choose a field</string>
     <string name="choosePlotPrompt">Choose plots</string>
+    <string name="chooseSinglePlotPrompt">Choose a plot</string>
     <string name="enterDataButton">Enter data</string>
     <string name="registerInputButton">Enter INPUT</string>
     <string name="chooserTitle">Choose</string>

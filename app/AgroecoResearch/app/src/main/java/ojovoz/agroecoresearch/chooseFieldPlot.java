@@ -148,7 +148,12 @@ public class chooseFieldPlot extends AppCompatActivity {
             field = agroHelper.getFieldFromId(fieldId);
             fieldListView = (Button) findViewById(R.id.chooseFieldButton);
             fieldListView.setText(field.fieldName + " r" + field.fieldReplicationN);
-            String msg=getString(R.string.choosePlotPrompt);
+            String msg="";
+            if(task.equals("measurement")){
+                msg = getString(R.string.chooseSinglePlotPrompt);
+            } else {
+                msg = getString(R.string.choosePlotPrompt);
+            }
             TextView choosePlotMessage = (TextView) findViewById(R.id.choosePlotMessage);
             choosePlotMessage.setText(msg);
             drawPlots();
@@ -273,7 +278,11 @@ public class chooseFieldPlot extends AppCompatActivity {
                     prefs.savePreference("field",Integer.toString(field.fieldId));
                     Button fieldListView = (Button) findViewById(R.id.chooseFieldButton);
                     fieldListView.setText(field.fieldName + " r" + field.fieldReplicationN);
-                    msg=getString(R.string.choosePlotPrompt);
+                    if(task.equals("measurement")){
+                        msg = getString(R.string.chooseSinglePlotPrompt);
+                    } else {
+                        msg = getString(R.string.choosePlotPrompt);
+                    }
                     drawPlots();
                 }
                 TextView choosePlotMessage = (TextView) findViewById(R.id.choosePlotMessage);
@@ -528,8 +537,8 @@ public class chooseFieldPlot extends AppCompatActivity {
                 } else {
                     plots=plots+","+Integer.toString(n);
                 }
+                n++;
             }
-            n++;
         }
         if(plots.isEmpty()){
             Toast.makeText(this, R.string.noPlotsChosen, Toast.LENGTH_SHORT).show();
@@ -541,7 +550,7 @@ public class chooseFieldPlot extends AppCompatActivity {
                     i = new Intent(context, enterTreatmentInput.class);
                 }
 
-                String longTitle = itemTitle+"\n"+agroHelper.getFieldNameFromId(field.fieldId)+"\nPlots: "+agroHelper.getPlotNames(field,plots);
+                String longTitle = itemTitle+"\n"+agroHelper.getFieldNameFromId(field.fieldId)+"\nPlots ("+Integer.toString(n)+"): "+agroHelper.getPlotNames(field,plots);
 
                 i.putExtra("userId", userId);
                 i.putExtra("userRole", userRole);
@@ -559,7 +568,7 @@ public class chooseFieldPlot extends AppCompatActivity {
 
             } else if(task.equals("activity")){
 
-                String longTitle = itemTitle+"\n"+agroHelper.getFieldNameFromId(field.fieldId)+"\nPlots: "+agroHelper.getPlotNames(field,plots);
+                String longTitle = itemTitle+"\n"+agroHelper.getFieldNameFromId(field.fieldId)+"\nPlots ("+Integer.toString(n)+"): "+agroHelper.getPlotNames(field,plots);
                 i = new Intent(context, enterActivity.class);
 
                 i.putExtra("userId", userId);
@@ -578,7 +587,7 @@ public class chooseFieldPlot extends AppCompatActivity {
 
             } else if(task.equals("measurement")){
 
-                String longTitle = itemTitle+"\n"+agroHelper.getFieldNameFromId(field.fieldId)+"\nPlots: "+agroHelper.getPlotNames(field,plots);
+                String longTitle = itemTitle+"\n"+agroHelper.getFieldNameFromId(field.fieldId)+"\nPlot: "+agroHelper.getPlotNames(field,plots);
                 i = new Intent(context, enterMeasurement.class);
 
                 oMeasurement m = agroHelper.getMeasurementFromId(taskId);

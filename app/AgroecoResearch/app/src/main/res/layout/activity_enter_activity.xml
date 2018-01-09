@@ -59,11 +59,33 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@string/enterUnitsText"
+            android:textColor="@color/colorPrimary"
+            android:id="@+id/enterUnitsText"
+            android:layout_marginTop="20dp"
+            android:layout_below="@+id/dateButton"
+            android:layout_alignParentStart="true"
+            android:layout_alignEnd="@+id/dateButton"
+            android:textSize="20dp" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/activityUnits"
+            android:layout_below="@+id/enterUnitsText"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="20dp"
+            android:layout_alignEnd="@+id/enterUnitsText"
+            android:singleLine="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="@string/enterValueText"
             android:textColor="@color/colorPrimary"
             android:id="@+id/enterValueText"
             android:layout_marginTop="20dp"
-            android:layout_below="@+id/dateButton"
+            android:layout_below="@+id/activityUnits"
             android:layout_alignParentStart="true"
             android:layout_alignEnd="@+id/dateButton"
             android:textSize="20dp" />
@@ -82,33 +104,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/enterUnitsText"
-            android:textColor="@color/colorPrimary"
-            android:id="@+id/enterUnitsText"
-            android:layout_marginTop="20dp"
-            android:layout_below="@+id/activityValue"
-            android:layout_alignParentStart="true"
-            android:layout_alignEnd="@+id/activityValue"
-            android:textSize="20dp" />
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/activityUnits"
-            android:layout_below="@+id/enterUnitsText"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="20dp"
-            android:layout_alignEnd="@+id/enterUnitsText"
-            android:singleLine="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="@string/enterLaborersText"
             android:textColor="@color/colorPrimary"
             android:id="@+id/enterLaborersText"
             android:layout_marginTop="20dp"
-            android:layout_below="@+id/activityUnits"
+            android:layout_below="@+id/activityValue"
             android:layout_alignParentStart="true"
             android:layout_alignEnd="@+id/activityValue"
             android:textSize="20dp" />
