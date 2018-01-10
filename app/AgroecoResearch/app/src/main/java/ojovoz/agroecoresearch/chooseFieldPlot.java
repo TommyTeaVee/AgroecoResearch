@@ -528,6 +528,7 @@ public class chooseFieldPlot extends AppCompatActivity {
         String plots="";
         // gather chosen plots
         int n=0;
+        int nPlots=0;
         Iterator<oPlotHelper> iterator = plotsInGrid.iterator();
         while (iterator.hasNext()) {
             oPlotHelper ph = iterator.next();
@@ -537,8 +538,9 @@ public class chooseFieldPlot extends AppCompatActivity {
                 } else {
                     plots=plots+","+Integer.toString(n);
                 }
-                n++;
+                nPlots++;
             }
+            n++;
         }
         if(plots.isEmpty()){
             Toast.makeText(this, R.string.noPlotsChosen, Toast.LENGTH_SHORT).show();
@@ -550,7 +552,7 @@ public class chooseFieldPlot extends AppCompatActivity {
                     i = new Intent(context, enterTreatmentInput.class);
                 }
 
-                String longTitle = itemTitle+"\n"+agroHelper.getFieldNameFromId(field.fieldId)+"\nPlots ("+Integer.toString(n)+"): "+agroHelper.getPlotNames(field,plots);
+                String longTitle = itemTitle+"\n"+agroHelper.getFieldNameFromId(field.fieldId)+"\nPlots ("+Integer.toString(nPlots)+"): "+agroHelper.getPlotNames(field,plots);
 
                 i.putExtra("userId", userId);
                 i.putExtra("userRole", userRole);
@@ -568,7 +570,7 @@ public class chooseFieldPlot extends AppCompatActivity {
 
             } else if(task.equals("activity")){
 
-                String longTitle = itemTitle+"\n"+agroHelper.getFieldNameFromId(field.fieldId)+"\nPlots ("+Integer.toString(n)+"): "+agroHelper.getPlotNames(field,plots);
+                String longTitle = itemTitle+"\n"+agroHelper.getFieldNameFromId(field.fieldId)+"\nPlots ("+Integer.toString(nPlots)+"): "+agroHelper.getPlotNames(field,plots);
                 i = new Intent(context, enterActivity.class);
 
                 i.putExtra("userId", userId);

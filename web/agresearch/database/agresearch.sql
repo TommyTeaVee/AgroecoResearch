@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: 192.168.86.55
--- Tiempo de generación: 09-01-2018 a las 17:11:24
+-- Tiempo de generación: 10-01-2018 a las 16:56:36
 -- Versión del servidor: 5.5.57-0+deb7u1-log
 -- Versión de PHP: 5.3.29-1~dotdeb.0
 
@@ -199,10 +199,10 @@ CREATE TABLE IF NOT EXISTS `health_report_item` (
 --
 
 INSERT INTO `health_report_item` (`health_report_item_id`, `item`, `item_categories`) VALUES
-(1, 'Disease', 'Don\\''t know,Bacterial,Fungal,Viral'),
-(2, 'Pest', 'Don\\''t know,Ants/Termites,Beetles,Birds,Locusts/Grasshoppers,Mites,Moths,Rats,Worms/Larvae'),
-(3, 'Discoloration', 'Brown,Dark green,Light green,Purple,Yellow'),
-(4, 'Water stress', 'Dry leaves,Folded leaves,Rippled leave margins,Rolled leaves');
+(1, 'Disease', 'Don\\''t know,Bacterial,Fungal,Viral,Other ...'),
+(2, 'Pest', 'Don\\''t know,Ants/Termites,Beetles,Birds,Locusts/Grasshoppers,Mites,Moths,Rats,Worms/Larvae,Other ...'),
+(3, 'Discoloration', 'Brown,Dark green,Light green,Purple,Yellow,Other ...'),
+(4, 'Water stress', 'Dry leaves,Folded leaves,Rippled leave margins,Rolled leaves,Other ...');
 
 -- --------------------------------------------------------
 
@@ -429,7 +429,7 @@ CREATE TABLE IF NOT EXISTS `notification` (
   `notification_date` date NOT NULL,
   `notification_text` text NOT NULL,
   `notification_sent` tinyint(3) unsigned NOT NULL DEFAULT '0'
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=29 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=30 ;
 
 --
 -- Volcado de datos para la tabla `notification`
@@ -443,11 +443,11 @@ INSERT INTO `notification` (`notification_id`, `sender_id`, `receiver_id`, `noti
 (20, 3, 1, '2017-09-18', 'Testing ''again''', 1),
 (21, 2, 1, '2017-09-18', 'hello this is a test', 1),
 (22, 2, 1, '2017-09-25', 'Please report any pest-related problems as soon as possible.', 1),
-(23, 1, 2, '2017-09-26', 'Hello, this is a test.', 0),
 (24, 2, 1, '2017-09-27', 'Hello, welcome to the AgroEco Research app!', 1),
 (25, 2, 1, '2017-10-01', 'Hello this is a test', 1),
 (26, 2, 1, '2017-10-01', 'Please make sure that you download catalogs again -- changes have been made.', 1),
-(28, 13, 7, '2017-10-03', 'Please remember to test the application. Thank you.', 1);
+(28, 13, 7, '2017-10-03', 'Please remember to test the application. Thank you.', 1),
+(29, 1, 1, '2018-01-09', 'Message to self', 1);
 
 -- --------------------------------------------------------
 
@@ -699,7 +699,7 @@ MODIFY `measurement_x_crop_or_treatment_id` int(10) unsigned NOT NULL AUTO_INCRE
 -- AUTO_INCREMENT de la tabla `notification`
 --
 ALTER TABLE `notification`
-MODIFY `notification_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=29;
+MODIFY `notification_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=30;
 --
 -- AUTO_INCREMENT de la tabla `plot`
 --

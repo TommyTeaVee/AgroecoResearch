@@ -65,6 +65,7 @@ public class enterMeasurement extends AppCompatActivity {
     public float max;
     ArrayList<CharSequence> categories;
     CharSequence categoriesArray[];
+    public String categoriesString;
     public String measurementCategory = "";
 
     public Date measurementDate;
@@ -106,7 +107,7 @@ public class enterMeasurement extends AppCompatActivity {
         type = getIntent().getExtras().getInt("type");
         min = getIntent().getExtras().getFloat("min");
         max = getIntent().getExtras().getFloat("max");
-        String categoriesString = getIntent().getExtras().getString("categories");
+        categoriesString = getIntent().getExtras().getString("categories");
         update = getIntent().getExtras().getString("update");
 
         categories = new ArrayList<>();
@@ -174,6 +175,7 @@ public class enterMeasurement extends AppCompatActivity {
                     }
                 });
             } else if (type == 2){
+                /*
                 TextView vt = (TextView) findViewById(R.id.enterValueText);
                 vt.setVisibility(View.GONE);
                 ve.setVisibility(View.GONE);
@@ -192,6 +194,7 @@ public class enterMeasurement extends AppCompatActivity {
                     }
                 });
                 cb.setText(R.string.healthReportButtonText);
+                */
             } else if (measurementUnits.equals("date")) {
                 Button cb = (Button) findViewById(R.id.measurementCategory);
                 cb.setVisibility(View.GONE);
@@ -202,11 +205,18 @@ public class enterMeasurement extends AppCompatActivity {
             }
         }
 
+        String healthReportValues = getIntent().getExtras().getString("healthReportValues");
+        int sampleId = getIntent().getExtras().getInt("sampleId");
+        if(healthReportValues==null){
+            healthReportValues="";
+            sampleId=-1;
+        }
+
         if (update.equals("measurement")) {
             logId = getIntent().getExtras().getInt("logId");
 
             if(hasSamples){
-                initializeSampleTable(getIntent().getExtras().getString("measurementCategory"));
+                initializeSampleTable(getIntent().getExtras().getString("measurementCategory"),healthReportValues,sampleId);
 
                 Button as = (Button) findViewById(R.id.addSample);
                 as.setOnClickListener(new View.OnClickListener() {
@@ -256,10 +266,20 @@ public class enterMeasurement extends AppCompatActivity {
             Button rb = (Button) findViewById(R.id.okButton);
             rb.setText(R.string.editButtonText);
         } else {
-            measurementDate = new Date();
+            String date = getIntent().getExtras().getString("measurementDate");
+            if(date!=null){
+                measurementDate=stringToDate(date);
+            } else {
+                measurementDate = new Date();
+            }
 
             if (hasSamples) {
-                initializeSampleTable("");
+                if(sampleId>=0) {
+                    String samples = getIntent().getExtras().getString("measurementCategory");
+                    initializeSampleTable(samples,healthReportValues,sampleId);
+                } else {
+                    initializeSampleTable("",healthReportValues,sampleId);
+                }
                 Button as = (Button) findViewById(R.id.addSample);
                 as.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -442,7 +462,7 @@ public class enterMeasurement extends AppCompatActivity {
         finish();
     }
 
-    public void initializeSampleTable(String ini) {
+    public void initializeSampleTable(String ini, String healthReport, int updateSample) {
         oSampleHelper sh;
         samples = new ArrayList<>();
         if(ini.isEmpty()) {
@@ -460,12 +480,18 @@ public class enterMeasurement extends AppCompatActivity {
             }
         }
 
+        if(updateSample>=0){
+            sh = samples.get(updateSample);
+            sh.value=healthReport;
+            samples.set(updateSample,sh);
+            changes=true;
+        }
+
         fillSampleTable();
 
     }
 
     public void fillSampleTable() {
-
         int n = 0;
         TableLayout samplesTable = (TableLayout) findViewById(R.id.samplesTable);
         samplesTable.removeAllViews();
@@ -553,14 +579,22 @@ public class enterMeasurement extends AppCompatActivity {
             if (type == 0 || type == 2) {
                 Button sb = new Button(enterMeasurement.this);
                 sb.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17f);
-                if(!sh.value.isEmpty()) {
-                    String display=sh.value;
-                    if(display.length()>10){
-                        display=display.substring(0,9)+"…";
+                if(!sh.value.trim().isEmpty()) {
+                    if(type==0) {
+                        String display = sh.value;
+                        if (display.length() > 10) {
+                            display = display.substring(0, 9) + "…";
+                        }
+                        sb.setText(display);
+                    } else {
+                        sb.setText(R.string.chooseValueSampleTable);
                     }
-                    sb.setText(display);
                 } else {
-                    sb.setText(R.string.chooseValueSampleTable);
+                    if(type==0) {
+                        sb.setText(R.string.chooseValueSampleTable);
+                    } else {
+                        sb.setText(R.string.healthReportButtonDefaultText);
+                    }
                 }
                 sb.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                 sb.setPadding(0,10,0,10);
@@ -588,7 +622,7 @@ public class enterMeasurement extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             currentSampleChoiceButton = (Button) v;
-                            showHealthReportSampleTable();
+                            showHealthReportSampleTable(currentSampleChoiceButton.getId());
                             changes = true;
                         }
                     });
@@ -790,7 +824,7 @@ public class enterMeasurement extends AppCompatActivity {
                     Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
                     ret=false;
                     break;
-                } else if(type==0 && sh.value.isEmpty()){
+                } else if(type==0 && sh.value.trim().isEmpty()){
                     String msg = this.getResources().getString(R.string.enterValidCategoryTextSample);
                     msg = msg.replaceAll("x", String.valueOf(sh.sampleNumber));
                     Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
@@ -808,10 +842,12 @@ public class enterMeasurement extends AppCompatActivity {
         Iterator<oSampleHelper> iterator = samples.iterator();
         while (iterator.hasNext()) {
             oSampleHelper sh = iterator.next();
+            String value = sh.value;
+            if(value.isEmpty()) { value=" "; }
             if(ret.isEmpty()){
-                ret=String.valueOf(sh.sampleNumber)+"*"+sh.value;
+                ret=String.valueOf(sh.sampleNumber)+"*"+value;
             } else {
-                ret=ret+"*"+String.valueOf(sh.sampleNumber)+"*"+sh.value;
+                ret=ret+"*"+String.valueOf(sh.sampleNumber)+"*"+value;
             }
         }
         return ret;
@@ -911,11 +947,11 @@ public class enterMeasurement extends AppCompatActivity {
         dialog.show();
     }
 
+    /*
     public void showHealthReport(){
         float valueNumber=0.0f;
 
         EditText c = (EditText)findViewById(R.id.measurementComments);
-        c.requestFocus();
         String commentsText = String.valueOf(c.getText());
         if (!commentsText.isEmpty()) {
             commentsText = commentsText.replaceAll(";", " ");
@@ -942,18 +978,24 @@ public class enterMeasurement extends AppCompatActivity {
         i.putExtra("type",type);
         i.putExtra("min",min);
         i.putExtra("max",max);
+        i.putExtra("categories",categoriesString);
         i.putExtra("measurementDate", dateToString(measurementDate));
         i.putExtra("measurementValue", valueNumber);
-        i.putExtra("measurementUnits", measurementUnits);
+        i.putExtra("units", measurementUnits);
         i.putExtra("measurementCategory", measurementCategory);
         i.putExtra("measurementComments", commentsText);
+        i.putExtra("update",update);
         startActivity(i);
         finish();
     }
+    */
 
-    public void showHealthReportSampleTable(){
+    public void showHealthReportSampleTable(int id){
+
+        int sampleNumber = samples.get(id).sampleNumber;
+        String sampleValue = samples.get(id).value;
+
         EditText c = (EditText)findViewById(R.id.measurementComments);
-        c.requestFocus();
         String commentsText = String.valueOf(c.getText());
         if (!commentsText.isEmpty()) {
             commentsText = commentsText.replaceAll(";", " ");
@@ -966,6 +1008,7 @@ public class enterMeasurement extends AppCompatActivity {
         Intent i = new Intent(context, enterHealthReport.class);
         i.putExtra("userId", userId);
         i.putExtra("userRole", userRole);
+        i.putExtra("logId",logId);
         i.putExtra("task", task);
         i.putExtra("title", measurementTitle);
         i.putExtra("shortTitle",shortTitle);
@@ -973,14 +1016,19 @@ public class enterMeasurement extends AppCompatActivity {
         i.putExtra("field", fieldId);
         i.putExtra("plots", plots);
         i.putExtra("measurement", measurementId);
+        i.putExtra("hasSamples",hasSamples);
         i.putExtra("type",type);
         i.putExtra("min",min);
         i.putExtra("max",max);
+        i.putExtra("categories",categoriesString);
         i.putExtra("measurementDate", dateToString(measurementDate));
         i.putExtra("measurementCategory", samplesString);
-        i.putExtra("measurementUnits", measurementUnits);
-        i.putExtra("measurementCategory", measurementCategory);
+        i.putExtra("units", measurementUnits);
         i.putExtra("measurementComments", commentsText);
+        i.putExtra("update",update);
+        i.putExtra("sampleNumber", sampleNumber);
+        i.putExtra("sampleId",id);
+        i.putExtra("previousValue",sampleValue);
         startActivity(i);
         finish();
     }

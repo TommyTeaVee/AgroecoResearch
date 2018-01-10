@@ -133,4 +133,5 @@
     <string name="enterHealthReportText">Health report</string>
     <string name="healthReportItemsTitle">Item</string>
     <string name="healthReportLabel">Health report</string>
+    <string name="healthReportButtonDefaultText">GOOD</string>
 </resources>
