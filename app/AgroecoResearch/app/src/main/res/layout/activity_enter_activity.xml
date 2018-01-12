@@ -59,11 +59,38 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@string/enterActivityTitle"
+            android:textColor="@color/colorPrimary"
+            android:id="@+id/enterActivityText"
+            android:layout_below="@+id/dateButton"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="20dp"
+            android:layout_alignEnd="@+id/fieldPlotText"
+            android:textSize="20dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/emptyString"
+            android:id="@+id/activityButton"
+            android:onClick="showActivities"
+            android:layout_below="@+id/enterActivityText"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="20dp"
+            android:layout_alignEnd="@+id/enterDateText"
+            android:textSize="20dp"
+            android:height="40dp"
+            android:background="@drawable/button_background"
+            android:textColor="@color/colorWhite" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="@string/enterUnitsText"
             android:textColor="@color/colorPrimary"
             android:id="@+id/enterUnitsText"
             android:layout_marginTop="20dp"
-            android:layout_below="@+id/dateButton"
+            android:layout_below="@+id/activityButton"
             android:layout_alignParentStart="true"
             android:layout_alignEnd="@+id/dateButton"
             android:textSize="20dp" />

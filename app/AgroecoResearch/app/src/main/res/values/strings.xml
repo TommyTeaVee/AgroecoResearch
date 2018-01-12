@@ -134,4 +134,7 @@
     <string name="healthReportItemsTitle">Item</string>
     <string name="healthReportLabel">Health report</string>
     <string name="healthReportButtonDefaultText">GOOD</string>
+    <string name="titleEnterActivity">Enter activity</string>
+    <string name="chooseActivityButtonTitle">Choose activity</string>
+    <string name="chooseValidActivityText">Please choose an activity</string>
 </resources>

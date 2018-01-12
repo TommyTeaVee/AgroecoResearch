@@ -258,8 +258,8 @@ public class enterMeasurement extends AppCompatActivity {
             }
 
             Button db = (Button) findViewById(R.id.dateButton);
-            db.setText(getIntent().getExtras().getString("date"));
-            measurementDate = stringToDate(getIntent().getExtras().getString("date"));
+            db.setText(getIntent().getExtras().getString("measurementDate"));
+            measurementDate = stringToDate(getIntent().getExtras().getString("measurementDate"));
 
             mc.setText(getIntent().getExtras().getString("measurementComments"));
 
@@ -587,7 +587,11 @@ public class enterMeasurement extends AppCompatActivity {
                         }
                         sb.setText(display);
                     } else {
-                        sb.setText(R.string.chooseValueSampleTable);
+                        if(isSampleGood(sh.value)){
+                            sb.setText(R.string.healthReportButtonDefaultText);
+                        } else {
+                            sb.setText(R.string.chooseValueSampleTable);
+                        }
                     }
                 } else {
                     if(type==0) {
@@ -803,6 +807,19 @@ public class enterMeasurement extends AppCompatActivity {
     public void doDelete(int id){
         samples.remove(id);
         fillSampleTable();
+    }
+
+    public boolean isSampleGood(String value){
+        boolean ret=true;
+        String[] healthValues;
+        healthValues = value.split("\\#");
+        for(int i=0;i<healthValues.length;i++){
+            if(!healthValues[i].trim().isEmpty()){
+                ret=false;
+                break;
+            }
+        }
+        return ret;
     }
 
     public boolean verifySamples(){

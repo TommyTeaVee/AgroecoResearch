@@ -79,10 +79,14 @@ public class mainMenu extends AppCompatActivity {
 
     public void addActivity(View v){
         final Context context = this;
-        Intent i = new Intent(context, chooser.class);
-        i.putExtra("userId",userId);
-        i.putExtra("userRole",userRole);
-        i.putExtra("task","activity");
+        Intent i = new Intent(context, chooseFieldPlot.class);
+        i.putExtra("userId", userId);
+        i.putExtra("userRole", userRole);
+        i.putExtra("task", "activity");
+        i.putExtra("field", -1);
+        i.putExtra("activity", -1);
+        i.putExtra("title","");
+
         startActivity(i);
         finish();
     }

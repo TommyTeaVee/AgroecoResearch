@@ -165,6 +165,8 @@ public class enterHealthReport extends AppCompatActivity {
         i.putExtra("measurementComments", commentsText);
         i.putExtra("hasSamples",hasSamples);
         i.putExtra("update",update);
+        i.putExtra("sampleNumber",sampleNumber);
+        i.putExtra("sampleId",sampleId);
         i.putExtra("healthReportValues",previousValue);
 
         startActivity(i);

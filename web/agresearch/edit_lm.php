@@ -88,7 +88,7 @@ if(isset($_POST['edit'])){
 <p><div class="w3-text-green">
 <b>Registered by:</b> <?php echo(getUserNameFromId($dbh,$row[15])); ?><br>
 <b>Field:</b> <?php echo($row[2]." replication ".$row[3]); ?><br>
-<b>Plots:</b> <?php echo($plot_labels); ?> <a href="edit_plots.php?task=lm&id=<?php echo($id); ?>">Edit</a><br>
+<b>Plot:</b> <?php echo($plot_labels); ?> <a href="edit_plots.php?task=lm&id=<?php echo($id); ?>">Edit</a><br>
 <b>Measurement:</b> <?php echo($row[5]); ?><br><br>
 <b>Date:</b>
 <div class="w3-row-padding">

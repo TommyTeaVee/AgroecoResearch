@@ -634,7 +634,7 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
             i.putExtra("userId", userId);
             i.putExtra("userRole", userRole);
             i.putExtra("logId",logItem.logId);
-            i.putExtra("fieldId", logItem.logFieldId);
+            i.putExtra("field", logItem.logFieldId);
             i.putExtra("plots", logItem.logPlots);
             i.putExtra("activity",logItem.logActivityId);
             i.putExtra("update", "activity");
@@ -669,7 +669,7 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
             i.putExtra("min",m.measurementMin);
             i.putExtra("max",m.measurementMax);
             i.putExtra("categories",m.measurementCategories);
-            i.putExtra("date",agroHelper.dateToString(logItem.logDate));
+            i.putExtra("measurementDate",agroHelper.dateToString(logItem.logDate));
             i.putExtra("measurementValue",logItem.logNumberValue);
             i.putExtra("units",logItem.logValueUnits);
             i.putExtra("measurementCategory",logItem.logTextValue);

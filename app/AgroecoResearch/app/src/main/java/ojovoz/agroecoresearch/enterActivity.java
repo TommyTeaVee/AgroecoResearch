@@ -12,16 +12,21 @@ import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.TimeZone;
 
 /**
@@ -53,6 +58,11 @@ public class enterActivity extends AppCompatActivity {
     String costValue;
     String commentsText;
 
+    agroecoHelper agrohelper;
+    ArrayList<oActivity> activities;
+    CharSequence activitiesArray[];
+    String activityName;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +82,16 @@ public class enterActivity extends AppCompatActivity {
         TextView tt = (TextView)findViewById(R.id.fieldPlotText);
         tt.setText(activityTitle);
 
+        agrohelper = new agroecoHelper(this,"fields,crops,treatments,activities");
+        activities = agrohelper.getActivitiesForPlots(fieldId,plots);
+        ArrayList<String> activityNames = new ArrayList<>();
+        Iterator<oActivity> iterator = activities.iterator();
+        while (iterator.hasNext()) {
+            oActivity a = iterator.next();
+            activityNames.add(a.activityName);
+        }
+        activitiesArray = activityNames.toArray(new CharSequence[activityNames.size()]);
+
         EditText et = (EditText)findViewById(R.id.activityUnits);
         et.setText(activityMeasurementUnits);
         EditText av = (EditText)findViewById(R.id.activityValue);
@@ -89,12 +109,18 @@ public class enterActivity extends AppCompatActivity {
             db.setText(getIntent().getExtras().getString("date"));
             activityDate = stringToDate(getIntent().getExtras().getString("date"));
 
+            Button ab = (Button)findViewById(R.id.activityButton);
+            ab.setText(agrohelper.getActivityNameFromId(activityId));
+
             av.setText(Float.toString(getIntent().getExtras().getFloat("activityValue")));
             al.setText(getIntent().getExtras().getString("activityLaborers"));
             ak.setText(getIntent().getExtras().getString("activityCost"));
             ac.setText(getIntent().getExtras().getString("activityComments"));
         } else {
             activityDate = new Date();
+
+            Button ab = (Button)findViewById(R.id.activityButton);
+            ab.setText(R.string.chooseActivityButtonTitle);
         }
 
         et.addTextChangedListener(new TextWatcher() {
@@ -236,7 +262,7 @@ public class enterActivity extends AppCompatActivity {
             i.putExtra("field", fieldId);
             i.putExtra("plots", plots);
             i.putExtra("newActivity", false);
-            i.putExtra("activity",activityId);
+            i.putExtra("activity",-1);
             i.putExtra("title",shortTitle);
             startActivity(i);
             finish();
@@ -297,6 +323,36 @@ public class enterActivity extends AppCompatActivity {
         i.putExtra("userRole",userRole);
         startActivity(i);
         finish();
+    }
+
+    public void showActivities(View v){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setNegativeButton(R.string.cancelButtonText, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        final ListAdapter adapter = new ArrayAdapter<>(this, R.layout.checked_list_template, activitiesArray);
+        builder.setSingleChoiceItems(adapter, -1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (i >= 0) {
+                    Button activitiesButton = (Button) findViewById(R.id.activityButton);
+                    activityName = (String) activitiesArray[i];
+                    activityId = activities.get(i).activityId;
+                    activitiesButton.setText(activityName);
+                    EditText au = (EditText)findViewById(R.id.activityUnits);
+                    au.setText(activities.get(i).activityMeasurementUnits);
+                    changes=true;
+                }
+                dialogInterface.dismiss();
+                changes=true;
+
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     public Date stringToDate(String d){
@@ -361,74 +417,78 @@ public class enterActivity extends AppCompatActivity {
     public void registerActivity(View v){
         EditText value = (EditText)findViewById(R.id.activityValue);
         String valueText = String.valueOf(value.getText());
-        if(isNumeric(valueText)){
-            valueNumber = Float.parseFloat(valueText);
+        if(activityId>=0) {
+            if (isNumeric(valueText)) {
+                valueNumber = Float.parseFloat(valueText);
 
-            EditText units = (EditText)findViewById(R.id.activityUnits);
-            unitsText = String.valueOf(units.getText());
+                EditText units = (EditText) findViewById(R.id.activityUnits);
+                unitsText = String.valueOf(units.getText());
 
-            if(!unitsText.isEmpty()){
-                unitsText = unitsText.replaceAll(";"," ");
-                unitsText = unitsText.replaceAll("\\|"," ");
-                unitsText = unitsText.replaceAll("\\*"," ");
+                if (!unitsText.isEmpty()) {
+                    unitsText = unitsText.replaceAll(";", " ");
+                    unitsText = unitsText.replaceAll("\\|", " ");
+                    unitsText = unitsText.replaceAll("\\*", " ");
 
-                EditText laborers = (EditText)findViewById(R.id.activityLaborers);
-                String laborersText = String.valueOf(laborers.getText());
-                if(isNumeric(laborersText) || laborersText.isEmpty()) {
-                    laborersNumber = laborersText;
+                    EditText laborers = (EditText) findViewById(R.id.activityLaborers);
+                    String laborersText = String.valueOf(laborers.getText());
+                    if (isNumeric(laborersText) || laborersText.isEmpty()) {
+                        laborersNumber = laborersText;
 
-                    EditText cost = (EditText)findViewById(R.id.activityCost);
-                    String costText = String.valueOf(cost.getText());
+                        EditText cost = (EditText) findViewById(R.id.activityCost);
+                        String costText = String.valueOf(cost.getText());
 
-                    if(isNumeric(costText) || costText.isEmpty()) {
-                        costValue = costText;
+                        if (isNumeric(costText) || costText.isEmpty()) {
+                            costValue = costText;
 
-                        EditText comments = (EditText) findViewById(R.id.activityComments);
-                        commentsText = String.valueOf(comments.getText());
+                            EditText comments = (EditText) findViewById(R.id.activityComments);
+                            commentsText = String.valueOf(comments.getText());
 
-                        if (!commentsText.isEmpty()) {
-                            commentsText = commentsText.replaceAll(";", " ");
-                            commentsText = commentsText.replaceAll("\\|", " ");
-                            commentsText = commentsText.replaceAll("\\*", " ");
-                        }
+                            if (!commentsText.isEmpty()) {
+                                commentsText = commentsText.replaceAll(";", " ");
+                                commentsText = commentsText.replaceAll("\\|", " ");
+                                commentsText = commentsText.replaceAll("\\*", " ");
+                            }
 
-                        if (update.equals("")) {
-                            requestCopyToReplications();
+                            if (update.equals("")) {
+                                requestCopyToReplications();
+                            } else {
+                                Toast.makeText(this, "Activity edited successfully", Toast.LENGTH_SHORT).show();
+                                Intent i = new Intent(this, manageData.class);
+                                i.putExtra("userId", userId);
+                                i.putExtra("userRole", userRole);
+                                i.putExtra("task", task);
+                                i.putExtra("logId", logId);
+                                i.putExtra("update", "activity");
+                                i.putExtra("activity", activityId);
+                                i.putExtra("activityDate", dateToString(activityDate));
+                                i.putExtra("activityValue", valueNumber);
+                                i.putExtra("activityUnits", unitsText);
+                                i.putExtra("activityLaborers", laborersNumber);
+                                i.putExtra("activityCost", costValue);
+                                i.putExtra("activityComments", commentsText);
+                                startActivity(i);
+                                finish();
+                            }
+
                         } else {
-                            Toast.makeText(this, "Activity edited successfully", Toast.LENGTH_SHORT).show();
-                            Intent i = new Intent(this, manageData.class);
-                            i.putExtra("userId", userId);
-                            i.putExtra("userRole", userRole);
-                            i.putExtra("task", task);
-                            i.putExtra("logId", logId);
-                            i.putExtra("update", "activity");
-                            i.putExtra("activity", activityId);
-                            i.putExtra("activityDate", dateToString(activityDate));
-                            i.putExtra("activityValue", valueNumber);
-                            i.putExtra("activityUnits", unitsText);
-                            i.putExtra("activityLaborers", laborersNumber);
-                            i.putExtra("activityCost", costValue);
-                            i.putExtra("activityComments", commentsText);
-                            startActivity(i);
-                            finish();
-                        }
+                            Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
+                            cost.requestFocus();
 
+                        }
                     } else {
                         Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
-                        cost.requestFocus();
-
+                        laborers.requestFocus();
                     }
                 } else {
-                    Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
-                    laborers.requestFocus();
+                    Toast.makeText(this, R.string.enterValidTextText, Toast.LENGTH_SHORT).show();
+                    units.requestFocus();
                 }
             } else {
-                Toast.makeText(this, R.string.enterValidTextText, Toast.LENGTH_SHORT).show();
-                units.requestFocus();
+                Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
+                value.requestFocus();
             }
         } else {
-            Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
-            value.requestFocus();
+            Toast.makeText(this, R.string.chooseValidActivityText, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -455,7 +515,7 @@ public class enterActivity extends AppCompatActivity {
 
     void doSave(boolean copy) {
         Toast.makeText(this, "Activity saved successfully", Toast.LENGTH_SHORT).show();
-        Intent i = new Intent(this, chooser.class);
+        Intent i = new Intent(this, chooseFieldPlot.class);
         i.putExtra("userId", userId);
         i.putExtra("userRole", userRole);
         i.putExtra("task", task);
