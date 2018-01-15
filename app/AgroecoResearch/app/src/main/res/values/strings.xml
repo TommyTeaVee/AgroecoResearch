@@ -137,4 +137,11 @@
     <string name="titleEnterActivity">Enter activity</string>
     <string name="chooseActivityButtonTitle">Choose activity</string>
     <string name="chooseValidActivityText">Please choose an activity</string>
+    <string name="ingredientsTitle">Ingredient</string>
+    <string name="unitsTitle">Units</string>
+    <string name="quantitiesTitle">Qty</string>
+    <string name="addIngredientText">Add ingredient</string>
+    <string name="ingredientQuantityOutOfRange">Quantity of x is out of range</string>
+    <string name="deleteIngredientString">Do you want to delete ingredient x?</string>
+    <string name="deleteIngredientTitle">Delete ingredient</string>
 </resources>

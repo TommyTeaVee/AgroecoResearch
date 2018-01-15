@@ -5,18 +5,29 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ScrollView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.TimeZone;
 
 /**
@@ -50,7 +62,6 @@ public class enterTreatmentInput extends AppCompatActivity {
     public int exitAction;
 
     String materialText;
-    float quantityNumber;
     String methodText;
     String costNumber;
     String commentsText;
@@ -59,6 +70,9 @@ public class enterTreatmentInput extends AppCompatActivity {
     public preferenceManager prefs;
     public ArrayList<String> previousMethods;
     public ArrayList<String> previousMaterials;
+
+    public ArrayList<oIngredientHelper> ingredients;
+    boolean bDeleting = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,12 +93,13 @@ public class enterTreatmentInput extends AppCompatActivity {
         TextView tt = (TextView)findViewById(R.id.treatmentInputTitle);
         tt.setText(inputTitle);
 
-        //EditText quantity = (EditText) findViewById(R.id.treatmentQuantity);
+        prefs = new preferenceManager(this);
+        previousMethods = prefs.getArrayListPreference("previousMethods");
+        previousMaterials = prefs.getArrayListPreference("previousMaterials");
+
         EditText cost = (EditText) findViewById(R.id.treatmentCost);
-        EditText material = (EditText) findViewById(R.id.treatmentMaterial);
         EditText method = (EditText) findViewById(R.id.treatmentPreparationMethod);
         EditText comments = (EditText) findViewById(R.id.inputComments);
-        EditText units = (EditText) findViewById(R.id.treatmentUnits);
 
         if(update.equals("treatment")){
             inputLogId = getIntent().getExtras().getInt("inputLogId");
@@ -96,14 +111,14 @@ public class enterTreatmentInput extends AppCompatActivity {
             db.setText(getIntent().getExtras().getString("treatmentInputDate"));
             treatmentInputDate = stringToDate(getIntent().getExtras().getString("treatmentInputDate"));
 
-            //quantity.setText(Float.toString(getIntent().getExtras().getFloat("treatmentInputQuantity")));
             cost.setText(getIntent().getExtras().getString("treatmentInputCost"));
-            material.setText(getIntent().getExtras().getString("treatmentInputMaterial"));
+            String materials = getIntent().getExtras().getString("treatmentInputMaterial");
             method.setText(getIntent().getExtras().getString("treatmentInputMethod"));
             comments.setText(getIntent().getExtras().getString("treatmentInputComments"));
-            units.setText(getIntent().getExtras().getString("treatmentInputUnits"));
+            initializeIngredientsTable(materials);
         } else {
             treatmentInputDate = new Date();
+            initializeIngredientsTable("");
         }
 
         comments.addTextChangedListener(new TextWatcher() {
@@ -123,60 +138,7 @@ public class enterTreatmentInput extends AppCompatActivity {
             }
         });
 
-        /*
-        quantity.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                changes=true;
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-        */
-
-        units.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                changes=true;
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-
         cost.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                changes=true;
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
-
-        material.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -219,10 +181,6 @@ public class enterTreatmentInput extends AppCompatActivity {
             }
         });
 
-        prefs = new preferenceManager(this);
-        previousMethods = prefs.getArrayListPreference("previousMethods");
-        previousMaterials = prefs.getArrayListPreference("previousMaterials");
-
         if(previousMethods.size()>0) {
             AutoCompleteAdapter adapter = new AutoCompleteAdapter(this, android.R.layout.simple_dropdown_item_1line, android.R.id.text1, previousMethods);
             AutoCompleteTextView a = (AutoCompleteTextView) findViewById(R.id.treatmentPreparationMethod);
@@ -230,15 +188,6 @@ public class enterTreatmentInput extends AppCompatActivity {
             a.setImeOptions(EditorInfo.IME_ACTION_NEXT);
         } else {
             AutoCompleteTextView a = (AutoCompleteTextView) findViewById(R.id.treatmentPreparationMethod);
-            a.setImeOptions(EditorInfo.IME_ACTION_NEXT);
-        }
-        if(previousMaterials.size()>0) {
-            AutoCompleteAdapter adapter = new AutoCompleteAdapter(this, android.R.layout.simple_dropdown_item_1line, android.R.id.text1, previousMaterials);
-            AutoCompleteTextView a = (AutoCompleteTextView) findViewById(R.id.treatmentMaterial);
-            a.setAdapter(adapter);
-            a.setImeOptions(EditorInfo.IME_ACTION_NEXT);
-        } else {
-            AutoCompleteTextView a = (AutoCompleteTextView) findViewById(R.id.treatmentMaterial);
             a.setImeOptions(EditorInfo.IME_ACTION_NEXT);
         }
     }
@@ -352,6 +301,324 @@ public class enterTreatmentInput extends AppCompatActivity {
         finish();
     }
 
+    public void initializeIngredientsTable(String ini) {
+        oIngredientHelper ih;
+        ingredients = new ArrayList<>();
+        if(ini.isEmpty()) {
+            ih = new oIngredientHelper();
+            ih.ingredient="";
+            ih.quantity=0.0f;
+            ih.units="kg";
+            ingredients.add(ih);
+        } else {
+            String[] sampleItems = ini.split("\\*");
+            for(int i=0;i<sampleItems.length;i+=3){
+                ih = new oIngredientHelper();
+                ih.ingredient = sampleItems[i];
+                ih.quantity = Float.valueOf(sampleItems[i+1]);
+                ih.units = sampleItems[i+2];
+                ingredients.add(ih);
+            }
+        }
+
+        fillIngredientsTable();
+
+    }
+
+    public void fillIngredientsTable(){
+        int n = 0;
+        TableLayout ingredientsTable = (TableLayout) findViewById(R.id.ingredientsTable);
+        ingredientsTable.removeAllViews();
+        Iterator<oIngredientHelper> iterator = ingredients.iterator();
+        while (iterator.hasNext()) {
+            oIngredientHelper ih = iterator.next();
+
+            final TableRow trow = new TableRow(enterTreatmentInput.this);
+            TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f);
+            lp.setMargins(10, 10, 0, 10);
+            if (n % 2 == 0) {
+                trow.setBackgroundColor(ContextCompat.getColor(this, R.color.lightGray));
+            } else {
+                trow.setBackgroundColor(ContextCompat.getColor(this, R.color.colorWhite));
+            }
+
+            CheckBox cb = new CheckBox(enterTreatmentInput.this);
+            cb.setButtonDrawable(R.drawable.delete_checkbox);
+            cb.setId(n);
+            cb.setPadding(10, 10, 10, 10);
+            cb.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    findViewById(R.id.childScrollView).getParent().requestDisallowInterceptTouchEvent(true);
+                    return false;
+                }
+            });
+
+            cb.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(final View view) {
+                    view.requestFocus();
+                    bDeleting=true;
+                    view.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            deleteIngredient(view);
+                        }
+                    },200);
+                }
+            });
+            trow.addView(cb, lp);
+
+            AutoCompleteTextView in = new AutoCompleteTextView(enterTreatmentInput.this);
+            if(previousMaterials.size()>0) {
+                AutoCompleteAdapter adapter = new AutoCompleteAdapter(this, android.R.layout.simple_dropdown_item_1line, android.R.id.text1, previousMaterials);
+                in.setAdapter(adapter);
+            }
+            in.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f);
+            in.setText(ih.ingredient);
+            in.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            in.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+            in.setRawInputType(InputType.TYPE_CLASS_TEXT);
+            in.setMaxLines(1);
+            in.setPadding(0,10,0,10);
+            in.setId(n);
+            in.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean b) {
+                    if (!b) {
+                        updateIngredientName(view);
+                    }
+                }
+            });
+            in.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    findViewById(R.id.childScrollView).getParent().requestDisallowInterceptTouchEvent(true);
+                    return false;
+                }
+            });
+            in.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    changes = true;
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    for(int i = editable.length(); i > 0; i--) {
+
+                        if(editable.subSequence(i-1, i).toString().equals("\n"))
+                            editable.replace(i-1, i, "");
+                    }
+                }
+            });
+            trow.addView(in, lp);
+
+            EditText iq = new EditText(enterTreatmentInput.this);
+            iq.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f);
+            iq.setText(String.valueOf(ih.quantity));
+            iq.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            iq.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+            iq.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+            iq.setPadding(0,10,0,10);
+            iq.setId(n);
+            iq.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean b) {
+                    if (!b) {
+                        updateIngredientQuantity(view);
+                    }
+                }
+            });
+            iq.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    findViewById(R.id.childScrollView).getParent().requestDisallowInterceptTouchEvent(true);
+                    return false;
+                }
+            });
+            iq.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    changes = true;
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+
+                }
+            });
+            trow.addView(iq, lp);
+
+            EditText iu = new EditText(enterTreatmentInput.this);
+            iu.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f);
+            iu.setText(String.valueOf(ih.units));
+            iu.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            iu.setImeOptions(EditorInfo.IME_ACTION_DONE);
+            iu.setRawInputType(InputType.TYPE_CLASS_TEXT);
+            iu.setMaxLines(1);
+            iu.setPadding(0,10,0,10);
+            iu.setId(n);
+            iu.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean b) {
+                    if (!b) {
+                        updateIngredientUnits(view);
+                    }
+                }
+            });
+            iu.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    findViewById(R.id.childScrollView).getParent().requestDisallowInterceptTouchEvent(true);
+                    return false;
+                }
+            });
+            iu.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    changes = true;
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    for(int i = editable.length(); i > 0; i--) {
+
+                        if(editable.subSequence(i-1, i).toString().equals("\n"))
+                            editable.replace(i-1, i, "");
+                    }
+
+                }
+            });
+            trow.addView(iu, lp);
+
+            trow.setGravity(Gravity.CENTER_VERTICAL);
+            ingredientsTable.addView(trow, lp);
+            n++;
+        }
+    }
+
+    public void updateIngredientName(View view) {
+        if(!bDeleting) {
+            EditText e = (EditText) view;
+            int id = e.getId();
+            String value = String.valueOf(e.getText());
+
+            if (!value.isEmpty()) {
+                oIngredientHelper ih = ingredients.get(id);
+                ih.ingredient = value;
+            }
+        } else {
+            bDeleting=false;
+        }
+    }
+
+    public void updateIngredientQuantity(View view) {
+        if(!bDeleting) {
+            EditText e = (EditText) view;
+            int id = e.getId();
+            String value = String.valueOf(e.getText());
+
+            if (!value.isEmpty()) {
+                oIngredientHelper ih = ingredients.get(id);
+                if (!isNumeric(value) || Float.parseFloat(value) < 0.0f) {
+                    String msg = this.getResources().getString(R.string.ingredientQuantityOutOfRange);
+                    msg = msg.replaceAll("x", String.valueOf(ih.ingredient));
+                    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+                } else {
+                    ih.quantity = Float.valueOf(value);
+                }
+            }
+        } else {
+            bDeleting=false;
+        }
+    }
+
+    public void updateIngredientUnits(View view) {
+        if(!bDeleting) {
+            EditText e = (EditText) view;
+            int id = e.getId();
+            String value = String.valueOf(e.getText());
+
+            if (!value.isEmpty()) {
+                oIngredientHelper ih = ingredients.get(id);
+                ih.units = value;
+            }
+        } else {
+            bDeleting=false;
+        }
+    }
+
+    public void deleteIngredient(View v){
+
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+        final CheckBox c = (CheckBox)v;
+        c.setChecked(true);
+        final int deleteId = c.getId();
+        oIngredientHelper ih = ingredients.get(deleteId);
+
+        String msg = this.getResources().getString(R.string.deleteIngredientString);
+        msg = msg.replaceAll("x", String.valueOf(ih.ingredient));
+
+        AlertDialog.Builder logoutDialog = new AlertDialog.Builder(this);
+        logoutDialog.setTitle(R.string.deleteIngredientTitle);
+        logoutDialog.setMessage(msg);
+        logoutDialog.setNegativeButton(R.string.cancelButtonText, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                c.setChecked(false);
+                bDeleting=false;
+            }
+        });
+        logoutDialog.setPositiveButton(R.string.okButtonText, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                c.setChecked(false);
+                changes=true;
+                doDelete(deleteId);
+            }
+        });
+        logoutDialog.create();
+        logoutDialog.show();
+    }
+
+    public void doDelete(int id){
+        ingredients.remove(id);
+        fillIngredientsTable();
+    }
+
+    public void addIngredient( View v) {
+        oIngredientHelper ih = new oIngredientHelper();
+        ih.ingredient="";
+        ih.quantity=0.0f;
+        ih.units="kg";
+        ingredients.add(ih);
+
+        changes=true;
+
+        fillIngredientsTable();
+
+        final ScrollView sv = (ScrollView)findViewById(R.id.childScrollView);
+        sv.postDelayed(new Runnable() { @Override public void run() { sv.fullScroll(View.FOCUS_DOWN); } }, 500);
+    }
+
     public Date stringToDate(String d){
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -412,6 +679,7 @@ public class enterTreatmentInput extends AppCompatActivity {
     }
 
     public void registerTreatment(View v) {
+        /*
         EditText quantityUnits = (EditText) findViewById(R.id.treatmentUnits);
         String quantityUnitsValue = String.valueOf(quantityUnits.getText());
         if (!quantityUnitsValue.isEmpty()) {
@@ -484,6 +752,7 @@ public class enterTreatmentInput extends AppCompatActivity {
             Toast.makeText(this, R.string.enterValidTextText, Toast.LENGTH_SHORT).show();
             quantityUnits.requestFocus();
         }
+        */
     }
 
     public void requestCopyToReplications() {

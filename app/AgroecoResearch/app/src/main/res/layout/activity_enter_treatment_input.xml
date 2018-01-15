@@ -48,37 +48,77 @@
             android:background="@drawable/button_background"
             android:textColor="@color/colorWhite" />
 
-        <TextView
+        <TableLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/enterTreatmentMaterialText"
-            android:textColor="@color/colorPrimary"
-            android:id="@+id/enterTreatmentMaterialText"
+            android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:textSize="20dp" />
+            android:shrinkColumns="0"
+            android:id="@+id/ingredients">
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/emptyString"
+                    android:id="@+id/header1"
+                    android:background="@color/colorPrimary"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="16dp"
+                    android:layout_weight="1"
+                    android:paddingLeft="3dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ingredientsTitle"
+                    android:id="@+id/header2"
+                    android:background="@color/colorPrimary"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="16dp"
+                    android:layout_weight="1"
+                    android:paddingLeft="16dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/quantitiesTitle"
+                    android:id="@+id/header3"
+                    android:background="@color/colorPrimary"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="16dp"
+                    android:layout_weight="1"
+                    android:paddingLeft="3dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/unitsTitle"
+                    android:id="@+id/header4"
+                    android:background="@color/colorPrimary"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="16dp"
+                    android:layout_weight="1"
+                    android:paddingLeft="3dp"/>
+            </TableRow>
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:id="@+id/childScrollView">
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:shrinkColumns="0"
+                    android:stretchColumns="1,2,3"
+                    android:id="@+id/ingredientsTable">
+                </TableLayout>
+            </ScrollView>
+        </TableLayout>
 
-        <AutoCompleteTextView
+        <Button
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/treatmentMaterial"
-            android:layout_marginTop="20dp"
-            android:singleLine="true" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/enterTreatmentQuantityText"
-            android:textColor="@color/colorPrimary"
-            android:id="@+id/enterTreatmentQuantityText"
-            android:layout_marginTop="20dp"
-            android:textSize="20dp" />
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/treatmentUnits"
-            android:layout_marginTop="20dp"
-            android:singleLine="true" />
+            android:text="@string/addIngredientText"
+            android:id="@+id/addIngredient"
+            android:textSize="20dp"
+            android:onClick="addIngredient"
+            android:background="@drawable/button_background"
+            android:textColor="@color/colorWhite" />
 
         <TextView
             android:layout_width="match_parent"
