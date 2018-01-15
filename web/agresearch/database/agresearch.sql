@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Servidor: 192.168.86.55
--- Tiempo de generación: 12-01-2018 a las 15:23:32
+-- Tiempo de generación: 15-01-2018 a las 11:52:37
 -- Versión del servidor: 5.5.57-0+deb7u1-log
 -- Versión de PHP: 5.3.29-1~dotdeb.0
 
@@ -201,10 +201,10 @@ CREATE TABLE IF NOT EXISTS `health_report_item` (
 --
 
 INSERT INTO `health_report_item` (`health_report_item_id`, `item`, `item_categories`) VALUES
-(1, 'Disease', 'Don\\''t know,Bacterial,Fungal,Viral,Other ...'),
-(2, 'Pest', 'Don\\''t know,Ants/Termites,Beetles,Birds,Locusts/Grasshoppers,Mites,Moths,Rats,Worms/Larvae,Other ...'),
+(1, 'Disease', 'Don\\''t know,Brown streak,Lethal necrosis,Mosaic,Other ...'),
+(2, 'Pest', 'Don\\''t know,Ants/Termites,Beetles,Birds,Fungi,Locusts/Grasshoppers,Mites,Moths,Rats,Worms/Larvae,Other ...'),
 (3, 'Discoloration', 'Brown,Dark green,Light green,Purple,Yellow,Other ...'),
-(4, 'Water stress', 'Dry leaves,Folded leaves,Rippled leave margins,Rolled leaves,Other ...');
+(4, 'Water stress', 'Dry leaves,Rolled leaves,Other ...');
 
 -- --------------------------------------------------------
 
@@ -224,25 +224,20 @@ CREATE TABLE IF NOT EXISTS `input_log` (
   `input_origin` varchar(200) NOT NULL,
   `input_crop_variety` varchar(100) NOT NULL,
   `input_quantity` int(10) unsigned NOT NULL,
-  `input_units` varchar(100) NOT NULL,
+  `input_units` text NOT NULL,
   `input_cost` varchar(100) NOT NULL,
   `input_treatment_material` text NOT NULL,
   `input_treatment_preparation_method` text NOT NULL,
   `input_comments` text NOT NULL,
   `input_picture` varchar(200) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=13 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14 ;
 
 --
 -- Volcado de datos para la tabla `input_log`
 --
 
 INSERT INTO `input_log` (`input_log_id`, `input_log_date`, `field_id`, `plots`, `user_id`, `crop_id`, `treatment_id`, `input_age`, `input_origin`, `input_crop_variety`, `input_quantity`, `input_units`, `input_cost`, `input_treatment_material`, `input_treatment_preparation_method`, `input_comments`, `input_picture`) VALUES
-(7, '2017-11-30', 24, '0,1,2,3,4,5,6,7', 9, 0, 17, '', '', '', 1, 'kg', '', 'on farm', 'cooking 15 times, sieving and dilluting water 1:5', '', ''),
-(8, '2017-11-30', 23, '5,4,8,12,0,1,13,9', 9, 0, 17, '', '', '', 1, 'kg', '', 'on farm', 'cooking 15 times, sieving and dilluting water 1:5', ' (copied)', ''),
-(9, '2017-11-30', 25, '14,15,6,7,11,10,2,3', 9, 0, 17, '', '', '', 1, 'kg', '', 'on farm', 'cooking 15 times, sieving and dilluting water 1:5', ' (copied)', ''),
-(10, '2017-11-30', 24, '0,1,2,3,4,5,6,7', 9, 0, 17, '', '', '', 1, 'kg', '', 'on farm', 'cooking 10 times', '', ''),
-(11, '2017-11-30', 23, '5,4,8,12,0,1,13,9', 9, 0, 17, '', '', '', 1, 'kg', '', 'on farm', 'cooking 10 times', ' (copied)', ''),
-(12, '2017-11-30', 25, '14,15,6,7,11,10,2,3', 9, 0, 17, '', '', '', 1, 'kg', '', 'on farm', 'cooking 10 times', ' (copied)', '');
+(13, '2018-01-15', 23, '0,1,4,5,8,9,12,13', 1, 0, 18, '', '', '', 0, '1,2,3', '', 'a,b,c', 'ghgy', '', '');
 
 -- --------------------------------------------------------
 
@@ -268,14 +263,15 @@ CREATE TABLE IF NOT EXISTS `log` (
   `log_cost` varchar(100) NOT NULL,
   `log_comments` text NOT NULL,
   `log_picture` varchar(200) NOT NULL
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
 
 --
 -- Volcado de datos para la tabla `log`
 --
 
 INSERT INTO `log` (`log_id`, `field_id`, `plots`, `user_id`, `crop_id`, `sample_number`, `treatment_id`, `measurement_id`, `activity_id`, `log_date`, `log_value_number`, `log_value_units`, `log_value_text`, `log_number_of_laborers`, `log_cost`, `log_comments`, `log_picture`) VALUES
-(1, 24, '1', 1, 0, '0', 0, 76, 0, '2018-01-11', 0, '', '1* # # # *2* #Fungal#Mites#Rolled leaves*3* *4*Light green# # # ', '', '', '', '');
+(1, 24, '1', 1, 0, '0', 0, 76, 0, '2018-01-11', 0, '', '1* # # # *2* #Fungal#Mites#Rolled leaves*3* *4*Light green# # # ', '', '', '', ''),
+(7, 23, '1', 1, 0, '0', 0, 77, 0, '2018-01-15', 0, '', '1* # #a,b,c# ', '', '', '', '');
 
 -- --------------------------------------------------------
 
@@ -307,17 +303,17 @@ INSERT INTO `measurement` (`measurement_id`, `measurement_name`, `measurement_ca
 (8, 'Number of planted seeds', 'Maize', 'Development', 1, 0, 1000, 'per plot', '', 0, 0, 0, 'Record how many seeds have been sown per plot.'),
 (9, 'Number of germinated plants', 'Maize', 'Development', 1, 0, 1000, 'per plot', '', 0, 0, 0, 'Count the number of plants which have germinated per plot.'),
 (12, 'Plant size', 'Maize', 'Development', 1, 0, 500, 'cm', '', 0, 1, 1, 'Method 1: measure the height of each plant in a plot from the stem basis/soil surface to the tip of the longest leaf.**Method 2: measure the height of each plant in a plot from the stem basis/soil surface to the highest point of the arch of the uppermost leaf whose tip is pointing down.'),
-(24, 'Weight of harvested tubers', 'Cassava', 'Productivity', 1, 0, 1000, 'kg', '', 0, 0, 1, 'Weigh the dry matter of all remaining plant residuals which can be collected on one plot after harvest and record the mass you get per plot and crop.'),
+(24, 'Weight of harvested tubers', 'Cassava', 'Productivity', 1, 0, 1000, 'kg per plot', '', 0, 0, 1, 'Weigh the dry matter of all remaining plant residuals which can be collected on one plot after harvest and record the mass you get per plot and crop.'),
 (39, 'Number of survived plants', 'Cassava', 'Productivity', 1, 0, 1000, 'per plot', '', 0, 0, 0, 'Count the number of plants which have survived on each plot shortly before harvesting the crops on that plot.'),
 (48, 'Plant size', 'Cassava', 'Development', 1, 0, 500, 'cm', '', 0, 1, 1, 'Plant size is measured by adding the stem heigth plus the height of the longest branch.'),
 (54, 'Number of sprouted plants', 'Cassava', 'Development', 1, 0, 1000, 'per plot', '', 0, 0, 0, 'Count the number of plants which have sprouted per plot.'),
 (55, 'Number of planted sticks', 'Cassava', 'Development', 1, 0, 1000, 'per plot', '', 0, 0, 0, 'Record how many sticks have been planted per plot.'),
 (56, 'Number of survived plants', 'Maize', 'Productivity', 1, 0, 1000, 'per plot', '', 0, 0, 0, 'Count the number of plants which have survived on each plot shortly before harvesting the crops on that plot.'),
-(58, 'Weight of harvested kernels', 'Maize', 'Productivity', 1, 0, 1000, 'kg', '', 0, 0, 1, 'Weigh the dry matter of all remaining plant residuals which can be collected on one plot after harvest and record the mass you get per plot and crop.'),
+(58, 'Weight of harvested kernels', 'Maize', 'Productivity', 1, 0, 1000, 'kg per plot', '', 0, 0, 1, 'Weigh the dry matter of all remaining plant residuals which can be collected on one plot after harvest and record the mass you get per plot and crop.'),
 (59, 'Number of planted seeds', 'Pulses', 'Development', 1, 0, 1000, 'per plot', '', 0, 0, 0, 'Record how many seeds have been sown per plot.'),
 (60, 'Number of germinated plants', 'Pulses', 'Development', 1, 0, 1000, 'per plot', '', 0, 0, 0, 'Count the number of plants which have germinated per plot.'),
 (61, 'Number of survived plants', 'Pulses', 'Productivity', 1, 0, 1000, 'per plot', '', 0, 0, 0, 'Count the number of plants which have survived on each plot shortly before harvesting the crops on that plot.'),
-(62, 'Weight of harvested grains', 'Pulses', 'Productivity', 1, 0, 1000, 'kg', '', 0, 0, 0, 'Weigh the dry matter of all remaining plant residuals which can be collected on one plot after harvest and record the mass you get per plot and crop.'),
+(62, 'Weight of harvested grains', 'Pulses', 'Productivity', 1, 0, 1000, 'kg per plot', '', 0, 0, 0, 'Weigh the dry matter of all remaining plant residuals which can be collected on one plot after harvest and record the mass you get per plot and crop.'),
 (76, 'Health report', 'Maize', 'Health', 2, 0, 0, '', '', 0, 1, 1, '1. Control whether the plants show any stress symptoms. Record for each plant in one plot whether and if so, which stress symptoms occur. There are different categories of stress symptoms: (1) folded, (2) rolled, (3) dry (4) yellowish, (5) light green, (6) dark green or (7) purple leaves.**2. Check each plant for pest signs and categorize the extent of the pest infestion with the following categories: (1) no or little pest signs, (2) clear pest damage but the development/growth is not limited (apex is intact), (3) the development/growth is limited due to heavy pest damage (apex is not intact), (4) the heavy pest infestion kills/killed the plant. **Determine the pest (category) or disease (viral/bacterial) by which the plant is infested and record them for each plant in one plot. If possible specify the pest species or the disease type.'),
 (77, 'Health report', 'Cassava', 'Health', 2, 0, 0, '', '', 0, 1, 1, '1. Control whether the plants show any stress symptoms. Record for each plant in one plot whether and if so, which stress symptoms occur. There are different categories of stress symptoms: (1) folded, (2) rolled, (3) dry (4) yellowish, (5) light green, (6) dark green or (7) purple leaves.**2. Check each plant for pest signs and categorize the extent of the pest infestion with the following categories: (1) no or little pest signs, (2) clear pest damage but the development/growth is not limited (apex is intact), (3) the development/growth is limited due to heavy pest damage (apex is not intact), (4) the heavy pest infestion kills/killed the plant. **Determine the pest (category) or disease (viral/bacterial) by which the plant is infested and record them for each plant in one plot. If possible specify the pest species or the disease type.'),
 (78, 'Number of flowering plants', 'Cassava', 'Development', 1, 0, 1000, 'plants', '', 0, 0, 1, 'Determine the number of plants flowering or tasseling in one plot.'),
@@ -669,12 +665,12 @@ MODIFY `health_report_item_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INC
 -- AUTO_INCREMENT de la tabla `input_log`
 --
 ALTER TABLE `input_log`
-MODIFY `input_log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=13;
+MODIFY `input_log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=14;
 --
 -- AUTO_INCREMENT de la tabla `log`
 --
 ALTER TABLE `log`
-MODIFY `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=7;
+MODIFY `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
 --
 -- AUTO_INCREMENT de la tabla `measurement`
 --

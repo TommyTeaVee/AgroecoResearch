@@ -256,11 +256,11 @@ public class enterHealthReport extends AppCompatActivity {
                     chosenValues.add(previousValues[n]);
                 } else {
                     sb.setVisibility(View.INVISIBLE);
-                    chosenValues.add("");
+                    chosenValues.add(" ");
                 }
             } else {
                 sb.setVisibility(View.INVISIBLE);
-                chosenValues.add("");
+                chosenValues.add(" ");
             }
             buttons.add(sb);
             trow.addView(sb, lp);

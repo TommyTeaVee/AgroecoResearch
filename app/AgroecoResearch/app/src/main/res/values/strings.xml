@@ -81,8 +81,8 @@
     <string name="enterCropCostText">Cost (local currency)</string>
     <string name="enterCropQuantityText">Quantity</string>
     <string name="enterCropInputTitle">Crop input</string>
-    <string name="enterTreatmentMaterialText">Material used</string>
-    <string name="enterTreatmentQuantityText">Material quantity</string>
+    <string name="enterTreatmentMaterialText">Ingredients (comma separated)</string>
+    <string name="enterTreatmentQuantityText">Quantities and units per plot\n(comma separated)</string>
     <string name="enterTreatmentPreparationMethodText">Preparation method</string>
     <string name="enterTreatmentCostText">Cost (local currency)</string>
     <string name="enterTreatmentInputTitle">Treatment input</string>

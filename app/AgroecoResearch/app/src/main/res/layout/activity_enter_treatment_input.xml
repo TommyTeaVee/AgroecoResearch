@@ -76,25 +76,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/treatmentQuantity"
-            android:inputType="numberDecimal"
-            android:layout_marginTop="20dp"
-            android:singleLine="true" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/enterInputUnitsText"
-            android:textColor="@color/colorPrimary"
-            android:id="@+id/enterTreatmentUnitsText"
-            android:layout_marginTop="20dp"
-            android:textSize="20dp" />
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:id="@+id/treatmentUnits"
-            android:text="@string/defaultUnits"
             android:layout_marginTop="20dp"
             android:singleLine="true" />
 
