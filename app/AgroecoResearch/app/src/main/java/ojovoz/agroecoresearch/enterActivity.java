@@ -71,6 +71,13 @@ public class enterActivity extends AppCompatActivity {
         userId = getIntent().getExtras().getInt("userId");
         userRole = getIntent().getExtras().getInt("userRole");
         task = getIntent().getExtras().getString("task");
+        if(task==null){
+            final Context context = this;
+            Intent i;
+            i = new Intent(context, loginScreen.class);
+            startActivity(i);
+            finish();
+        }
         fieldId = getIntent().getExtras().getInt("field");
         plots = getIntent().getExtras().getString("plots");
         activityId = getIntent().getExtras().getInt("activity");

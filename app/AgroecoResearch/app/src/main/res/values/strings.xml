@@ -144,4 +144,5 @@
     <string name="ingredientQuantityOutOfRange">Quantity of x is out of range</string>
     <string name="deleteIngredientString">Do you want to delete ingredient x?</string>
     <string name="deleteIngredientTitle">Delete ingredient</string>
+    <string name="emptyIngredientMessage">Ingredient x data is invalid</string>
 </resources>

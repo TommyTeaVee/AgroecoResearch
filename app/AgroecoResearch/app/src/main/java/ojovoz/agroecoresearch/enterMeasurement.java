@@ -98,6 +98,13 @@ public class enterMeasurement extends AppCompatActivity {
         task = getIntent().getExtras().getString("task");
         fieldId = getIntent().getExtras().getInt("field");
         plots = getIntent().getExtras().getString("plots");
+        if(plots==null){
+            final Context context = this;
+            Intent i;
+            i = new Intent(context, loginScreen.class);
+            startActivity(i);
+            finish();
+        }
         measurementId = getIntent().getExtras().getInt("measurement");
         hasSamples = getIntent().getExtras().getBoolean("hasSamples");
         measurementTitle = getIntent().getExtras().getString("title");

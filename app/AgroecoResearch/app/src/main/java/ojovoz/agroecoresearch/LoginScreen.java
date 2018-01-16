@@ -124,9 +124,9 @@ public class loginScreen extends AppCompatActivity implements httpConnection.Asy
             //begin
 
 
-            userId=1;
-            userRole=2;
-            launchMainMenu();
+            //userId=1;
+            //userRole=2;
+            //launchMainMenu();
 
 
             //end

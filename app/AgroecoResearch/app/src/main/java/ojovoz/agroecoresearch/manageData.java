@@ -59,6 +59,14 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
         userRole = getIntent().getExtras().getInt("userRole");
         update = getIntent().getExtras().getString("update");
 
+        if(update==null){
+            final Context context = this;
+            Intent i;
+            i = new Intent(context, loginScreen.class);
+            startActivity(i);
+            finish();
+        }
+
         if(update.equals("activity")){
             int logId = getIntent().getExtras().getInt("logId");
             String aD = getIntent().getExtras().getString("activityDate");

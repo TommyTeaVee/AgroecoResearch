@@ -73,6 +73,7 @@ public class enterTreatmentInput extends AppCompatActivity {
 
     public ArrayList<oIngredientHelper> ingredients;
     boolean bDeleting = false;
+    String ingredientsString="";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -82,6 +83,13 @@ public class enterTreatmentInput extends AppCompatActivity {
         userId = getIntent().getExtras().getInt("userId");
         userRole = getIntent().getExtras().getInt("userRole");
         task = getIntent().getExtras().getString("task");
+        if(task==null){
+            final Context context = this;
+            Intent i;
+            i = new Intent(context, loginScreen.class);
+            startActivity(i);
+            finish();
+        }
         subTask = getIntent().getExtras().getString("subTask");
         fieldId = getIntent().getExtras().getInt("field");
         plots = getIntent().getExtras().getString("plots");
@@ -678,15 +686,45 @@ public class enterTreatmentInput extends AppCompatActivity {
         return str.matches("-?\\d+(\\.\\d+)?");
     }
 
-    public void registerTreatment(View v) {
-        /*
-        EditText quantityUnits = (EditText) findViewById(R.id.treatmentUnits);
-        String quantityUnitsValue = String.valueOf(quantityUnits.getText());
-        if (!quantityUnitsValue.isEmpty()) {
+    public boolean VerifyIngredients(){
+        boolean ret=true;
+        ingredientsString="";
+        int n=1;
+        Iterator<oIngredientHelper> iterator = ingredients.iterator();
+        while (iterator.hasNext()) {
+            oIngredientHelper ih = iterator.next();
+            if(ih.ingredient.isEmpty() || ih.units.isEmpty() || Float.valueOf(ih.quantity)<0){
+                String msg = this.getResources().getString(R.string.emptyIngredientMessage);
+                msg = msg.replaceAll("x", String.valueOf(n));
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+                ret=false;
+                break;
+            } else {
+                String ingredient = ih.ingredient.replaceAll(";", " ");
+                ingredient = ingredient.replaceAll("\\|", " ");
+                ingredient = ingredient.replaceAll("\\*", " ");
+                prefs.appendIfNotExists("previousMaterials", ingredient);
+                String units = ih.units.replaceAll(";", " ");
+                units = units.replaceAll("\\|", " ");
+                units = units.replaceAll("\\*", " ");
+                String quantity = String.valueOf(ih.quantity);
+                if(ingredientsString.isEmpty()){
+                    ingredientsString=ingredient+"*"+quantity+"*"+units;
+                } else {
+                    ingredientsString=ingredientsString+"*"+ingredient+"*"+quantity+"*"+units;
+                }
+            }
+            n++;
+        }
+        return ret;
+    }
 
-            unitsText = quantityUnitsValue.replaceAll(";", " ");
-            unitsText = unitsText.replaceAll("\\|", " ");
-            unitsText = unitsText.replaceAll("\\*", " ");
+    public void registerTreatment(View v) {
+
+        EditText c = (EditText)findViewById(R.id.inputComments);
+        c.requestFocus();
+
+        if(VerifyIngredients()) {
 
             EditText cost = (EditText) findViewById(R.id.treatmentCost);
             String costValue = String.valueOf(cost.getText());
@@ -694,65 +732,49 @@ public class enterTreatmentInput extends AppCompatActivity {
 
                 costNumber = costValue;
 
-                EditText material = (EditText) findViewById(R.id.treatmentMaterial);
-                materialText = String.valueOf(material.getText());
-                if (!materialText.isEmpty()) {
-                    materialText = materialText.replaceAll(";", " ");
-                    materialText = materialText.replaceAll("\\|", " ");
-                    materialText = materialText.replaceAll("\\*", " ");
-
-                    EditText method = (EditText) findViewById(R.id.treatmentPreparationMethod);
-                    methodText = String.valueOf(method.getText());
-                    if (!methodText.isEmpty()) {
-                        methodText = methodText.replaceAll(";", " ");
-                        methodText = methodText.replaceAll("\\|", " ");
-                        methodText = methodText.replaceAll("\\*", " ");
-                    }
-
-                    EditText comments = (EditText) findViewById(R.id.inputComments);
-                    commentsText = String.valueOf(comments.getText());
-                    if (!commentsText.isEmpty()) {
-                        commentsText = commentsText.replaceAll(";", " ");
-                        commentsText = commentsText.replaceAll("\\|", " ");
-                        commentsText = commentsText.replaceAll("\\*", " ");
-                    }
-
-                    if (update.equals("")) {
-                        requestCopyToReplications();
-                    } else {
-                        prefs.appendIfNotExists("previousMethods", methodText);
-                        prefs.appendIfNotExists("previousMaterials", materialText);
-                        Toast.makeText(this, "Input edited successfully", Toast.LENGTH_SHORT).show();
-                        Intent i = new Intent(this, manageData.class);
-                        i.putExtra("userId", userId);
-                        i.putExtra("userRole", userRole);
-                        i.putExtra("task", task);
-                        i.putExtra("inputLogId", inputLogId);
-                        i.putExtra("update", "treatmentInput");
-                        i.putExtra("treatment", treatmentId);
-                        i.putExtra("treatmentInputDate", dateToString(treatmentInputDate));
-                        i.putExtra("treatmentInputMaterial", materialText);
-                        i.putExtra("treatmentInputQuantity", 0.0f);
-                        i.putExtra("treatmentInputUnits", unitsText);
-                        i.putExtra("treatmentInputMethod", methodText);
-                        i.putExtra("treatmentInputCost", costNumber);
-                        i.putExtra("treatmentInputComments", commentsText);
-                        startActivity(i);
-                        finish();
-                    }
-                } else {
-                    Toast.makeText(this, R.string.enterValidTextText, Toast.LENGTH_SHORT).show();
-                    material.requestFocus();
+                EditText method = (EditText) findViewById(R.id.treatmentPreparationMethod);
+                methodText = String.valueOf(method.getText());
+                if (!methodText.isEmpty()) {
+                    methodText = methodText.replaceAll(";", " ");
+                    methodText = methodText.replaceAll("\\|", " ");
+                    methodText = methodText.replaceAll("\\*", " ");
                 }
+
+                commentsText = String.valueOf(c.getText());
+                if (!commentsText.isEmpty()) {
+                    commentsText = commentsText.replaceAll(";", " ");
+                    commentsText = commentsText.replaceAll("\\|", " ");
+                    commentsText = commentsText.replaceAll("\\*", " ");
+                }
+
+                if (update.equals("")) {
+                    requestCopyToReplications();
+                } else {
+                    prefs.appendIfNotExists("previousMethods", methodText);
+                    Toast.makeText(this, "Input edited successfully", Toast.LENGTH_SHORT).show();
+                    Intent i = new Intent(this, manageData.class);
+                    i.putExtra("userId", userId);
+                    i.putExtra("userRole", userRole);
+                    i.putExtra("task", task);
+                    i.putExtra("inputLogId", inputLogId);
+                    i.putExtra("update", "treatmentInput");
+                    i.putExtra("treatment", treatmentId);
+                    i.putExtra("treatmentInputDate", dateToString(treatmentInputDate));
+                    i.putExtra("treatmentInputMaterial", ingredientsString);
+                    i.putExtra("treatmentInputQuantity", 0.0f);
+                    i.putExtra("treatmentInputUnits", "");
+                    i.putExtra("treatmentInputMethod", methodText);
+                    i.putExtra("treatmentInputCost", costNumber);
+                    i.putExtra("treatmentInputComments", commentsText);
+                    startActivity(i);
+                    finish();
+                }
+
             } else {
                 Toast.makeText(this, R.string.enterValidNumberText, Toast.LENGTH_SHORT).show();
                 cost.requestFocus();
             }
-        } else {
-            Toast.makeText(this, R.string.enterValidTextText, Toast.LENGTH_SHORT).show();
-            quantityUnits.requestFocus();
         }
-        */
     }
 
     public void requestCopyToReplications() {
@@ -791,9 +813,9 @@ public class enterTreatmentInput extends AppCompatActivity {
         i.putExtra("treatmentId", treatmentId);
         i.putExtra("cropId",-1);
         i.putExtra("treatmentInputDate", dateToString(treatmentInputDate));
-        i.putExtra("treatmentInputMaterial", materialText);
+        i.putExtra("treatmentInputMaterial", ingredientsString);
         i.putExtra("treatmentInputQuantity", 0.0f);
-        i.putExtra("treatmentInputUnits", unitsText);
+        i.putExtra("treatmentInputUnits", "");
         i.putExtra("treatmentInputMethod", methodText);
         i.putExtra("treatmentInputCost", costNumber);
         i.putExtra("treatmentInputComments", commentsText);

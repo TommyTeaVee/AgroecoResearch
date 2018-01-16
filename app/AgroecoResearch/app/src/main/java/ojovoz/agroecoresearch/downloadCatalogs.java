@@ -46,6 +46,13 @@ public class downloadCatalogs extends AppCompatActivity implements httpConnectio
         userId = getIntent().getExtras().getInt("userId");
         userRole = getIntent().getExtras().getInt("userRole");
         server = getIntent().getExtras().getString("server");
+        if(server==null){
+            final Context context = this;
+            Intent i;
+            i = new Intent(context, loginScreen.class);
+            startActivity(i);
+            finish();
+        }
 
         initializeChecboxes();
     }

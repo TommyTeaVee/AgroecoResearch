@@ -43,6 +43,13 @@ public class inputChooser extends AppCompatActivity {
         userId = getIntent().getExtras().getInt("userId");
         userRole = getIntent().getExtras().getInt("userRole");
         task = getIntent().getExtras().getString("task");
+        if(task==null){
+            final Context context = this;
+            Intent i;
+            i = new Intent(context, loginScreen.class);
+            startActivity(i);
+            finish();
+        }
 
         agroHelper = new agroecoHelper(this, "crops,fields,treatments,input_log");
 

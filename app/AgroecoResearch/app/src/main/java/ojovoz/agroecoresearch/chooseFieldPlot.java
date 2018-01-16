@@ -63,6 +63,13 @@ public class chooseFieldPlot extends AppCompatActivity {
         userId = getIntent().getExtras().getInt("userId");
         userRole = getIntent().getExtras().getInt("userRole");
         task = getIntent().getExtras().getString("task");
+        if(task==null){
+            final Context context = this;
+            Intent i;
+            i = new Intent(context, loginScreen.class);
+            startActivity(i);
+            finish();
+        }
         String plots = getIntent().getExtras().getString("plots");
         if(task.equals("measurement")){
             measurementCategory = getIntent().getExtras().getString("measurementChosenCategory");
