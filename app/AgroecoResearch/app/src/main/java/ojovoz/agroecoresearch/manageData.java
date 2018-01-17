@@ -414,56 +414,58 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
             Iterator<oLog> logIterator = filteredLog.iterator();
             while (logIterator.hasNext()) {
                 oLog logElement = logIterator.next();
-                final TableRow trow = new TableRow(manageData.this);
-                TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f);
-                lp.setMargins(10, 10, 0, 10);
+                if(logElement.logUserId==userId || userRole>0) {
+                    final TableRow trow = new TableRow(manageData.this);
+                    TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f);
+                    lp.setMargins(10, 10, 0, 10);
 
-                if (n % 2 == 0) {
-                    trow.setBackgroundColor(ContextCompat.getColor(this, R.color.lightGray));
-                } else {
-                    trow.setBackgroundColor(ContextCompat.getColor(this, R.color.colorWhite));
-                }
-
-                String itemName = "";
-                if (logElement.logActivityId > 0) {
-                    itemName = agroHelper.getActivityNameFromId(logElement.logActivityId);
-                } else if (logElement.logMeasurementId > 0) {
-                    itemName = agroHelper.getMeasurementNameFromId(logElement.logMeasurementId) + " (" + agroHelper.getMeasurementCategoryFromId(logElement.logMeasurementId) + ")";
-                }
-
-                String tvText = agroHelper.dateToString(logElement.logDate) + " " + agroHelper.getFieldNameFromId(logElement.logFieldId)
-                        + "\n" + itemName;
-
-                CheckBox cb = new CheckBox(manageData.this);
-                cb.setButtonDrawable(R.drawable.custom_checkbox);
-                cb.setId(logElement.logId);
-                cb.setPadding(4, 4, 4, 4);
-                cb.setChecked(true);
-                checkboxesLog.add(cb);
-                trow.addView(cb, lp);
-
-                TextView tv = new TextView(manageData.this);
-                tv.setId(logElement.logId);
-                tv.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
-                tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17f);
-                tv.setText(tvText);
-                tv.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-                tv.setPadding(0, 10, 0, 10);
-                tv.setMaxWidth(350);
-                tv.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        viewItem(v, v.getId());
+                    if (n % 2 == 0) {
+                        trow.setBackgroundColor(ContextCompat.getColor(this, R.color.lightGray));
+                    } else {
+                        trow.setBackgroundColor(ContextCompat.getColor(this, R.color.colorWhite));
                     }
 
-                });
-                trow.addView(tv, lp);
+                    String itemName = "";
+                    if (logElement.logActivityId > 0) {
+                        itemName = agroHelper.getActivityNameFromId(logElement.logActivityId);
+                    } else if (logElement.logMeasurementId > 0) {
+                        itemName = agroHelper.getMeasurementNameFromId(logElement.logMeasurementId) + " (" + agroHelper.getMeasurementCategoryFromId(logElement.logMeasurementId) + ")";
+                    }
 
-                trow.setGravity(Gravity.CENTER_VERTICAL);
-                logTable.addView(trow, lp);
+                    String tvText = agroHelper.dateToString(logElement.logDate) + " " + agroHelper.getFieldNameFromId(logElement.logFieldId)
+                            + "\n" + itemName;
 
-                n++;
+                    CheckBox cb = new CheckBox(manageData.this);
+                    cb.setButtonDrawable(R.drawable.custom_checkbox);
+                    cb.setId(logElement.logId);
+                    cb.setPadding(4, 4, 4, 4);
+                    cb.setChecked(true);
+                    checkboxesLog.add(cb);
+                    trow.addView(cb, lp);
+
+                    TextView tv = new TextView(manageData.this);
+                    tv.setId(logElement.logId);
+                    tv.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+                    tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17f);
+                    tv.setText(tvText);
+                    tv.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+                    tv.setPadding(0, 10, 0, 10);
+                    tv.setMaxWidth(350);
+                    tv.setOnClickListener(new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View v) {
+                            viewItem(v, v.getId());
+                        }
+
+                    });
+                    trow.addView(tv, lp);
+
+                    trow.setGravity(Gravity.CENTER_VERTICAL);
+                    logTable.addView(trow, lp);
+
+                    n++;
+                }
             }
         }
 
@@ -495,63 +497,58 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
             Iterator<oInputLog> logIterator = filteredInputLog.iterator();
             while (logIterator.hasNext()) {
                 oInputLog inputLogElement = logIterator.next();
-                final TableRow trow = new TableRow(manageData.this);
-                TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f);
-                lp.setMargins(10, 10, 0, 10);
+                if(inputLogElement.inputLogUserId==userId || userRole>0) {
+                    final TableRow trow = new TableRow(manageData.this);
+                    TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT, 1.0f);
+                    lp.setMargins(10, 10, 0, 10);
 
-                if (n % 2 == 0) {
-                    trow.setBackgroundColor(ContextCompat.getColor(this, R.color.lightGray));
-                } else {
-                    trow.setBackgroundColor(ContextCompat.getColor(this, R.color.colorWhite));
-                }
-
-                String itemName = "";
-                if (inputLogElement.inputLogCropId > 0) {
-                    itemName = agroHelper.getCropNameFromId(inputLogElement.inputLogCropId);
-                } else if (inputLogElement.inputLogTreatmentId > 0) {
-                    itemName = agroHelper.getTreatmentNameFromId(inputLogElement.inputLogTreatmentId);
-                }
-
-                /*
-                String plotNumber = "";
-                if(inputLogElement.inputLogPlotNumber>=0){
-                    plotNumber = "-plot " + Integer.toString(inputLogElement.inputLogPlotNumber+1);
-                }
-                */
-
-                String tvText = agroHelper.dateToString(inputLogElement.inputLogDate) + " " + agroHelper.getFieldNameFromId(inputLogElement.inputLogFieldId)
-                        + "\n" + itemName;
-
-                CheckBox cb = new CheckBox(manageData.this);
-                cb.setButtonDrawable(R.drawable.custom_checkbox);
-                cb.setId(inputLogElement.inputLogId);
-                cb.setPadding(10, 10, 10, 10);
-                cb.setChecked(true);
-                checkboxesInputLog.add(cb);
-                trow.addView(cb, lp);
-
-                TextView tv = new TextView(manageData.this);
-                tv.setId(inputLogElement.inputLogId);
-                tv.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
-                tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17f);
-                tv.setText(tvText);
-                tv.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-                tv.setPadding(0, 10, 0, 10);
-                tv.setMaxWidth(350);
-                tv.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        viewInput(v, v.getId());
+                    if (n % 2 == 0) {
+                        trow.setBackgroundColor(ContextCompat.getColor(this, R.color.lightGray));
+                    } else {
+                        trow.setBackgroundColor(ContextCompat.getColor(this, R.color.colorWhite));
                     }
 
-                });
-                trow.addView(tv, lp);
+                    String itemName = "";
+                    if (inputLogElement.inputLogCropId > 0) {
+                        itemName = agroHelper.getCropNameFromId(inputLogElement.inputLogCropId);
+                    } else if (inputLogElement.inputLogTreatmentId > 0) {
+                        itemName = agroHelper.getTreatmentNameFromId(inputLogElement.inputLogTreatmentId);
+                    }
 
-                trow.setGravity(Gravity.CENTER_VERTICAL);
-                logTable.addView(trow, lp);
+                    String tvText = agroHelper.dateToString(inputLogElement.inputLogDate) + " " + agroHelper.getFieldNameFromId(inputLogElement.inputLogFieldId)
+                            + "\n" + itemName;
 
-                n++;
+                    CheckBox cb = new CheckBox(manageData.this);
+                    cb.setButtonDrawable(R.drawable.custom_checkbox);
+                    cb.setId(inputLogElement.inputLogId);
+                    cb.setPadding(10, 10, 10, 10);
+                    cb.setChecked(true);
+                    checkboxesInputLog.add(cb);
+                    trow.addView(cb, lp);
+
+                    TextView tv = new TextView(manageData.this);
+                    tv.setId(inputLogElement.inputLogId);
+                    tv.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+                    tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17f);
+                    tv.setText(tvText);
+                    tv.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+                    tv.setPadding(0, 10, 0, 10);
+                    tv.setMaxWidth(350);
+                    tv.setOnClickListener(new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View v) {
+                            viewInput(v, v.getId());
+                        }
+
+                    });
+                    trow.addView(tv, lp);
+
+                    trow.setGravity(Gravity.CENTER_VERTICAL);
+                    logTable.addView(trow, lp);
+
+                    n++;
+                }
             }
         }
 
