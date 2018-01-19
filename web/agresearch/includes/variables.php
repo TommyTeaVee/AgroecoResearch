@@ -21,5 +21,5 @@ $smtp_server="smtp.sautiyawakulima.net";
 $smtp_server_port="578";
 $mail_server="{134.0.12.74:110/pop3/notls}";
 
-$max_log_items_per_page=20;
+$max_log_items_per_page=15;
 ?>

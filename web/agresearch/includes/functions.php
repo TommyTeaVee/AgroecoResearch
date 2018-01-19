@@ -550,7 +550,7 @@ function checkMessages($mail_server, $mail_user, $mail_password, $dbh){
 						$i_log_entry=explode("|",$what_log[1]);
 						for($i=0;$i<sizeof($i_log_entry);$i++){
 							$i_log_entry_part=explode(";",$i_log_entry[$i]);
-							if(sizeof($i_log_entry_part)==14){
+							if(sizeof($i_log_entry_part)==16){
 								$log_id=$i_log_entry_part[0];
 								$field_id=$i_log_entry_part[1];
 								$plots=$i_log_entry_part[2];
@@ -561,16 +561,20 @@ function checkMessages($mail_server, $mail_user, $mail_password, $dbh){
 								$age=$i_log_entry_part[7];
 								$origin=$i_log_entry_part[8];
 								if($origin=="null") { $origin=""; }
-								$quantity=$i_log_entry_part[9];
-								$cost=number_format($i_log_entry_part[10],2,'.','');
-								$material=$i_log_entry_part[11];
+								$variety=$i_log_entry_part[9];
+								if($variety=="null") { $variety=""; }
+								$quantity=$i_log_entry_part[10];
+								$units=$i_log_entry_part[11];
+								if($units=="null") { $units=""; }
+								$cost=number_format($i_log_entry_part[12],2,'.','');
+								$material=$i_log_entry_part[13];
 								if($material=="null") { $material=""; }
-								$method=$i_log_entry_part[12];
+								$method=$i_log_entry_part[14];
 								if($method=="null") { $method=""; }
-								$comments=$i_log_entry_part[13];
+								$comments=$i_log_entry_part[15];
 								if($comments=="null") { $comments=""; }
 							
-								$query="INSERT INTO input_log (input_log_date, field_id, plots, user_id, crop_id, treatment_id, input_age, input_origin, input_quantity, input_cost, input_treatment_material, input_treatment_preparation_method, input_comments) VALUES ('$date', $field_id, '$plots', $user_id, $crop_id, $treatment_id, '$age', '$origin', $quantity, '$cost', '$material', '$method', '$comments')";
+								$query="INSERT INTO input_log (input_log_date, field_id, plots, user_id, crop_id, treatment_id, input_age, input_origin, input_crop_variety, input_quantity, input_units, input_cost, input_treatment_material, input_treatment_preparation_method, input_comments) VALUES ('$date', $field_id, '$plots', $user_id, $crop_id, $treatment_id, '$age', '$origin', '$variety', $quantity, '$units', '$cost', '$material', '$method', '$comments')";
 								//echo($query);
 								$result = mysqli_query($dbh,$query);
 							}
@@ -591,9 +595,63 @@ function markNotificationAsSent($dbh,$id){
 	$result = mysqli_query($dbh,$query);
 }
 
+function parseIngredients($ingredients){
+	$ret="";
+	$ingredient_elements=explode("*",$ingredients);
+	for($i=0;$i<sizeof($ingredient_elements);$i+=3){
+		if($ret==""){
+			$ret=$ingredient_elements[$i].": ".$ingredient_elements[$i+1]." ".$ingredient_elements[$i+2];
+		} else {
+			$ret=$ret.", ".$ingredient_elements[$i].": ".$ingredient_elements[$i+1]." ".$ingredient_elements[$i+2];
+		}
+	}
+	return $ret;
+}
+
+function getHealthReportItems($dbh){
+	$ret=array();
+	$query="SELECT item FROM health_report_item ORDER BY item";
+	$result = mysqli_query($dbh,$query);
+	$i=0;
+	while($row = mysqli_fetch_array($result,MYSQL_NUM)){
+		$ret[$i]=$row[0];
+		$i++;
+	}
+	return $ret;
+}
+
+function parseHealthReportValues($dbh,$sample_values){
+	$ret="";
+	$problem_names=getHealthReportItems($dbh);
+	$samples=explode("*",$sample_values);
+	for($i=0;$i<sizeof($samples);$i+=2){
+		$sample_n=$samples[$i];
+		$problems=explode("#",$samples[$i+1]);
+		$problem_string="";
+		for($j=0;$j<sizeof($problem_names);$j++){
+			if(trim($problems[$j])!=""){
+				if($problem_string==""){
+					$problem_string=$problem_names[$j]." - ".$problems[$j];
+				} else {
+					$problem_string=$problem_string.", ".$problem_names[$j]." - ".$problems[$j];
+				}
+			}
+		}
+		if($problem_string!=""){
+			if($ret==""){
+				$ret=$sample_n.": ".$problem_string;
+			} else {
+				$ret=$ret."<br>".$sample_n.": ".$problem_string;
+			}
+		}
+	}
+	return $ret;
+}
+
 function parseSampleValues($sample_values){
 	$ret="";
 	$elements=explode("*",$sample_values);
+	/*
 	if(sizeof($elements)>10){
 		$n=5;
 		$tail=" ...";
@@ -601,6 +659,9 @@ function parseSampleValues($sample_values){
 		$n=sizeof($elements);
 		$tail="";
 	}
+	*/
+	$n=sizeof($elements);
+	$tail="";
 	for($i=0;$i<$n;$i+=2){
 		if($ret==""){
 			$ret=$elements[$i].":".$elements[$i+1];

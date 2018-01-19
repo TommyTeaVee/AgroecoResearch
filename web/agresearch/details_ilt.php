@@ -32,9 +32,8 @@ if(isset($_SESSION['admin']) && $_SESSION['admin']==true && isset($_GET['id'])){
 <b>Plots:</b> <?php echo($plot_labels); ?><br>
 <b>Treatment:</b> <?php echo($row[5]); ?><br>
 <b>Date:</b> <?php echo($row[1]); ?> <br>
-<b>Material used:</b> <?php echo($row[6]); ?> <br>
+<b>Material used:</b> <?php echo(parseIngredients($row[6])); ?> <br>
 <b>Preparation method:</b> <?php echo($row[8]); ?><br>
-<b>Quantity:</b> <?php echo($row[7]); ?><br>
 <b>Cost (local currency):</b> <?php echo($row[9]); ?><br>
 <?php
 if($row[11]!=""){

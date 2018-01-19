@@ -48,7 +48,7 @@ To:
 <select class="w3-select w3-text-green" name="receiver" id="receiver">
 <option value="-1" selected disabled>Select:</option>
 <?php
-$query="SELECT user_id, user_name FROM user WHERE user_id<>$current_user ORDER BY user_name";
+$query="SELECT user_id, user_name FROM user ORDER BY user_name";
 $result = mysqli_query($dbh,$query);
 while($row = mysqli_fetch_array($result,MYSQL_NUM)){
 	echo('<option value="'.$row[0].'">'.$row[1].'</option>');

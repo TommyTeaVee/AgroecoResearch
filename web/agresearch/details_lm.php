@@ -44,14 +44,20 @@ if($row[13]==0){
 <?php
 	}
 } else {
-	$values=parseSampleValues($row[9]);
 	if($row[7]==0){
+		$values=parseSampleValues($row[9]);
 	?>
-<b>Values (sample:value)</b> <?php echo($values); ?><br>
+<b>Values (sample #:value)</b> <?php echo($values); ?><br>
 <?php	
-	} else {
+	} else if ($row[7]==1) {
+		$values=parseSampleValues($row[9]);
 	?>
-<b>Values (sample:value in <?php echo($row[6]); ?>)</b> <?php echo($values); ?><br>
+<b>Values (sample #:value in <?php echo($row[6]); ?>)</b> <?php echo($values); ?><br>
+<?php
+	} else {
+		$values=parseHealthReportValues($dbh,$row[9]);
+	?>
+	<b>Health report (sample #:problems)</b><br> <?php echo($values); ?><br>
 <?php
 	}
 }
