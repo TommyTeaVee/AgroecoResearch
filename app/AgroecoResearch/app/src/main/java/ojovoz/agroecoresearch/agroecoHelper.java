@@ -599,6 +599,53 @@ public class agroecoHelper {
         return ret;
     }
 
+    public oPlot getModelPlot(ArrayList<oPlot> plots){
+        oPlot ret = new oPlot();
+        boolean hasPestControl=true;
+        boolean hasSoilManagement=true;
+        int prevCrop=0;
+        int prevIntercroppingCrop=0;
+        Iterator<oPlot> plotIterator = plots.iterator();
+        int i=0;
+        while (plotIterator.hasNext()) {
+            oPlot plot = plotIterator.next();
+            if(prevCrop==0){
+                prevCrop=plot.primaryCrop.cropId;
+                ret.primaryCrop=plot.primaryCrop;
+            } else {
+                if(prevCrop!=plot.primaryCrop.cropId){
+                    ret.primaryCrop=null;
+                }
+            }
+            if(plot.intercroppingCrop!=null) {
+                if (prevIntercroppingCrop == 0) {
+                    if(i==0) {
+                        prevIntercroppingCrop = plot.intercroppingCrop.cropId;
+                        ret.intercroppingCrop = plot.intercroppingCrop;
+                    } else {
+                        ret.intercroppingCrop=null;
+                    }
+                } else {
+                    if (prevIntercroppingCrop != plot.intercroppingCrop.cropId) {
+                        ret.intercroppingCrop = null;
+                    }
+                }
+            } else if(prevIntercroppingCrop!=0){
+                ret.intercroppingCrop=null;
+            }
+            if(!plot.hasPestControl){
+                hasPestControl=false;
+            }
+            if(!plot.hasSoilManagement){
+                hasSoilManagement=false;
+            }
+            i++;
+        }
+        ret.hasPestControl = hasPestControl;
+        ret.hasSoilManagement = hasSoilManagement;
+        return ret;
+    }
+
     public oActivity getActivityFromId(int id){
         oActivity ret = new oActivity();
         Iterator<oActivity> iterator = activities.iterator();
@@ -615,45 +662,54 @@ public class agroecoHelper {
     public ArrayList<oActivity> getActivitiesForPlots(int fieldId, String p){
         ArrayList<oActivity> ret = new ArrayList<>();
         ArrayList<oPlot> plots = getPlots(fieldId,p);
+
+        oPlot modelPlot = getModelPlot(plots);
+
         Iterator<oActivity> activityIterator = activities.iterator();
         while (activityIterator.hasNext()) {
             oActivity activity = activityIterator.next();
             if (activity.activityAppliesToCrops.size() == 0 && activity.activityAppliesToTreatments.size() == 0) {
-                ret.add(activity);
+                if(!ret.contains(activity)){
+                    ret.add(activity);
+                }
             } else {
-                Iterator<oPlot> plotIterator = plots.iterator();
-                boolean activityAdded=false;
-                if(!activityAdded) {
-                    while (plotIterator.hasNext() && !activityAdded) {
-                        oPlot plot = plotIterator.next();
-                        oCrop plotCrop = plot.primaryCrop;
-                        Iterator<oCrop> iteratorCrop = activity.activityAppliesToCrops.iterator();
-                        while (iteratorCrop.hasNext()) {
-                            oCrop aC = iteratorCrop.next();
-                            if (aC.cropId == plotCrop.cropId) {
-                                if (!ret.contains(activity)) {
-                                    ret.add(activity);
-                                    activityAdded = true;
-                                    break;
-                                }
-                            }
+
+                boolean cropOK = false;
+                boolean treatmentOK = false;
+
+                if(activity.activityAppliesToTreatments.size()>0) {
+                    Iterator<oTreatment> iteratorTreatment = activity.activityAppliesToTreatments.iterator();
+                    while (iteratorTreatment.hasNext()) {
+                        oTreatment aT = iteratorTreatment.next();
+                        if ((modelPlot.intercroppingCrop != null && aT.treatmentCategory.equals("Intercropping"))
+                                || (modelPlot.hasSoilManagement && aT.treatmentCategory.equals("Soil management"))
+                                || (modelPlot.hasPestControl && aT.treatmentCategory.equals("Pest control"))) {
+                            treatmentOK = true;
+                            break;
                         }
-                        if(!activityAdded) {
-                            Iterator<oTreatment> iteratorTreatment = activity.activityAppliesToTreatments.iterator();
-                            while (iteratorTreatment.hasNext()) {
-                                oTreatment aT = iteratorTreatment.next();
-                                if ((plot.intercroppingCrop != null && aT.treatmentCategory.equals("Intercropping"))
-                                        || (plot.hasSoilManagement && aT.treatmentCategory.equals("Soil management"))
-                                        || (plot.hasPestControl && aT.treatmentCategory.equals("Pest control"))) {
-                                    if (!ret.contains(activity)) {
-                                        ret.add(activity);
-                                        activityAdded = true;
-                                        break;
-                                    }
-                                }
+                    }
+                } else {
+                    treatmentOK = true;
+                }
+
+                if (activity.activityAppliesToCrops.size() > 0) {
+                    Iterator<oCrop> iteratorCrop = activity.activityAppliesToCrops.iterator();
+                    while (iteratorCrop.hasNext()) {
+                        oCrop aC = iteratorCrop.next();
+                        if(modelPlot.primaryCrop!=null) {
+                            if (aC.cropId == modelPlot.primaryCrop.cropId) {
+                                cropOK = true;
+                                break;
                             }
                         }
                     }
+                } else{
+                    cropOK = true;
+                }
+
+
+                if ((cropOK && treatmentOK) && !ret.contains(activity)) {
+                    ret.add(activity);
                 }
             }
         }
