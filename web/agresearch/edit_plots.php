@@ -113,7 +113,7 @@ if($proceed){
 	}
 ?><br><br>
 <?php
-	$remaining_plots=getRemainingPlots($dbh,$field_id,$plots);
+	$remaining_plots=getRemainingPlots($dbh,$field_id,$plots,$id,$task);
 	if($remaining_plots!=""){
 ?>
 <b>Available plots:</b><br>

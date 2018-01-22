@@ -130,8 +130,8 @@ if(isset($_POST['edit'])){
     <input class="w3-input w3-border-teal w3-text-green" type="text" name="yyyy" value="<?php echo($yy); ?>" onkeypress="return isNumberKey(event)">
   </div>
 </div>
-<b>Value:</b> <input class="w3-input w3-border-green w3-text-green" name="value" type="text" value="<?php echo($row[7]); ?>" onkeypress="return isNumberKey(event)">
 <b>Units:</b> <input class="w3-input w3-border-green w3-text-green" name="units" type="text" value="<?php echo($row[6]); ?>">
+<b>Value:</b> <input class="w3-input w3-border-green w3-text-green" name="value" type="text" value="<?php echo($row[7]); ?>" onkeypress="return isNumberKey(event)">
 <b>Number of laborers:</b> <input class="w3-input w3-border-green w3-text-green" name="laborers" type="text" value="<?php echo($row[10]); ?>">
 <b>Cost:</b> <input class="w3-input w3-border-green w3-text-green" name="cost" type="text" value="<?php echo($row[11]); ?>">
 <?php

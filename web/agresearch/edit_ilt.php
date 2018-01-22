@@ -13,9 +13,14 @@ if(isset($_POST['edit'])){
 	$mm=$_POST['mm'];
 	$yyyy=$_POST['yyyy'];
 	$date=$yyyy."-".$mm."-".$dd;
-	$material=$_POST['material'];
+	$material=reverseParseIngredients($_POST['material']);
+	if($material==-1){
+		$material_update="";
+	} else {
+		$material_update="input_treatment_material='$material', ";
+	}
 	$method=$_POST['method'];
-	$quantity=floatval($_POST['quantity']);
+	$quantity=0.0;
 	$cost=floatval($_POST['cost']);
 	$comments=$_POST['comments'];
 	if(isset($_FILES['input_picture']['name'])){
@@ -31,7 +36,7 @@ if(isset($_POST['edit'])){
 		$update_picture="";
 	}
 	
-	$query="UPDATE input_log SET input_log_date='$date', input_treatment_material='$material', input_treatment_preparation_method='$method', input_quantity=$quantity, input_cost='$cost', input_comments='$comments'".$update_picture." WHERE input_log_id=$id";
+	$query="UPDATE input_log SET input_log_date='$date', ".$material_update."input_treatment_preparation_method='$method', input_quantity=$quantity, input_cost='$cost', input_comments='$comments'".$update_picture." WHERE input_log_id=$id";
 	$result = mysqli_query($dbh,$query);
 	echo "<script type='text/javascript'>";
 	echo "window.opener.location.reload(false);";
@@ -83,7 +88,7 @@ if(isset($_POST['edit'])){
 <b>Registered by:</b> <?php echo(getUserNameFromId($dbh,$row[13])); ?><br>
 <b>Field:</b> <?php echo($row[2]." replication ".$row[3]); ?><br>
 <b>Plots:</b> <?php echo($plot_labels); ?> <a href="edit_plots.php?task=it&id=<?php echo($id); ?>">Edit</a><br>
-<b>Treatment:</b> <?php echo($row[5]. " (".$row[6].")"); ?><br><br>
+<b>Treatment:</b> <?php echo($row[5]); ?><br><br>
 <b>Date:</b>
 <div class="w3-row-padding">
   <div class="w3-third">
@@ -130,9 +135,8 @@ if(isset($_POST['edit'])){
     <input class="w3-input w3-border-teal w3-text-green" type="text" name="yyyy" value="<?php echo($yy); ?>" onkeypress="return isNumberKey(event)">
   </div>
 </div>
-<b>Material used:</b> <input class="w3-input w3-border-green w3-text-green" name="material" type="text" value="<?php echo($row[6]); ?>">
+<b>Ingredients (comma separated, use format: <i>ingredient: quantity units</i>):</b> <input class="w3-input w3-border-green w3-text-green" name="material" type="text" value="<?php echo(parseIngredients($row[6])); ?>">
 <b>Preparation method:</b> <input class="w3-input w3-border-green w3-text-green" name="method" type="text" value="<?php echo($row[7]); ?>">
-<b>Quantity (units):</b> <input class="w3-input w3-border-green w3-text-green" name="quantity" type="text" value="<?php echo($row[8]); ?>" onkeypress="return isNumberKey(event)">
 <b>Cost (local currency):</b> <input class="w3-input w3-border-green w3-text-green" name="cost" type="text" value="<?php echo($row[9]); ?>" onkeypress="return isNumberKey(event)">
 <?php
 if($row[11]!=""){

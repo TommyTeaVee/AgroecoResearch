@@ -48,7 +48,7 @@ To:
 <select class="w3-select w3-text-green" name="receiver" id="receiver">
 <option value="-1" selected disabled>Select:</option>
 <?php
-$query="SELECT user_id, user_name FROM user WHERE user_id<>$current_user ORDER BY user_name";
+$query="SELECT user_id, user_name FROM user ORDER BY user_name";
 $result = mysqli_query($dbh,$query);
 while($row = mysqli_fetch_array($result,MYSQL_NUM)){
 	echo('<option value="'.$row[0].'">'.$row[1].'</option>');
@@ -66,7 +66,7 @@ while($row = mysqli_fetch_array($result,MYSQL_NUM)){
 	$sent = ($row[3]==0) ? "No" : "Yes";
 	$id = $row[4];
 	$delete_link = ($row[3]==0) ? ' <a class="w3-text-green" href="delete_notification.php?id='.$id.'">Delete</a>' : '';
-	echo("To: ".$row[0]."<br>Date: ".$row[1]."<br>Message: ".$row[2]."<br>Sent: ".$sent.$delete_link."<br><br>");
+	echo("To: ".$row[0]."<br>Date: ".$row[1]."<br>Message: ".$row[2]."<br>Received: ".$sent.$delete_link."<br><br>");
 }
 ?>
 <br></div>

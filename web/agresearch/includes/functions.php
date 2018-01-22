@@ -259,7 +259,79 @@ function getAllPlots($dbh,$field_id){
 	return $ret;
 }
 
-function getRemainingPlots($dbh,$field_id,$plots){
+function isPlotAssociatedWithTask($dbh,$plot,$id,$task){
+	
+	$ret=false;
+	
+	$plot_parts=parseConfig($plot);
+	$plot_crop=$plot_parts[0];
+	if($plot_parts[1]!=0){
+		$plot_intercropping_crop=$plot_parts[1];
+	} else {
+		$plot_intercropping_crop=-1;
+	}
+	
+	if($task=="lm"){
+		$query="SELECT log.measurement_id, measurement_x_crop_or_treatment.crop_id, measurement_x_crop_or_treatment.treatment_id FROM log, measurement_x_crop_or_treatment WHERE log_id=$id AND measurement_x_crop_or_treatment.measurement_id = log.measurement_id";
+		$result = mysqli_query($dbh,$query);
+		if($row = mysqli_fetch_array($result,MYSQL_NUM)){
+			if($plot_crop==$row[1] || $plot_intercropping_crop==$row[1]){
+				$ret=true;
+			} else {
+				if($row[2]>0){
+					$treatment_id=$row[2];
+					$query="SELECT treatment_category FROM treatment WHERE treatment_id=$treatment_id";
+					$result = mysqli_query($dbh,$query);
+					if($row = mysqli_fetch_array($result,MYSQL_NUM)){
+						if(($plot_parts[3]!=0 && $row[0]=="Pest control") || ($plot_parts[2]!=0 && $row[0]=="Soil management")){
+							$ret=true;
+						}
+					}
+				}
+			}
+		}
+	} else if($task=="la"){
+		$query="SELECT log.activity_id, activity_x_crop_or_treatment.crop_id, activity_x_crop_or_treatment.treatment_id FROM log, activity_x_crop_or_treatment WHERE log_id=$id AND activity_x_crop_or_treatment.activity_id = log.activity_id";
+		$result = mysqli_query($dbh,$query);
+		if($row = mysqli_fetch_array($result,MYSQL_NUM)){
+			if($plot_crop==$row[1] || $plot_intercropping_crop==$row[1]){
+				$ret=true;
+			} else {
+				if($row[2]>0){
+					$treatment_id=$row[2];
+					$query="SELECT treatment_category FROM treatment WHERE treatment_id=$treatment_id";
+					$result = mysqli_query($dbh,$query);
+					if($row = mysqli_fetch_array($result,MYSQL_NUM)){
+						if(($plot_parts[3]!=0 && $row[0]=="Pest control") || ($plot_parts[2]!=0 && $row[0]=="Soil management")){
+							$ret=true;
+						}
+					}
+				}
+			}
+		}
+	} else if($task=="ic"){
+		$query="SELECT crop_id FROM input_log WHERE input_log_id=$id";
+		$result = mysqli_query($dbh,$query);
+		if($row = mysqli_fetch_array($result,MYSQL_NUM)){
+			if($plot_crop==$row[0] || $plot_intercropping_crop==$row[0]){
+				$ret=true;
+			}
+		}
+	} else if($task=="it"){
+		$query="SELECT input_log.treatment_id, treatment.treatment_category FROM input_log,treatment WHERE input_log_id=$id AND treatment.treatment_id = input_log.treatment_id";
+		$result = mysqli_query($dbh,$query);
+		if($row = mysqli_fetch_array($result,MYSQL_NUM)){
+			if(($plot_parts[3]!=0 && $row[1]=="Pest control") || ($plot_parts[2]!=0 && $row[1]=="Soil management")){
+				$ret=true;
+			}
+		}
+	}
+	
+	return $ret;			
+	
+}
+
+function getRemainingPlots($dbh,$field_id,$plots,$id,$task){
 	$ret="";
 	$query="SELECT field_configuration FROM field WHERE field_id=$field_id";
 	$result = mysqli_query($dbh,$query);
@@ -267,12 +339,12 @@ function getRemainingPlots($dbh,$field_id,$plots){
 		$field_configuration=$row[0];
 		$elements=explode(";",$field_configuration);
 		if((sizeof($elements)-3)>sizeof($plots)){
-			for($i=2;$i<(sizeof($elements)-3);$i++){
-				if(!in_array($i,$plots)){
+			for($i=2;$i<(sizeof($elements)-1);$i++){
+				if(!in_array(($i-2),$plots) && isPlotAssociatedWithTask($dbh,$elements[$i],$id,$task)){
 					if($ret==""){
-						$ret=$i;
+						$ret=($i-2);
 					} else {
-						$ret.=",".$i;
+						$ret.=",".($i-2);
 					}
 				}
 			}
@@ -603,6 +675,40 @@ function parseIngredients($ingredients){
 			$ret=$ingredient_elements[$i].": ".$ingredient_elements[$i+1]." ".$ingredient_elements[$i+2];
 		} else {
 			$ret=$ret.", ".$ingredient_elements[$i].": ".$ingredient_elements[$i+1]." ".$ingredient_elements[$i+2];
+		}
+	}
+	return $ret;
+}
+
+function reverseParseIngredients($ingredients){
+
+	$ret="";
+	$ingredients=trim($ingredients);
+	$ingredients = preg_replace('!\s+!', ' ', $ingredients);
+	$ingredient_list=explode(",",$ingredients);
+	for($i=0;$i<sizeof($ingredient_list);$i++){	
+		$ingredient_elements=explode(":",$ingredient_list[$i]);
+		if(sizeof($ingredient_elements)==2){
+			$second_part=explode(" ",trim($ingredient_elements[1]));
+			if(sizeof($second_part)==2){
+				$ingredient=str_replace(":","",$ingredient_elements[0]);
+				$ingredient=str_replace("*","",$ingredient);
+				$quantity=str_replace(":","",$second_part[0]);
+				$quantity=str_replace("*","",$quantity);
+				$units=str_replace(":","",$second_part[1]);
+				$units=str_replace("*","",$units);
+				if($ret==""){
+					$ret=trim($ingredient)."*".trim($quantity)."*".trim($units);
+				} else {
+					$ret.="*".trim($ingredient)."*".trim($quantity)."*".trim($units);
+				}
+			} else {
+				$ret=-1;
+				break;
+			}
+		} else {
+			$ret=-1;
+			break;
 		}
 	}
 	return $ret;
