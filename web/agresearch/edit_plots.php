@@ -11,27 +11,42 @@ $proceed=false;
 if(isset($_POST['add'])){
 	$id=$_POST['id'];
 	$task=$_POST['task'];
-	if($task=="lm" || $task=="la"){
-		$query="SELECT plots, field_id FROM log WHERE log_id=$id";
-	} else {
-		$query="SELECT plots, field_id FROM input_log WHERE input_log_id=$id";
-	}
-	$result = mysqli_query($dbh,$query);
-	$row = mysqli_fetch_array($result,MYSQL_NUM);
-	$plot_list = $row[0];
-	$field_id=$row[1];
-	$plots = explode(",",$plot_list);
-	
-	$add=$_POST['added_plot'];
-	if($add!=""){
-		$plot_list.=",".$add;
-		$plots = explode(",",$plot_list);
-		if($task=="lm" || $task=="la"){
+	if($task=="lm"){
+		$query="SELECT field_id FROM log WHERE log_id=$id";
+		$result = mysqli_query($dbh,$query);
+		$row = mysqli_fetch_array($result,MYSQL_NUM);
+		$field_id=$row[0];
+		$add=$_POST['added_plot'];
+		if($add!=""){
+			$plot_list=$add;
+			$plots=explode(",",$plot_list);
 			$query="UPDATE log SET plots='".$plot_list."' WHERE log_id=$id";
+			$result = mysqli_query($dbh,$query);
+		}
+	} else {
+		if($task=="la") {
+			$query="SELECT plots, field_id FROM log WHERE log_id=$id";
 		} else {
-			$query="UPDATE input_log SET plots='".$plot_list."' WHERE input_log_id=$id";
+			$query="SELECT plots, field_id FROM input_log WHERE input_log_id=$id";
 		}
 		$result = mysqli_query($dbh,$query);
+		$row = mysqli_fetch_array($result,MYSQL_NUM);
+		$plot_list = $row[0];
+		$field_id=$row[1];
+		$plots = explode(",",$plot_list);
+	
+		$add=$_POST['added_plot'];
+		if($add!=""){
+			$plot_list.=",".$add;
+			$plots = explode(",",$plot_list);
+			if($task=="la"){
+				$query="UPDATE log SET plots='".$plot_list."' WHERE log_id=$id";
+			} else {
+				$query="UPDATE input_log SET plots='".$plot_list."' WHERE input_log_id=$id";
+			}
+			$result = mysqli_query($dbh,$query);
+		}
+		
 	}
 	
 	$proceed=true;
@@ -104,12 +119,17 @@ if($proceed){
 <input name="id" type="hidden" id="id" value="<? echo($id); ?>">
 <input name="task" type="hidden" id="task" value="<? echo($task); ?>">
 <p><div class="w3-text-green">
-<b>Included plots:</b><br>
+<b><?php if($task=="lm") { echo("Affected plot"); } else { echo("Affected plots"); } ?>:</b><br>
 <?php
 	for($i=0;$i<sizeof($plots);$i++){
 		$plot=$plots[$i];
 		$plot_name=calculatePlotLabels($dbh,$field_id,$plot);
-		echo($plot_name.' <a href="edit_plots.php?id='.$id.'&task='.$task.'&remove='.$plot.'">Remove</a><br>');
+		if($task!="lm"){
+			$remove_link='<a href="edit_plots.php?id='.$id.'&task='.$task.'&remove='.$plot.'">Remove</a><br>';
+		} else {
+			$remove_link='';
+		}
+		echo($plot_name.' '.$remove_link);
 	}
 ?><br><br>
 <?php
@@ -126,7 +146,7 @@ if($proceed){
 		echo('<option value="'.$remaining_plot.'">'.$plot_name.'</option>');
 	}
 ?>
-</select><br><br><button class="w3-button w3-green w3-round w3-border w3-border-green w3-large w3-round-large" id="add" name="add">Add</button><br><br>
+</select><br><br><button class="w3-button w3-green w3-round w3-border w3-border-green w3-large w3-round-large" id="add" name="add"><?php if($task=="lm") { echo("Change"); } else { echo("Add"); } ?></button><br><br>
 <?php
 }
 ?>

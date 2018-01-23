@@ -156,19 +156,24 @@ if($row[14]==0){
 <?php	
 	} else {
 ?>
-<b>Value:</b> <input class="w3-input w3-border-green w3-text-green" name="value" type="text" value="<?php echo($row[9]); ?>" onkeypress="return isNumberKey(event)">
 <b>Units:</b> <input class="w3-input w3-border-green w3-text-green" name="units" type="text" value="<?php echo($row[7]); ?>">
+<b>Value:</b> <input class="w3-input w3-border-green w3-text-green" name="value" type="text" value="<?php echo($row[9]); ?>" onkeypress="return isNumberKey(event)">
 <?php	
 	}
 } else {
 	$values=parseSampleValues($row[10]);
 	if($row[6]==0){
 		?>
-<b><br>Values (sample:value)</b> <?php echo($values); ?><br><a href="edit_samples.php?id=<?php echo($id); ?>&m_id=<?php echo($row[16]); ?>">Edit</a><br><br>
+<b><br>Values (sample:value)</b> <?php echo($values); ?> <a href="edit_samples.php?id=<?php echo($id); ?>&m_id=<?php echo($row[16]); ?>">Edit</a><br><br>
 <?php	
-	} else {
+	} else if($row[6]==1) {
 	?>
-<b><br>Values (sample:value in <?php echo($row[7]); ?>)</b> <?php echo($values); ?><br><a href="edit_samples.php?id=<?php echo($id); ?>&m_id=<?php echo($row[16]); ?>">Edit</a><br><br>
+<b><br>Values (sample:value in <?php echo($row[7]); ?>)</b> <?php echo($values); ?> <a href="edit_samples.php?id=<?php echo($id); ?>&m_id=<?php echo($row[16]); ?>">Edit</a><br><br>
+<?php
+	} else {
+		$values=parseHealthReportValues($dbh,$row[10]);
+	?>
+<b>Health report (sample #:problems)</b><br> <?php echo($values); ?><br><a href="edit_health_report.php?id=<?php echo($id); ?>&m_id=<?php echo($row[16]); ?>">Edit</a><br><br>
 <?php
 	}
 }

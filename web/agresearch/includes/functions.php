@@ -289,6 +289,8 @@ function isPlotAssociatedWithTask($dbh,$plot,$id,$task){
 					}
 				}
 			}
+		} else {
+			$ret=true;
 		}
 	} else if($task=="la"){
 		$query="SELECT log.activity_id, activity_x_crop_or_treatment.crop_id, activity_x_crop_or_treatment.treatment_id FROM log, activity_x_crop_or_treatment WHERE log_id=$id AND activity_x_crop_or_treatment.activity_id = log.activity_id";
@@ -308,6 +310,8 @@ function isPlotAssociatedWithTask($dbh,$plot,$id,$task){
 					}
 				}
 			}
+		} else {
+			$ret=true;
 		}
 	} else if($task=="ic"){
 		$query="SELECT crop_id FROM input_log WHERE input_log_id=$id";
