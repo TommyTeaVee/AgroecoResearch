@@ -272,7 +272,12 @@ function isPlotAssociatedWithTask($dbh,$plot,$id,$task){
 	}
 	
 	if($task=="lm"){
-		$query="SELECT log.measurement_id, measurement_x_crop_or_treatment.crop_id, measurement_x_crop_or_treatment.treatment_id FROM log, measurement_x_crop_or_treatment WHERE log_id=$id AND measurement_x_crop_or_treatment.measurement_id = log.measurement_id";
+		if($id>=0){
+			$query="SELECT log.measurement_id, measurement_x_crop_or_treatment.crop_id, measurement_x_crop_or_treatment.treatment_id FROM log, measurement_x_crop_or_treatment WHERE log_id=$id AND measurement_x_crop_or_treatment.measurement_id = log.measurement_id";
+		} else {
+			$id=$id*-1;
+			$query="SELECT measurement.measurement_id, measurement_x_crop_or_treatment.crop_id, measurement_x_crop_or_treatment.treatment_id FROM measurement, measurement_x_crop_or_treatment WHERE measurement.measurement_id=$id AND measurement_x_crop_or_treatment.measurement_id=measurement.measurement_id";
+		}
 		$result = mysqli_query($dbh,$query);
 		if($row = mysqli_fetch_array($result,MYSQL_NUM)){
 			if($plot_crop==$row[1] || $plot_intercropping_crop==$row[1]){
@@ -293,7 +298,12 @@ function isPlotAssociatedWithTask($dbh,$plot,$id,$task){
 			$ret=true;
 		}
 	} else if($task=="la"){
-		$query="SELECT log.activity_id, activity_x_crop_or_treatment.crop_id, activity_x_crop_or_treatment.treatment_id FROM log, activity_x_crop_or_treatment WHERE log_id=$id AND activity_x_crop_or_treatment.activity_id = log.activity_id";
+		if($id>=0){
+			$query="SELECT log.activity_id, activity_x_crop_or_treatment.crop_id, activity_x_crop_or_treatment.treatment_id FROM log, activity_x_crop_or_treatment WHERE log_id=$id AND activity_x_crop_or_treatment.activity_id = log.activity_id";
+		} else {
+			$id=$id*-1;
+			$query="SELECT activity.activity_id, activity_x_crop_or_treatment.crop_id, activity_x_crop_or_treatment.treatment_id FROM activity, activity_x_crop_or_treatment WHERE activity.activity_id=$id AND activity_x_crop_or_treatment.activity_id=activity.activity_id";
+		}
 		$result = mysqli_query($dbh,$query);
 		if($row = mysqli_fetch_array($result,MYSQL_NUM)){
 			if($plot_crop==$row[1] || $plot_intercropping_crop==$row[1]){
@@ -314,7 +324,12 @@ function isPlotAssociatedWithTask($dbh,$plot,$id,$task){
 			$ret=true;
 		}
 	} else if($task=="ic"){
-		$query="SELECT crop_id FROM input_log WHERE input_log_id=$id";
+		if($id>=0){
+			$query="SELECT crop_id FROM input_log WHERE input_log_id=$id";
+		} else {
+			$id=$id*-1;
+			$query="SELECT crop_id FROM crop WHERE crop_id=$id";
+		}
 		$result = mysqli_query($dbh,$query);
 		if($row = mysqli_fetch_array($result,MYSQL_NUM)){
 			if($plot_crop==$row[0] || $plot_intercropping_crop==$row[0]){
@@ -322,7 +337,12 @@ function isPlotAssociatedWithTask($dbh,$plot,$id,$task){
 			}
 		}
 	} else if($task=="it"){
-		$query="SELECT input_log.treatment_id, treatment.treatment_category FROM input_log,treatment WHERE input_log_id=$id AND treatment.treatment_id = input_log.treatment_id";
+		if($id>=0){
+			$query="SELECT input_log.treatment_id, treatment.treatment_category FROM input_log,treatment WHERE input_log_id=$id AND treatment.treatment_id = input_log.treatment_id";
+		} else {
+			$id=$id*-1;
+			$query="SELECT treatment_id, treatment_category FROM treatment WHERE treatment_id=$id";
+		}
 		$result = mysqli_query($dbh,$query);
 		if($row = mysqli_fetch_array($result,MYSQL_NUM)){
 			if(($plot_parts[3]!=0 && $row[1]=="Pest control") || ($plot_parts[2]!=0 && $row[1]=="Soil management")){

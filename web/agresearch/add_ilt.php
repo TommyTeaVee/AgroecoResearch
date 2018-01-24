@@ -17,10 +17,11 @@ if(isset($_POST['add'])){
 	$mm=$_POST['mm'];
 	$yyyy=$_POST['yyyy'];
 	$date=$yyyy."-".$mm."-".$dd;
-	$age=intval($_POST['age']);
-	$origin=$_POST['origin'];
-	$units=$_POST['units'];
-	$quantity=floatval($_POST['quantity']);
+	$material=reverseParseIngredients($_POST['material']);
+	if($material==-1){
+		$material="";
+	} 
+	$method=$_POST['method'];
 	$cost=floatval($_POST['cost']);
 	$comments=$_POST['comments'];
 	if(isset($_FILES['input_picture']['name'])){
@@ -36,7 +37,8 @@ if(isset($_POST['add'])){
 		$picture="";
 	}
 	
-	$query="INSERT INTO input_log (crop_id, user_id, field_id, plots, input_log_date, input_age, input_origin, input_units, input_quantity, input_cost, input_comments, input_picture) VALUES ($id,$user,$field,'$plots','$date',$age,'$origin','$units',$quantity,$cost,'$comments','$picture')";
+	$query="INSERT INTO input_log (treatment_id, user_id, field_id, plots, input_log_date, input_treatment_material, input_treatment_preparation_method, input_cost, input_comments, input_picture) VALUES ($id,$user,$field,'$plots','$date','$material','$method',$cost,'$comments','$picture')";
+
 	$result = mysqli_query($dbh,$query);
 	echo "<script type='text/javascript'>";
 	echo "window.opener.location.reload(false);";
@@ -48,10 +50,11 @@ if(isset($_POST['add'])){
 	$id=$_GET['id'];
 	$field=$_GET['field'];
 	
-	$query="SELECT crop_name FROM crop WHERE crop_id=$id";
+	$query="SELECT treatment_name, treatment_category FROM treatment WHERE treatment_id=$id";
 	$result = mysqli_query($dbh,$query);
 	$row = mysqli_fetch_array($result,MYSQL_NUM);
-	$crop_name = $row[0];
+	$treatment_name = $row[0];
+	$treatment_category = $row[1];
 
 	$yy=date('Y');
 	$mm=date('m');
@@ -160,7 +163,7 @@ if(isset($_POST['add'])){
 </head>
 <body>
 <div class="w3-container w3-card-4">
-<h2 class="w3-green">Add crop input</h2>
+<h2 class="w3-green">Add treatment input</h2>
 <form method="post" enctype="multipart/form-data" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 <input name="id" type="hidden" id="id" value="<? echo($id); ?>">
 <input name="field" type="hidden" id="field" value="<? echo($field); ?>">
@@ -171,7 +174,7 @@ if(isset($_POST['add'])){
 <b>Field:</b> <?php echo(getFieldNameFromId($dbh,$field)); ?><br>
 <b>Plots (click on a plot to remove):</b> <span id="included_plots"></span><br>
 <?php
-$plots=getRemainingPlots($dbh,$field,"",($id*-1),"ic");
+$plots=getRemainingPlots($dbh,$field,"",($id*-1),"it");
 if($plots!=""){
 	$plot_list=explode(",",$plots);
 	$plot_labels=calculatePlotLabels($dbh,$field,$plots);
@@ -191,7 +194,7 @@ for($i=0;$i<sizeof($plot_list);$i++){
 <?php }
 ?>
 <br>
-<b>Crop:</b> <?php echo($crop_name); ?><br><br>
+<b>Treatment:</b> <?php echo($treatment_name." (".$treatment_category.")"); ?><br><br>
 <b>Date:</b>
 <div class="w3-row-padding">
   <div class="w3-third">
@@ -238,10 +241,8 @@ for($i=0;$i<sizeof($plot_list);$i++){
     <input class="w3-input w3-border-teal w3-text-green" type="text" name="yyyy" value="<?php echo($yy); ?>" onkeypress="return isNumberKey(event)">
   </div>
 </div>
-<br><b>Age (days):</b> <input class="w3-input w3-border-green w3-text-green" name="age" type="text" value="" onkeypress="return isNumberKey(event)">
-<b>Origin:</b> <input class="w3-input w3-border-green w3-text-green" name="origin" type="text" maxlength="200" value="">
-<b>Units:</b> <input class="w3-input w3-border-green w3-text-green" name="units" type="text" maxlength="200" value="kg">
-<b>Quantity:</b> <input class="w3-input w3-border-green w3-text-green" name="quantity" type="text" value="" onkeypress="return isNumberKey(event)">
+<br><b>Ingredients (comma separated, use format: <i>ingredient: quantity units</i>):</b> <input class="w3-input w3-border-green w3-text-green" name="material" type="text" value="">
+<b>Preparation method:</b> <input class="w3-input w3-border-green w3-text-green" name="method" type="text" value="">
 <b>Cost (local currency):</b> <input class="w3-input w3-border-green w3-text-green" name="cost" type="text" value="" onkeypress="return isNumberKey(event)">
 <br>
 <b>Image:</b> <input class="w3-input w3-border-green w3-text-green" name="input_picture" type="file" id="input_picture" accept=".jpg,.png">

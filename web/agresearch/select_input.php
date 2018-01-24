@@ -15,7 +15,7 @@ if(isset($_POST['enter'])){
 		$id=$id*-1;
 		header("Location: add_ilc.php?id=$id&field=$field");
 	} else {
-		header("Location: add_ilt.php?id=$id");
+		header("Location: add_ilt.php?id=$id&field=$field");
 	}
 
 } else if(isset($_SESSION['admin']) && $_SESSION['admin']==true){
