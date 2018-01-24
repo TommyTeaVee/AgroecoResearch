@@ -44,18 +44,26 @@ function insertRow(){
     var inp1=new_row.cells[0].getElementsByTagName('input')[0];
     inp1.id += len;
     inp1.value = '';
-	for (var i=1;i<(new_row.cells.length-2);i++){
+	for (var i=1;i<(new_row.cells.length-1);i++){
 		var inpx = new_row.cells[i].getElementsByTagName('select')[0];
 		inpx.setAttribute("onchange","checkOther(this,'')");
-		inpx.value=' ';
+		inpx.value='_';
 		inpx.id += len;
+		var parent = inpx.parentNode;
+		if(parent.childNodes.length==2){
+			parent.removeChild(parent.childNodes[1]);
+		}
 	}
     table.appendChild(new_row);
 }
 
 function deleteRow(row){
-	var i=row.parentNode.parentNode.rowIndex;
-	document.getElementById('sample_table').deleteRow(i);
+	var table = document.getElementById('sample_table');
+    var rowCount = table.rows.length;
+	if(rowCount>2){
+		var i=row.parentNode.parentNode.rowIndex;
+		document.getElementById('sample_table').deleteRow(i);
+	}
 }
 
 function checkOther(select,v){
@@ -87,9 +95,8 @@ function inArray(needle,haystack){
 	return found;
 }
 
-/*
 
-function saveSamples(log_id){
+function saveSamples(log_id,num_cols){
 	var error=false;
 	var sampleNumbers=[];
 	var sampleValues=[];
@@ -107,43 +114,22 @@ function saveSamples(log_id){
 				error=true;
 				break;
 			}
-<?php
-if($type=="0"){
-?>
-			var s1 = row.cells[1].childNodes[0];
-			var sampleValue=s1.value;
-			if(sampleValue=="-1"){
-				var inp2 = row.cells[1].childNodes[1];
-				sampleValue=inp2.value;
+			
+			var sampleValue="";
+			for (var j = 1; j <= num_cols; j++){
+				var s1 = row.cells[j].childNodes[0];
+				var value=s1.value;
+				if(value=="-1"){
+					var inp2 = row.cells[j].childNodes[1];
+					value=inp2.value;
+				} 
 				if(sampleValue==""){
-					alert("Missing sample value in row "+i);
-					error=true;
-					break;
+					sampleValue=value
+				} else {
+					sampleValue+=";"+value;
 				}
 			}
 			sampleValues.push(sampleValue);
-<?php
-} else {
-?>
-			var inp2 = row.cells[1].childNodes[0];
-			var sampleValue=inp2.value;
-			if(sampleValue!=""){
-				var sampleValueF=parseFloat(sampleValue);
-				if(sampleValueF><?php echo($range_min); ?> && sampleValueF<<?php echo($range_max); ?>){
-					sampleValues.push(inp2.value);
-				} else {
-					alert("Value out of range in row "+i);
-					error=true;
-					break;
-				}
-			} else {
-				alert("Missing sample value in row "+i);
-				error=true;
-				break;
-			}
-<?php
-}
-?>
 		} else {
 			alert("Missing sample number in row "+i);
 			error=true;
@@ -151,10 +137,10 @@ if($type=="0"){
 		}
 	}
 	if(!error){
-		document.location="update_samples.php?id="+log_id+"&numbers="+sampleNumbers.toString()+"&values="+sampleValues.toString();
+		document.location="update_health_report.php?id="+log_id+"&numbers="+sampleNumbers.toString()+"&values="+sampleValues.toString();
 	}
 }
-*/
+
 </script>
 </head>
 <body>
@@ -179,7 +165,7 @@ for($i=0;$i<sizeof($health_report_items);$i++){
 		for($j=0;$j<sizeof($health_report_items);$j++){
 			echo('<td>');
 			echo('<select class="w3-select w3-text-green w3-small" name="value" onchange="checkOther(this,\''.$sample_elements[$j].'\')">');
-			echo('<option value=" "> </option>');
+			echo('<option value="_" selected> </option>');
 			$found=false;
 			for($k=0;$k<sizeof($health_report_categories[$j])-1;$k++){
 				$category_item=stripslashes($health_report_categories[$j][$k]);
@@ -208,7 +194,7 @@ for($i=0;$i<sizeof($health_report_items);$i++){
 </div>
 </div>
 <button class="w3-button w3-green w3-round w3-border w3-border-green w3-large w3-round-large" id="add_sample" name="add_sample" onclick="insertRow()">Add sample</button><br><br>
-<button class="w3-button w3-green w3-round w3-border w3-border-green w3-large w3-round-large" id="edit" name="edit" onclick="saveSamples(<?php echo($id); ?>)">Edit</button> <button class="w3-button w3-green w3-round w3-border w3-border-green w3-large w3-round-large" onclick="javascript:window.close();">Close</button><br><br>
+<button class="w3-button w3-green w3-round w3-border w3-border-green w3-large w3-round-large" id="edit" name="edit" onclick="saveSamples(<?php echo($id.",".sizeof($health_report_items)); ?>)">Edit</button> <button class="w3-button w3-green w3-round w3-border w3-border-green w3-large w3-round-large" onclick="javascript:window.close();">Close</button><br><br>
 </div>
 </body>
 </html>

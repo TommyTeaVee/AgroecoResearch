@@ -8,7 +8,8 @@ session_start();
 
 $id=$_GET['id'];
 $numbers=$_GET['numbers'];
-$values=$_GET['values'];
+$values=str_replace(";","#",$_GET['values']);
+$values=str_replace("_"," ",$values);
 
 $numbers_list=explode(",",$numbers);
 $values_list=explode(",",$values);
@@ -22,7 +23,7 @@ for($i=0;$i<sizeof($numbers_list);$i++){
 }
 
 $query="UPDATE log SET log_value_text='$samples_string' WHERE log_id=$id";
-//$result = mysqli_query($dbh,$query);
+$result = mysqli_query($dbh,$query);
 ?>
 <!DOCTYPE html>
 <html>
@@ -31,7 +32,6 @@ $query="UPDATE log SET log_value_text='$samples_string' WHERE log_id=$id";
 <link rel="stylesheet" href="css/w3.css">
 <title>Agroeco Research</title>
 </head>
-<body>
-<?php echo($values); ?>
+<body onload="javascript:window.close();">
 </body>
 </html>

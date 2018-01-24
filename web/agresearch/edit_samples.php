@@ -56,8 +56,12 @@ function insertRow(type){
 }
 
 function deleteRow(row){
-	var i=row.parentNode.parentNode.rowIndex;
-	document.getElementById('sample_table').deleteRow(i);
+	var table = document.getElementById('sample_table');
+    var rowCount = table.rows.length;
+	if(rowCount>2){
+		var i=row.parentNode.parentNode.rowIndex;
+		document.getElementById('sample_table').deleteRow(i);
+	}
 }
 
 function checkOther(select,v){

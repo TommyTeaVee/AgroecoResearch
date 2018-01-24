@@ -165,7 +165,7 @@ while($row = mysqli_fetch_array($result,MYSQL_NUM)){
 		$link_details="calc_l.php?id=".$row[1]."&task=details";
 		$link_edit="calc_l.php?id=".$row[1]."&task=edit";
 	}
-	echo('<td><a href="'.$link_details.'" onclick="return showPopup(\''.$link_details.'\',800,700)">Details</a> || <a href="'.$link_edit.'" onclick="return showPopup(\''.$link_edit.'\',800,700)">Edit</a></td>');
+	echo('<td><a href="'.$link_details.'" onclick="return showPopup(\''.$link_details.'\',900,700)">Details</a> || <a href="'.$link_edit.'" onclick="return showPopup(\''.$link_edit.'\',900,700)">Edit</a></td>');
 	echo('</tr>');
 	$n++;
 }

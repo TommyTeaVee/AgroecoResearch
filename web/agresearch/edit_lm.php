@@ -164,11 +164,11 @@ if($row[14]==0){
 	$values=parseSampleValues($row[10]);
 	if($row[6]==0){
 		?>
-<b><br>Values (sample:value)</b> <?php echo($values); ?> <a href="edit_samples.php?id=<?php echo($id); ?>&m_id=<?php echo($row[16]); ?>">Edit</a><br><br>
+<b><br>Values (sample:value)</b> <?php echo($values); ?><br><a href="edit_samples.php?id=<?php echo($id); ?>&m_id=<?php echo($row[16]); ?>">Edit</a><br><br>
 <?php	
 	} else if($row[6]==1) {
 	?>
-<b><br>Values (sample:value in <?php echo($row[7]); ?>)</b> <?php echo($values); ?> <a href="edit_samples.php?id=<?php echo($id); ?>&m_id=<?php echo($row[16]); ?>">Edit</a><br><br>
+<b><br>Values (sample:value in <?php echo($row[7]); ?>)</b> <?php echo($values); ?><br><a href="edit_samples.php?id=<?php echo($id); ?>&m_id=<?php echo($row[16]); ?>">Edit</a><br><br>
 <?php
 	} else {
 		$values=parseHealthReportValues($dbh,$row[10]);
