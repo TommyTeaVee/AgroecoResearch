@@ -173,7 +173,7 @@ if($row[14]==0){
 	} else {
 		$values=parseHealthReportValues($dbh,$row[10]);
 	?>
-<b>Health report (sample #:problems)</b><br> <?php echo($values); ?><br><a href="edit_health_report.php?id=<?php echo($id); ?>&m_id=<?php echo($row[16]); ?>">Edit</a><br><br>
+<b><br>Health report (sample #:problems)</b><br> <?php echo($values); ?><br><a href="edit_health_report.php?id=<?php echo($id); ?>&m_id=<?php echo($row[16]); ?>">Edit</a><br><br>
 <?php
 	}
 }
