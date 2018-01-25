@@ -192,34 +192,32 @@ function calculatePlotLabels($dbh,$field_id,$plotsCSV){
 		$field_configuration=$row[0];
 		$elements=explode(";",$field_configuration);
 		$plots=explode(",",$plotsCSV);
-		if(sizeof($plots)==(sizeof($elements)-3)){
-			$ret="All";
-		} else {
-			for($i=0;$i<sizeof($plots);$i++){
-				$plot=$elements[$plots[$i]+2];
-				$plot_parts=parseConfig($plot);
-				$plot_string=getCropSymbolFromId($dbh,$plot_parts[0]);
-				$plot_treatments="";
-				if($plot_parts[3]!=0){
-					$plot_treatments="P";
-				}
-				if($plot_parts[2]!=0){
-					$plot_treatments.="S";
-				}
-				if($plot_parts[1]!=0){
-					$plot_treatments.="L";
-				}
-				if($plot_treatments!=""){
-					$plot_string=$plot_string."-".$plot_treatments;
-				}
-			
-				if($ret==""){
-					$ret=$plot_string;
-				} else {
-					$ret.=", ".$plot_string;
-				}
+		
+		for($i=0;$i<sizeof($plots);$i++){
+			$plot=$elements[$plots[$i]+2];
+			$plot_parts=parseConfig($plot);
+			$plot_string=getCropSymbolFromId($dbh,$plot_parts[0]);
+			$plot_treatments="";
+			if($plot_parts[3]!=0){
+				$plot_treatments="P";
+			}
+			if($plot_parts[2]!=0){
+				$plot_treatments.="S";
+			}
+			if($plot_parts[1]!=0){
+				$plot_treatments.="L";
+			}
+			if($plot_treatments!=""){
+				$plot_string=$plot_string."-".$plot_treatments;
+			}
+		
+			if($ret==""){
+				$ret=$plot_string;
+			} else {
+				$ret.=", ".$plot_string;
 			}
 		}
+
 	}
 	
 	return $ret;
@@ -363,10 +361,10 @@ function getRemainingPlots($dbh,$field_id,$plots,$id,$task){
 		$field_configuration=$row[0];
 		$elements=explode(";",$field_configuration);
 		if((sizeof($elements)-3)>sizeof($plots)){
-			for($i=2;$i<(sizeof($elements)-1);$i++){
+			for($i=2;$i<sizeof($elements)-1;$i++){
 				if(!in_array(($i-2),$plots) && isPlotAssociatedWithTask($dbh,$elements[$i],$id,$task)){
 					if($ret==""){
-						$ret=($i-2);
+						$ret=(string)($i-2);
 					} else {
 						$ret.=",".($i-2);
 					}
