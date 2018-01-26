@@ -104,6 +104,11 @@ if(isset($_POST['add'])){
 			var samples = document.getElementById("samples");
 			samples.innerHTML=values;
 		}
+		
+		function updateHealthReport(values) {
+			var health = document.getElementById("health");
+			health.innerHTML=values;
+		}
 	   
 	   function addPlot(){
 		var e = document.getElementById("a_plots");
@@ -284,16 +289,16 @@ if($measurement_has_samples==0){
 	$values=parseSampleValues($values);
 	if($measurement_type==0){
 		?>
-<b><br>Values (sample:value)</b> <span id="samples"><?php echo($values); ?></span><br><a href="javascript:showPopup('edit_samples.php?id=-1&m_id=<?php echo($id); ?>',800,700);">Add samples</a><br><br>
+<b><br>Values (sample:value)</b> <span id="samples"><?php echo($values); ?></span><br><a href="javascript:showPopup('edit_samples.php?id=-1&m_id=<?php echo($id); ?>',800,700);">Add/edit samples</a><br><br>
 <?php	
 	} else if($measurement_type==1) {
 	?>
-<b><br>Values (sample:value in <?php echo($measurement_units); ?>)</b> <span id="samples"><?php echo($values); ?></span><br><a href="javascript:showPopup('edit_samples.php?id=-1&m_id=<?php echo($id); ?>',800,700);">Add samples</a><br><br>
+<b><br>Values (sample:value in <?php echo($measurement_units); ?>)</b> <span id="samples"><?php echo($values); ?></span><br><a href="javascript:showPopup('edit_samples.php?id=-1&m_id=<?php echo($id); ?>',800,700);">Add/edit samples</a><br><br>
 <?php
 	} else {
 		$values=parseHealthReportValues($dbh,$values);
 	?>
-<b><br>Health report (sample #:problems)</b><br> <?php echo($values); ?><br><a href="edit_health_report.php?id=-1&m_id=<?php echo($id); ?>">Add health report</a><br><br>
+<b><br>Health report (sample #:problems)</b><br> <span id="health"><?php echo($values); ?></span><br><a href="javascript:showPopup('edit_health_report.php?id=-1&m_id=<?php echo($id); ?>',800,700);">Add/edit health report</a><br><br>
 <?php
 	}
 }

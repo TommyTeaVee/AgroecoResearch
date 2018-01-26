@@ -9,11 +9,15 @@ session_start();
 if(isset($_SESSION['admin']) && $_SESSION['admin']==true && isset($_GET['id'])){
 	$id=$_GET['id'];
 	$m_id=$_GET['m_id'];
-	$query="SELECT log_value_text FROM log WHERE log_id=$id";
-	$result = mysqli_query($dbh,$query);
-	$row = mysqli_fetch_array($result,MYSQL_NUM);
+	if($id>=0){
+		$query="SELECT log_value_text FROM log WHERE log_id=$id";
+		$result = mysqli_query($dbh,$query);
+		$row = mysqli_fetch_array($result,MYSQL_NUM);
 	
-	$samples=$row[0];
+		$samples=$row[0];
+	} else {
+		$samples=$_SESSION['values'];
+	}
 	
 	$query="SELECT item, item_categories FROM health_report_item ORDER BY item";
 	$result = mysqli_query($dbh,$query);
@@ -176,7 +180,7 @@ for($i=0;$i<sizeof($health_report_items);$i++){
 				}
 				echo('<option value="'.$category_item.'"'.$selected.'>'.$category_item.'</option>');
 			}
-			if($found || $sample_elements[$j]==" "){
+			if($found || $sample_elements[$j]==" " || $sample_elements[$j]==""){
 				echo('<option value="-1">Other</option>');
 				echo('</select>');
 			} else {
@@ -194,7 +198,7 @@ for($i=0;$i<sizeof($health_report_items);$i++){
 </div>
 </div>
 <button class="w3-button w3-green w3-round w3-border w3-border-green w3-large w3-round-large" id="add_sample" name="add_sample" onclick="insertRow()">Add sample</button><br><br>
-<button class="w3-button w3-green w3-round w3-border w3-border-green w3-large w3-round-large" id="edit" name="edit" onclick="saveSamples(<?php echo($id.",".sizeof($health_report_items)); ?>)">Edit</button> <button class="w3-button w3-green w3-round w3-border w3-border-green w3-large w3-round-large" onclick="javascript:window.close();">Close</button><br><br>
+<button class="w3-button w3-green w3-round w3-border w3-border-green w3-large w3-round-large" id="edit" name="edit" onclick="saveSamples(<?php echo($id.",".sizeof($health_report_items)); ?>)"><?php if($id>=0) { echo("Edit"); } else { echo("Save"); } ?></button> <button class="w3-button w3-green w3-round w3-border w3-border-green w3-large w3-round-large" onclick="javascript:window.close();">Close</button><br><br>
 </div>
 </body>
 </html>
