@@ -45,6 +45,16 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
+        if(getIntent().getExtras()==null){
+            final Context context = this;
+            Intent i;
+            i = new Intent(context, loginScreen.class);
+            startActivity(i);
+            finish();
+            return;
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_data);
 
@@ -58,14 +68,6 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
         userId = getIntent().getExtras().getInt("userId");
         userRole = getIntent().getExtras().getInt("userRole");
         update = getIntent().getExtras().getString("update");
-
-        if(update==null){
-            final Context context = this;
-            Intent i;
-            i = new Intent(context, loginScreen.class);
-            startActivity(i);
-            finish();
-        }
 
         if(update.equals("activity")){
             int logId = getIntent().getExtras().getInt("logId");

@@ -44,6 +44,16 @@ public class measurementChooser extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
+        if(getIntent().getExtras()==null){
+            final Context context = this;
+            Intent i;
+            i = new Intent(context, loginScreen.class);
+            startActivity(i);
+            finish();
+            return;
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_measurement_chooser);
 

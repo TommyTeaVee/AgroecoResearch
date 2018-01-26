@@ -41,18 +41,21 @@ public class downloadCatalogs extends AppCompatActivity implements httpConnectio
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_download_catalogs);
-        userId = getIntent().getExtras().getInt("userId");
-        userRole = getIntent().getExtras().getInt("userRole");
-        server = getIntent().getExtras().getString("server");
-        if(server==null){
+
+        if(getIntent().getExtras()==null){
             final Context context = this;
             Intent i;
             i = new Intent(context, loginScreen.class);
             startActivity(i);
             finish();
+            return;
         }
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_download_catalogs);
+        userId = getIntent().getExtras().getInt("userId");
+        userRole = getIntent().getExtras().getInt("userRole");
+        server = getIntent().getExtras().getString("server");
 
         initializeChecboxes();
     }

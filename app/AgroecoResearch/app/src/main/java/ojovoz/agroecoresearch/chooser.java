@@ -39,6 +39,16 @@ public class chooser extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
+        if(getIntent().getExtras()==null){
+            final Context context = this;
+            Intent i;
+            i = new Intent(context, loginScreen.class);
+            startActivity(i);
+            finish();
+            return;
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chooser);
 
@@ -46,13 +56,6 @@ public class chooser extends AppCompatActivity {
         userId = getIntent().getExtras().getInt("userId");
         userRole = getIntent().getExtras().getInt("userRole");
         task = getIntent().getExtras().getString("task");
-        if(task==null){
-            final Context context = this;
-            Intent i;
-            i = new Intent(context, loginScreen.class);
-            startActivity(i);
-            finish();
-        }
 
         agroHelper = new agroecoHelper(this,"crops,fields,treatments,activities");
 

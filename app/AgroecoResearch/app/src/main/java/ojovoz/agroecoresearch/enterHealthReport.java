@@ -68,6 +68,16 @@ public class enterHealthReport extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
+        if(getIntent().getExtras()==null){
+            final Context context = this;
+            Intent i;
+            i = new Intent(context, loginScreen.class);
+            startActivity(i);
+            finish();
+            return;
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_health_report);
 
@@ -81,13 +91,6 @@ public class enterHealthReport extends AppCompatActivity {
         task = getIntent().getExtras().getString("task");
         fieldId = getIntent().getExtras().getInt("field");
         plots = getIntent().getExtras().getString("plots");
-        if(plots==null){
-            final Context context = this;
-            Intent i;
-            i = new Intent(context, loginScreen.class);
-            startActivity(i);
-            finish();
-        }
         measurementId = getIntent().getExtras().getInt("measurement");
         hasSamples = getIntent().getExtras().getBoolean("hasSamples");
         measurementTitle = getIntent().getExtras().getString("title");

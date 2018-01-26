@@ -37,19 +37,22 @@ public class inputChooser extends AppCompatActivity {
     public ArrayList<oTreatment> treatments;
 
     public void onCreate(Bundle savedInstanceState) {
+
+        if(getIntent().getExtras()==null){
+            final Context context = this;
+            Intent i;
+            i = new Intent(context, loginScreen.class);
+            startActivity(i);
+            finish();
+            return;
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input_chooser);
 
         userId = getIntent().getExtras().getInt("userId");
         userRole = getIntent().getExtras().getInt("userRole");
         task = getIntent().getExtras().getString("task");
-        if(task==null){
-            final Context context = this;
-            Intent i;
-            i = new Intent(context, loginScreen.class);
-            startActivity(i);
-            finish();
-        }
 
         agroHelper = new agroecoHelper(this, "crops,fields,treatments,input_log");
 
