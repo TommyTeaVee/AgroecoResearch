@@ -9,7 +9,12 @@ session_start();
 if(isset($_POST['add'])){
 	
 	$id=$_POST['id'];
+	$field=$_POST['field'];
+	$plots=$_POST['plots'];
+	$user=$_SESSION['user_id'];
+	
 	$type=$_POST['type'];
+	$has_samples=$_POST['has_samples'];
 	$dd=$_POST['dd'];
 	$mm=$_POST['mm'];
 	$yyyy=$_POST['yyyy'];
@@ -20,21 +25,28 @@ if(isset($_POST['add'])){
 		$upload = "images/".$image_file;
 		if(is_uploaded_file($_FILES['log_picture']['tmp_name'])) {
 			move_uploaded_file($_FILES['log_picture']['tmp_name'],$upload);
-			$update_picture=", log_picture='$upload'";
+			$picture=$upload;
 		} else {
-			$update_picture="";
+			$picture="";
 		}
 	} else {
-		$update_picture="";
+		$picture="";
 	}
 	
-	if($type=="0"){
-		$value=$_POST['value'];
-		$query="UPDATE log SET log_date='$date', log_value_text='$value', log_comments='$comments'".$update_picture." WHERE log_id=$id";
-	} else {
+	if($type=="0" || $has_samples=="1"){
+		if($has_samples=="0"){
+			$value=$_POST['value'];
+		} else {
+			$value=$_SESSION['values'];
+			$units=$_POST['units_original'];
+		}
+		$query="INSERT INTO log (measurement_id, user_id, field_id, plots, log_date, log_value_text, log_value_units, log_comments, log_picture) VALUES ($id,$user,$field,'$plots','$date','$value','$units','$comments','$picture')";
+	} else if($type=="1") {
 		$value=floatval($_POST['value']);
 		$units=$_POST['units'];
-		$query="UPDATE log SET log_date='$date', log_value_number=$value, log_value_units='$units', log_comments='$comments'".$update_picture." WHERE log_id=$id";
+		$query="INSERT INTO log (measurement_id, user_id, field_id, plots, log_date, log_value_number, log_value_units, log_comments, log_picture) VALUES ($id,$user,$field,'$plots','$date',$value,'$units','$comments','$picture')";
+	} else if($type=="2"){
+		
 	}
 	
 	$result = mysqli_query($dbh,$query);
@@ -82,6 +94,16 @@ if(isset($_POST['add'])){
 
           return true;
        }
+	   
+	   function showPopup(url,width,height) {
+			newwindow=window.open(url,'newname','height=' + height +',width=' + width + ',top=50,left=50,screenX=50,screenY=50');
+			if (window.focus) {newwindow.focus()}
+		}
+		
+		function updateSamples(values) {
+			var samples = document.getElementById("samples");
+			samples.innerHTML=values;
+		}
 	   
 	   function addPlot(){
 		var e = document.getElementById("a_plots");
@@ -164,6 +186,7 @@ if(isset($_POST['add'])){
 <input name="id" type="hidden" id="id" value="<? echo($id); ?>">
 <input name="type" type="hidden" id="type" value="<? echo($measurement_type); ?>">
 <input name="has_samples" type="hidden" id="has_samples" value="<? echo($measurement_has_samples); ?>">
+<input name="units_original" type="hidden" id="units_original" value="<?php echo($measurement_units); ?>">
 <input name="field" type="hidden" id="field" value="<? echo($field); ?>">
 <input name="plots" type="hidden" id="plots" value="">
 <input name="plot_labels" type="hidden" id="plot_labels" value="">
@@ -261,11 +284,11 @@ if($measurement_has_samples==0){
 	$values=parseSampleValues($values);
 	if($measurement_type==0){
 		?>
-<b><br>Values (sample:value)</b> <?php echo($values); ?><br><a href="edit_samples.php?id=-1&m_id=<?php echo($id); ?>">Add samples</a><br><br>
+<b><br>Values (sample:value)</b> <span id="samples"><?php echo($values); ?></span><br><a href="javascript:showPopup('edit_samples.php?id=-1&m_id=<?php echo($id); ?>',800,700);">Add samples</a><br><br>
 <?php	
 	} else if($measurement_type==1) {
 	?>
-<b><br>Values (sample:value in <?php echo($measurement_units); ?>)</b> <?php echo($values); ?><br><a href="edit_samples.php?id=-1&m_id=<?php echo($id); ?>">Add samples</a><br><br>
+<b><br>Values (sample:value in <?php echo($measurement_units); ?>)</b> <span id="samples"><?php echo($values); ?></span><br><a href="javascript:showPopup('edit_samples.php?id=-1&m_id=<?php echo($id); ?>',800,700);">Add samples</a><br><br>
 <?php
 	} else {
 		$values=parseHealthReportValues($dbh,$values);

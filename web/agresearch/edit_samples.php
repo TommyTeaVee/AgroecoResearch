@@ -9,11 +9,15 @@ session_start();
 if(isset($_SESSION['admin']) && $_SESSION['admin']==true && isset($_GET['id'])){
 	$id=$_GET['id'];
 	$m_id=$_GET['m_id'];
-	$query="SELECT log_value_text FROM log WHERE log_id=$id";
-	$result = mysqli_query($dbh,$query);
-	$row = mysqli_fetch_array($result,MYSQL_NUM);
+	if($id>=0){
+		$query="SELECT log_value_text FROM log WHERE log_id=$id";
+		$result = mysqli_query($dbh,$query);
+		$row = mysqli_fetch_array($result,MYSQL_NUM);
 	
-	$samples=$row[0];
+		$samples=$row[0];
+	} else {
+		$samples=$_SESSION['values'];
+	}
 	
 	$query="SELECT measurement_type, measurement_categories, measurement_range_min, measurement_range_max, measurement_units FROM measurement WHERE measurement_id=$m_id";
 	$result = mysqli_query($dbh,$query);
@@ -204,7 +208,7 @@ if($type=="0"){
 </div>
 </div>
 <button class="w3-button w3-green w3-round w3-border w3-border-green w3-large w3-round-large" id="add_sample" name="add_sample" onclick="insertRow(<?php echo($type); ?>)">Add sample</button><br><br>
-<button class="w3-button w3-green w3-round w3-border w3-border-green w3-large w3-round-large" id="edit" name="edit" onclick="saveSamples(<?php echo($id); ?>)">Edit</button> <button class="w3-button w3-green w3-round w3-border w3-border-green w3-large w3-round-large" onclick="javascript:window.close();">Close</button><br><br>
+<button class="w3-button w3-green w3-round w3-border w3-border-green w3-large w3-round-large" id="edit" name="edit" onclick="saveSamples(<?php echo($id); ?>)"><?php if($id>=0) { echo("Edit"); } else { echo("Save"); } ?></button> <button class="w3-button w3-green w3-round w3-border w3-border-green w3-large w3-round-large" onclick="javascript:window.close();">Close</button><br><br>
 </div>
 </body>
 </html>
