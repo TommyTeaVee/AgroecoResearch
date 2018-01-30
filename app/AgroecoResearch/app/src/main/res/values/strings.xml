@@ -78,13 +78,13 @@
     <string name="treatmentsTableRowText">Treatments</string>
     <string name="enterCropAgeText">Age (days)</string>
     <string name="enterCropOriginText">Origin</string>
-    <string name="enterCropCostText">Cost (local currency)</string>
-    <string name="enterCropQuantityText">Quantity</string>
+    <string name="enterCropCostText">Total cost (local currency)</string>
+    <string name="enterCropQuantityText">Total quantity</string>
     <string name="enterCropInputTitle">Crop input</string>
     <string name="enterTreatmentMaterialText">Ingredients (comma separated)</string>
     <string name="enterTreatmentQuantityText">Quantities and units per plot\n(comma separated)</string>
     <string name="enterTreatmentPreparationMethodText">Preparation method</string>
-    <string name="enterTreatmentCostText">Cost (local currency)</string>
+    <string name="enterTreatmentCostText">Total cost (local currency)</string>
     <string name="enterTreatmentInputTitle">Treatment input</string>
     <string name="activitiesMeasurementsTableTitle">Activities and measurements</string>
     <string name="inputsTableTitle">Inputs</string>
@@ -96,8 +96,8 @@
     <string name="chooseMeasurementTitle">Choose measurement</string>
     <string name="chosenXNotApplicable">Chosen x is not applicable to this field</string>
     <string name="noPlotsChosen">Please choose at least one plot</string>
-    <string name="enterLaborersText">Number of laborers</string>
-    <string name="enterActivityCostText">Cost (local currency)</string>
+    <string name="enterLaborersText">Total number of laborers</string>
+    <string name="enterActivityCostText">Total cost (local currency)</string>
     <string name="samplesTitle">Sample</string>
     <string name="addSampleText">Add sample</string>
     <string name="valuesTitle">Value</string>
@@ -145,4 +145,5 @@
     <string name="deleteIngredientString">Do you want to delete ingredient x?</string>
     <string name="deleteIngredientTitle">Delete ingredient</string>
     <string name="emptyIngredientMessage">Ingredient x data is invalid</string>
+    <string name="enterActivityValueText">Total value</string>
 </resources>
