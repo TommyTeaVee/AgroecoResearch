@@ -41,6 +41,7 @@ public class mainMenu extends AppCompatActivity {
         createButtons();
     }
 
+    /*
     @Override public void onResume() {
         super.onResume();
         if(userId==0){
@@ -52,6 +53,7 @@ public class mainMenu extends AppCompatActivity {
             return;
         }
     }
+    */
 
     @Override
     public void onBackPressed(){

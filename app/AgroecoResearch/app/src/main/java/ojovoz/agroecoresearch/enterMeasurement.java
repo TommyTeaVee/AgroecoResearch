@@ -355,6 +355,7 @@ public class enterMeasurement extends AppCompatActivity {
         });
     }
 
+    /*
     @Override public void onResume() {
         super.onResume();
         if(userId==0){
@@ -366,6 +367,7 @@ public class enterMeasurement extends AppCompatActivity {
             return;
         }
     }
+    */
 
     @Override public void onBackPressed () {
         if(changes) {

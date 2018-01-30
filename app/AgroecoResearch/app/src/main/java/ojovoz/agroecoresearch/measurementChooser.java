@@ -84,6 +84,7 @@ public class measurementChooser extends AppCompatActivity {
         }
     }
 
+    /*
     @Override public void onResume() {
         super.onResume();
         if(userId==0){
@@ -95,6 +96,7 @@ public class measurementChooser extends AppCompatActivity {
             return;
         }
     }
+    */
 
     @Override
     public void onBackPressed(){

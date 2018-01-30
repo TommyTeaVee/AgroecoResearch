@@ -107,6 +107,7 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
         fillTable();
     }
 
+    /*
     @Override public void onResume() {
         super.onResume();
         if(userId==0){
@@ -118,6 +119,7 @@ public class manageData extends AppCompatActivity implements httpConnection.Asyn
             return;
         }
     }
+    */
 
     @Override
     public boolean onCreateOptionsMenu(android.view.Menu menu) {

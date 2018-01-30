@@ -232,6 +232,7 @@ public class enterCropInput extends AppCompatActivity {
         });
     }
 
+    /*
     @Override public void onResume() {
         super.onResume();
         if(userId==0){
@@ -243,6 +244,7 @@ public class enterCropInput extends AppCompatActivity {
             return;
         }
     }
+    */
 
     @Override
     public void onBackPressed(){

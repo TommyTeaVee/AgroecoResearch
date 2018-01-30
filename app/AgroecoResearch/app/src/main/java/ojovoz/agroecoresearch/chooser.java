@@ -67,6 +67,7 @@ public class chooser extends AppCompatActivity {
         fillTable();
     }
 
+    /*
     @Override public void onResume() {
         super.onResume();
         if(userId==0){
@@ -78,6 +79,7 @@ public class chooser extends AppCompatActivity {
             return;
         }
     }
+    */
 
     @Override public void onBackPressed(){
         final Context context = this;

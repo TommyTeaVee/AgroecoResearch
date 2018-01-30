@@ -219,6 +219,7 @@ public class enterActivity extends AppCompatActivity {
         });
     }
 
+    /*
     @Override public void onResume() {
         super.onResume();
         if(userId==0){
@@ -230,6 +231,7 @@ public class enterActivity extends AppCompatActivity {
             return;
         }
     }
+    */
 
     @Override public void onBackPressed(){
         if(changes) {

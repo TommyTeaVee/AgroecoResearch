@@ -40,6 +40,7 @@ public class settings extends AppCompatActivity implements httpConnection.AsyncR
         initializeVariables();
     }
 
+    /*
     @Override public void onResume() {
         super.onResume();
         if(userId==0){
@@ -51,6 +52,7 @@ public class settings extends AppCompatActivity implements httpConnection.AsyncR
             return;
         }
     }
+    */
 
     @Override
     public void onBackPressed(){

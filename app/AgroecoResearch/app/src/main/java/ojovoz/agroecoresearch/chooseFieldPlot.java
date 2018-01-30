@@ -167,6 +167,7 @@ public class chooseFieldPlot extends AppCompatActivity {
 
     }
 
+    /*
     @Override public void onResume() {
         super.onResume();
         if(userId==0){
@@ -178,6 +179,7 @@ public class chooseFieldPlot extends AppCompatActivity {
             return;
         }
     }
+    */
 
     @Override public void onBackPressed(){
         final Context context = this;

@@ -51,6 +51,7 @@ public class downloadCatalogs extends AppCompatActivity implements httpConnectio
         initializeChecboxes();
     }
 
+    /*
     @Override public void onResume() {
         super.onResume();
         if(userId==0){
@@ -62,6 +63,7 @@ public class downloadCatalogs extends AppCompatActivity implements httpConnectio
             return;
         }
     }
+    */
 
     @Override public void onBackPressed(){
         settings();

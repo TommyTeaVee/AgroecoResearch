@@ -194,6 +194,7 @@ public class enterTreatmentInput extends AppCompatActivity {
         }
     }
 
+    /*
     @Override public void onResume() {
         super.onResume();
         if(userId==0){
@@ -205,6 +206,7 @@ public class enterTreatmentInput extends AppCompatActivity {
             return;
         }
     }
+    */
 
     @Override
     public void onBackPressed(){
