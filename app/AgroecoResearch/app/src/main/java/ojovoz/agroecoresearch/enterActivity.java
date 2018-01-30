@@ -66,15 +66,6 @@ public class enterActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
-        if(getIntent().getExtras()==null){
-            final Context context = this;
-            Intent i;
-            i = new Intent(context, loginScreen.class);
-            startActivity(i);
-            finish();
-            return;
-        }
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_activity);
 
@@ -226,6 +217,18 @@ public class enterActivity extends AppCompatActivity {
                 displayDatePicker();
             }
         });
+    }
+
+    @Override public void onResume() {
+        super.onResume();
+        if(userId==0){
+            final Context context = this;
+            Intent i;
+            i = new Intent(context, loginScreen.class);
+            startActivity(i);
+            finish();
+            return;
+        }
     }
 
     @Override public void onBackPressed(){

@@ -40,15 +40,6 @@ public class chooser extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
-        if(getIntent().getExtras()==null){
-            final Context context = this;
-            Intent i;
-            i = new Intent(context, loginScreen.class);
-            startActivity(i);
-            finish();
-            return;
-        }
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chooser);
 
@@ -74,6 +65,18 @@ public class chooser extends AppCompatActivity {
         tt.setText("Choose "+task+":");
 
         fillTable();
+    }
+
+    @Override public void onResume() {
+        super.onResume();
+        if(userId==0){
+            final Context context = this;
+            Intent i;
+            i = new Intent(context, loginScreen.class);
+            startActivity(i);
+            finish();
+            return;
+        }
     }
 
     @Override public void onBackPressed(){

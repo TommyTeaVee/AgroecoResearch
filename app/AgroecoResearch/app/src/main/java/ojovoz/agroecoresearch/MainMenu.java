@@ -30,15 +30,6 @@ public class mainMenu extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
-        if(getIntent().getExtras()==null){
-            final Context context = this;
-            Intent i;
-            i = new Intent(context, loginScreen.class);
-            startActivity(i);
-            finish();
-            return;
-        }
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         userId = getIntent().getExtras().getInt("userId");
@@ -48,6 +39,18 @@ public class mainMenu extends AppCompatActivity {
 
         notifications = new notificationHelper(this);
         createButtons();
+    }
+
+    @Override public void onResume() {
+        super.onResume();
+        if(userId==0){
+            final Context context = this;
+            Intent i;
+            i = new Intent(context, loginScreen.class);
+            startActivity(i);
+            finish();
+            return;
+        }
     }
 
     @Override

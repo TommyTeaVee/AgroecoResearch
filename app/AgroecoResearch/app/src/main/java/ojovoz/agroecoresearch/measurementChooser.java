@@ -45,15 +45,6 @@ public class measurementChooser extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
-        if(getIntent().getExtras()==null){
-            final Context context = this;
-            Intent i;
-            i = new Intent(context, loginScreen.class);
-            startActivity(i);
-            finish();
-            return;
-        }
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_measurement_chooser);
 
@@ -90,6 +81,18 @@ public class measurementChooser extends AppCompatActivity {
             Button fieldListView = (Button) findViewById(R.id.chooseCategoryButton);
             fieldListView.setText(chosenCategory);
             fillTable();
+        }
+    }
+
+    @Override public void onResume() {
+        super.onResume();
+        if(userId==0){
+            final Context context = this;
+            Intent i;
+            i = new Intent(context, loginScreen.class);
+            startActivity(i);
+            finish();
+            return;
         }
     }
 

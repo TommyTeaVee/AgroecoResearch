@@ -78,15 +78,6 @@ public class enterTreatmentInput extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
-        if(getIntent().getExtras()==null){
-            final Context context = this;
-            Intent i;
-            i = new Intent(context, loginScreen.class);
-            startActivity(i);
-            finish();
-            return;
-        }
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_treatment_input);
 
@@ -200,6 +191,18 @@ public class enterTreatmentInput extends AppCompatActivity {
         } else {
             AutoCompleteTextView a = (AutoCompleteTextView) findViewById(R.id.treatmentPreparationMethod);
             a.setImeOptions(EditorInfo.IME_ACTION_NEXT);
+        }
+    }
+
+    @Override public void onResume() {
+        super.onResume();
+        if(userId==0){
+            final Context context = this;
+            Intent i;
+            i = new Intent(context, loginScreen.class);
+            startActivity(i);
+            finish();
+            return;
         }
     }
 
