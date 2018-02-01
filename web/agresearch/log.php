@@ -121,7 +121,7 @@ function confirmDelete(){
 </head>
 <body>
 <div class="w3-container w3-card-4">
-<h2 class="w3-green">Log</h2><br>
+<h2 class="w3-green">Data manager</h2><br>
 <p><table class="w3-table w3-border w3-bordered w3-striped w3-hoverable w3-mobile">
   <thead>
 	<tr class="w3-green">
