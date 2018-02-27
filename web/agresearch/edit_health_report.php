@@ -16,7 +16,7 @@ if(isset($_SESSION['admin']) && $_SESSION['admin']==true && isset($_GET['id'])){
 	
 		$samples=$row[0];
 	} else {
-		$samples=$_SESSION['values'];
+		$samples=stripslashes($_SESSION['values']);
 	}
 	
 	$query="SELECT item, item_categories FROM health_report_item ORDER BY item";
@@ -47,7 +47,7 @@ function insertRow(){
        
     var inp1=new_row.cells[0].getElementsByTagName('input')[0];
     inp1.id += len;
-    inp1.value = '';
+    inp1.value = len;
 	for (var i=1;i<(new_row.cells.length-1);i++){
 		var inpx = new_row.cells[i].getElementsByTagName('select')[0];
 		inpx.setAttribute("onchange","checkOther(this,'')");
@@ -165,7 +165,12 @@ for($i=0;$i<sizeof($health_report_items);$i++){
 	for($i=0;$i<sizeof($sample_list);$i+=2){
 		$sample_elements=explode("#",$sample_list[$i+1]);
 		echo('<tr>');
-		echo('<td><input class="w3-input w3-border-teal w3-text-green w3-small" type="text" name="samplen" id="samplen" value="'.$sample_list[$i].'"></td>');
+		if($sample_list[$i]==""){
+			$sample_n=1;
+		} else {
+			$sample_n=$sample_list[$i];
+		}
+		echo('<td><input class="w3-input w3-border-teal w3-text-green w3-small" type="text" name="samplen" id="samplen" value="'.$sample_n.'"></td>');
 		for($j=0;$j<sizeof($health_report_items);$j++){
 			echo('<td>');
 			echo('<select class="w3-select w3-text-green w3-small" name="value" onchange="checkOther(this,\''.$sample_elements[$j].'\')">');

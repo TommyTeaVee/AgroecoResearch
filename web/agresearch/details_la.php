@@ -28,7 +28,7 @@ if(isset($_SESSION['admin']) && $_SESSION['admin']==true && isset($_GET['id'])){
 <h2 class="w3-green">Item details</h2>
 <p><div class="w3-text-green">
 <b>Registered by:</b> <?php echo(getUserNameFromId($dbh,$row[13])); ?><br>
-<b>Field:</b> <?php echo($row[2]." replication ".$row[3]); ?><br>
+<b>Field:</b> <?php echo($row[2]." R".$row[3]); ?><br>
 <b>Plots:</b> <?php echo($plot_labels); ?><br>
 <b>Activity:</b> <?php echo($row[5]); ?><br>
 <b>Date:</b> <?php echo($row[1]); ?> <br>

@@ -39,6 +39,16 @@ if(isset($_SESSION['admin']) && $_SESSION['admin']==true && isset($_GET['id'])){
 <link rel="stylesheet" href="css/w3.css">
 <title>Agroeco Research</title>
 <script>
+function isNumberKey(evt)
+       {
+          var charCode = (evt.which) ? evt.which : evt.keyCode;
+          if (charCode != 46 && charCode > 31 
+            && (charCode < 48 || charCode > 57))
+             return false;
+
+          return true;
+       }
+
 function insertRow(type){
 	var table=document.getElementById('sample_table');
     var new_row=table.rows[1].cloneNode(true);
@@ -46,7 +56,7 @@ function insertRow(type){
        
     var inp1=new_row.cells[0].getElementsByTagName('input')[0];
     inp1.id += len;
-    inp1.value = '';
+    inp1.value = len;
 	if(type==0){
 		var inp2 = new_row.cells[1].getElementsByTagName('select')[0];
 		inp2.setAttribute("onchange","checkOther(this,'')");
@@ -174,7 +184,12 @@ if($type=="0"){
 	$sample_elements=explode("*",$samples);
 	for($i=0;$i<sizeof($sample_elements);$i+=2){
 		echo('<tr>');
-		echo('<td><input class="w3-input w3-border-teal w3-text-green" type="text" name="samplen" id="samplen" value="'.$sample_elements[$i].'"></td>');
+		if($sample_elements[$i]==""){
+			$sample_n=1;
+		} else {
+			$sample_n=$sample_elements[$i];
+		}
+		echo('<td><input class="w3-input w3-border-teal w3-text-green" type="text" name="samplen" id="samplen" value="'.$sample_n.'" onkeypress="return isNumberKey(event)"></td>');
 		if($type=="0"){
 			echo('<td>');
 			echo('<select class="w3-select w3-text-green" name="value" onchange="checkOther(this,\''.$sample_elements[$i+1].'\')">');
@@ -198,7 +213,7 @@ if($type=="0"){
 			}
 			echo('</td>');
 		} else {
-			echo('<td><input class="w3-input w3-border-teal w3-text-green" type="text" name="value" id="samplen" value="'.$sample_elements[$i+1].'"></td>');
+			echo('<td><input class="w3-input w3-border-teal w3-text-green" type="text" name="value" id="samplen" value="'.$sample_elements[$i+1].'" onkeypress="return isNumberKey(event)"></td>');
 		}
 		echo('<td><button class="w3-button w3-green w3-round w3-border w3-border-green w3-large w3-round-large" id="delete" name="delete" onclick="deleteRow(this)">Delete</button></td>');
 		echo('</tr>');

@@ -135,25 +135,29 @@ function confirmDelete(){
   </thead>
 <?php 
 if(isset($_SESSION['log_activity_filter'])){
-	$query="SELECT 'Log', log_id AS id, log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, activity_name AS item FROM field, activity, log WHERE field.field_id = log.field_id".$_SESSION['log_field_filter'].$_SESSION['log_date_filter']."AND activity.activity_id = log.activity_id AND log.activity_id=".$_SESSION['log_activity_filter']." ORDER BY date DESC, fname, frn, plot, item LIMIT $from, $max_messages";
+	$query="SELECT 'Log', log_id AS id, log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, activity_name AS item, log.user_id AS user FROM field, activity, log WHERE field.field_id = log.field_id".$_SESSION['log_field_filter'].$_SESSION['log_date_filter']."AND activity.activity_id = log.activity_id AND log.activity_id=".$_SESSION['log_activity_filter']." ORDER BY date DESC, fname, frn, item LIMIT $from, $max_messages";
 } else if(isset($_SESSION['log_measurement_filter'])){
-	$query="SELECT 'Log', log_id AS id, log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, measurement_name AS item FROM field, measurement, log WHERE field.field_id = log.field_id".$_SESSION['log_field_filter'].$_SESSION['log_date_filter']."AND measurement.measurement_id = log.measurement_id AND log.measurement_id=".$_SESSION['log_measurement_filter']." ORDER BY date DESC, fname, frn, plot, item LIMIT $from, $max_messages";
+	$query="SELECT 'Log', log_id AS id, log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, measurement_name AS item, log.user_id AS user FROM field, measurement, log WHERE field.field_id = log.field_id".$_SESSION['log_field_filter'].$_SESSION['log_date_filter']."AND measurement.measurement_id = log.measurement_id AND log.measurement_id=".$_SESSION['log_measurement_filter']." ORDER BY date DESC, fname, frn, item LIMIT $from, $max_messages";
 } else if(isset($_SESSION['input_log_crop_filter'])){
-	$query="SELECT 'Input', input_log_id AS id, input_log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, crop_name AS item FROM field, crop, input_log WHERE field.field_id = input_log.field_id".$_SESSION['input_log_field_filter'].$_SESSION['input_log_date_filter']."AND crop.crop_id = input_log.crop_id AND input_log.crop_id=".$_SESSION['input_log_crop_filter']." ORDER BY date DESC, fname, frn, plot, item LIMIT $from, $max_messages";
+	$query="SELECT 'Input', input_log_id AS id, input_log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, crop_name AS item, input_log.user_id AS user FROM field, crop, input_log WHERE field.field_id = input_log.field_id".$_SESSION['input_log_field_filter'].$_SESSION['input_log_date_filter']."AND crop.crop_id = input_log.crop_id AND input_log.crop_id=".$_SESSION['input_log_crop_filter']." ORDER BY date DESC, fname, frn, item LIMIT $from, $max_messages";
 } else if(isset($_SESSION['input_log_treatment_filter'])){
-	$query="SELECT 'Input', input_log_id AS id, input_log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, treatment_name AS item FROM field, treatment, input_log WHERE field.field_id = input_log.field_id".$_SESSION['input_log_field_filter'].$_SESSION['input_log_date_filter']."AND treatment.treatment_id = input_log.treatment_id AND input_log.treatment_id=".$_SESSION['input_log_treatment_filter']." ORDER BY date DESC, fname, frn, plot, item LIMIT $from, $maxmessages";
+	$query="SELECT 'Input', input_log_id AS id, input_log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, treatment_name AS item, input_log.user_id AS user FROM field, treatment, input_log WHERE field.field_id = input_log.field_id".$_SESSION['input_log_field_filter'].$_SESSION['input_log_date_filter']."AND treatment.treatment_id = input_log.treatment_id AND input_log.treatment_id=".$_SESSION['input_log_treatment_filter']." ORDER BY date DESC, fname, frn, item LIMIT $from, $maxmessages";
 } else {
-	$query="(SELECT 'Activity', log_id AS id, log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, activity_name AS item FROM field, activity, log WHERE field.field_id = log.field_id".$_SESSION['log_field_filter'].$_SESSION['log_date_filter']."AND activity.activity_id = log.activity_id AND log.activity_id>0) UNION (SELECT 'Measurement', log_id AS id, log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, measurement_name AS item FROM field, measurement, log WHERE field.field_id = log.field_id".$_SESSION['log_field_filter'].$_SESSION['log_date_filter']."AND measurement.measurement_id = log.measurement_id AND log.measurement_id>0) UNION (SELECT 'Input', input_log_id AS id, input_log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, crop_name AS item FROM field, crop, input_log WHERE field.field_id = input_log.field_id".$_SESSION['input_log_field_filter'].$_SESSION['input_log_date_filter']."AND crop.crop_id = input_log.crop_id AND input_log.crop_id>0) UNION (SELECT 'Input', input_log_id AS id, input_log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, treatment_name AS item FROM field, treatment, input_log WHERE field.field_id = input_log.field_id".$_SESSION['input_log_field_filter'].$_SESSION['input_log_date_filter']."AND treatment.treatment_id = input_log.treatment_id AND input_log.treatment_id>0) ORDER BY date DESC, fname, frn, plot, item LIMIT $from, $max_messages";
+	$query="(SELECT 'Activity', log_id AS id, log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, activity_name AS item, log.user_id AS user FROM field, activity, log WHERE field.field_id = log.field_id".$_SESSION['log_field_filter'].$_SESSION['log_date_filter']."AND activity.activity_id = log.activity_id AND log.activity_id>0) UNION (SELECT 'Measurement', log_id AS id, log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, measurement_name AS item, log.user_id AS user FROM field, measurement, log WHERE field.field_id = log.field_id".$_SESSION['log_field_filter'].$_SESSION['log_date_filter']."AND measurement.measurement_id = log.measurement_id AND log.measurement_id>0) UNION (SELECT 'Input', input_log_id AS id, input_log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, crop_name AS item, input_log.user_id AS user FROM field, crop, input_log WHERE field.field_id = input_log.field_id".$_SESSION['input_log_field_filter'].$_SESSION['input_log_date_filter']."AND crop.crop_id = input_log.crop_id AND input_log.crop_id>0) UNION (SELECT 'Input', input_log_id AS id, input_log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, treatment_name AS item, input_log.user_id AS user FROM field, treatment, input_log WHERE field.field_id = input_log.field_id".$_SESSION['input_log_field_filter'].$_SESSION['input_log_date_filter']."AND treatment.treatment_id = input_log.treatment_id AND input_log.treatment_id>0) ORDER BY date DESC, fname, frn, item LIMIT $from, $max_messages";
 }
 $result = mysqli_query($dbh,$query);
 $n=0;
+$cb=0;
 while($row = mysqli_fetch_array($result,MYSQL_NUM)){
-	echo('<tr>');
-	if($row[0]=='Activity' || $row[0]=='Measurement'){
-		echo('<td><input class="w3-check" type="checkbox" name="delete_log[]" value="'.$row[1].'"></td>');
-	} else if($row[0]=='Input'){
-		echo('<td><input class="w3-check" type="checkbox" name="delete_input_log[]" value="'.$row[1].'"></td>');
+	echo('<tr><td>');
+	if(($row[0]=='Activity' || $row[0]=='Measurement') && ($_SESSION['superadmin'] || $_SESSION['user_id'] == $row[7])){
+		echo('<input class="w3-check" type="checkbox" name="delete_log[]" value="'.$row[1].'">');
+		$cb++;
+	} else if($row[0]=='Input' && ($_SESSION['superadmin'] || $_SESSION['user_id'] == $row[7])){
+		echo('<input class="w3-check" type="checkbox" name="delete_input_log[]" value="'.$row[1].'">');
+		$cb++;
 	}
+	echo('</td>');
 	echo('<td>'.$row[0].'</td>');
 	echo('<td>'.$row[2].'</td>');
 	echo('<td>'.$row[3].' R'.$row[4].'</td>');
@@ -165,7 +169,10 @@ while($row = mysqli_fetch_array($result,MYSQL_NUM)){
 		$link_details="calc_l.php?id=".$row[1]."&task=details";
 		$link_edit="calc_l.php?id=".$row[1]."&task=edit";
 	}
-	echo('<td><a href="'.$link_details.'" onclick="return showPopup(\''.$link_details.'\',900,700)">Details</a> || <a href="'.$link_edit.'" onclick="return showPopup(\''.$link_edit.'\',900,700)">Edit</a></td>');
+	echo('<td><a href="'.$link_details.'" onclick="return showPopup(\''.$link_details.'\',900,700)">Details</a>');
+	if($_SESSION['superadmin'] || ($_SESSION['user_id']==$row[7])){
+		echo(' || <a href="'.$link_edit.'" onclick="return showPopup(\''.$link_edit.'\',900,700)">Edit</a></td>');
+	}
 	echo('</tr>');
 	$n++;
 }
@@ -191,9 +198,19 @@ if(getTotalItems($dbh,$_SESSION['log_field_filter'],$_SESSION['input_log_field_f
 }
 ?></div></div>
 <br>
-<button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:20%; height:40px; max-width:300px;" type="button" id="refresh" name="refresh" onclick="refresh()">Refresh</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:20%; height:40px; max-width:300px;" type="button" id="delete_selected" name="delete_selected" onclick="confirmDelete()">Delete selected</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" id="filters" name="filters" style="width:20%; height:40px; max-width:300px;" onclick="return showPopup('filters.php',800,700)">Filters</button><br><br>
+<button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:20%; height:40px; max-width:300px;" type="button" id="refresh" name="refresh" onclick="refresh()">Refresh</button> <?php if($_SESSION['superadmin'] || ($cb>0)) { ?><button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:20%; height:40px; max-width:300px;" type="button" id="delete_selected" name="delete_selected" onclick="confirmDelete()">Delete selected</button><?php } ?> <button class="w3-button w3-green w3-round w3-border w3-border-green" id="filters" name="filters" style="width:20%; height:40px; max-width:300px;" onclick="return showPopup('filters.php',800,700)">Filters</button><br><br>
 <button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:20%; height:40px; max-width:300px;" type="button" id="enter_input" name="enter_input" onclick="return showPopup('select_input.php',800,700)">Enter input</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:20%; height:40px; max-width:300px;" type="button" id="enter_activity" name="enter_activity" onclick="return showPopup('select_activity.php',800,700)">Enter activity</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" id="enter_measurement" name="enter_measurement" style="width:20%; height:40px; max-width:300px;" onclick="return showPopup('select_measurement.php',800,700)">Enter measurement</button><br><br> 
 <button class="w3-button w3-green w3-round w3-border w3-border-green" id="menu" name="menu" type="button" style="width:20%; height:40px; max-width:300px;" onclick="goToMenu()">Menu</button><br><br>
+<?php
+if($cb==0){
+?>
+<script>
+document.getElementById("toggle_all").style.visibility="hidden";
+
+</script>
+<?php
+}
+?>
 </body>
 </html>
 <?php

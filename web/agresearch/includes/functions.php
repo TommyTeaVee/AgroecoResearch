@@ -149,6 +149,58 @@ function getParentField($field_id,$dbh){
 	return $ret;
 }
 
+function getAllReplications($field_id,$dbh){
+	$ret=array();
+	$query="SELECT field_id FROM field WHERE parent_field_id=$field_id";
+	$result = mysqli_query($dbh,$query);
+	while($row = mysqli_fetch_array($result,MYSQL_NUM)){
+		array_push($ret,$row[0]);
+	}
+	return $ret;
+}
+
+function getEquivalentPlots($source_field,$source_plots,$dest_field,$dbh){
+	$plots_dest="";
+	
+	$query="SELECT field_configuration FROM field WHERE field_id=$source_field";
+	$result = mysqli_query($dbh,$query);
+	if($row = mysqli_fetch_array($result,MYSQL_NUM)){
+		
+		$field_configuration_source=$row[0];
+		$elements_source=explode(";",$field_configuration_source);
+		$plots_source=explode(",",$source_plots);
+		
+		$query="SELECT field_configuration FROM field WHERE field_id=$dest_field";
+		$result_dest = mysqli_query($dbh,$query);
+		if($row_dest = mysqli_fetch_array($result_dest,MYSQL_NUM)){
+			
+			$field_configuration_dest=$row_dest[0];
+			$elements_dest=explode(";",$field_configuration_dest);
+		
+			for($i=0;$i<sizeof($plots_source);$i++){
+				$plot_source=$elements_source[$plots_source[$i]+2];
+				$plot_parts_source=parseConfig($plot_source);
+			
+				for($j=2;$j<sizeof($elements_dest);$j++){
+					$plot_dest=$elements_dest[$j];
+					$plot_parts_dest=parseConfig($plot_dest);
+					if($plot_parts_source[0]==$plot_parts_dest[0] && $plot_parts_source[1]==$plot_parts_dest[1] && $plot_parts_source[2]==$plot_parts_dest[2] && $plot_parts_source[3]==$plot_parts_dest[3]){
+						if($plots_dest==""){
+							$plots_dest=($j-2);
+						} else {
+							$plots_dest.=",".($j-2);
+						}
+						break;
+					}
+				}
+			
+			}
+		}
+	}
+	
+	return $plots_dest;
+}
+
 function parseConfig($element){
 	$inner=substr($element,3,(strlen($element)-4));
 	$parts=explode(",",$inner);
@@ -615,8 +667,10 @@ function checkMessages($mail_server, $mail_user, $mail_password, $dbh){
 						}
 						$what_log=explode("<>",$text);
 						$ma_log_entry=explode("|",$what_log[0]);
+						
 						for($i=0;$i<sizeof($ma_log_entry);$i++){
-							$ma_log_entry_part=explode(";",$ma_log_entry[$i]);
+							$ma_log_entry_part_raw=str_replace('=','',$ma_log_entry[$i]);
+							$ma_log_entry_part=explode(";",$ma_log_entry_part_raw);
 							if(sizeof($ma_log_entry_part)==16){
 								$field_id=$ma_log_entry_part[0];
 								$plots=$ma_log_entry_part[1];
@@ -636,14 +690,15 @@ function checkMessages($mail_server, $mail_user, $mail_password, $dbh){
 								$sample_number=$ma_log_entry_part[15];
 							
 								$query="INSERT INTO log (field_id, plots, user_id, crop_id, sample_number, treatment_id, measurement_id, activity_id, log_date, log_value_number, log_value_units, log_value_text, log_number_of_laborers, log_cost, log_comments) VALUES ($field_id, '$plots', $user_id, $crop_id, $sample_number, $treatment_id, $measurement_id, $activity_id, '$date', $number_value, '$units', '$text_value', '$number_of_laborers', '$cost', '$comments')";
-								//echo($query);
+								//echo($query."<br><br><br>");
 								$result = mysqli_query($dbh,$query);
 							}
 						}
 						
 						$i_log_entry=explode("|",$what_log[1]);
 						for($i=0;$i<sizeof($i_log_entry);$i++){
-							$i_log_entry_part=explode(";",$i_log_entry[$i]);
+							$i_log_entry_part_raw=str_replace('=','',$i_log_entry[$i]);
+							$i_log_entry_part=explode(";",$i_log_entry_part_raw);
 							if(sizeof($i_log_entry_part)==16){
 								$log_id=$i_log_entry_part[0];
 								$field_id=$i_log_entry_part[1];
@@ -669,7 +724,7 @@ function checkMessages($mail_server, $mail_user, $mail_password, $dbh){
 								if($comments=="null") { $comments=""; }
 							
 								$query="INSERT INTO input_log (input_log_date, field_id, plots, user_id, crop_id, treatment_id, input_age, input_origin, input_crop_variety, input_quantity, input_units, input_cost, input_treatment_material, input_treatment_preparation_method, input_comments) VALUES ('$date', $field_id, '$plots', $user_id, $crop_id, $treatment_id, '$age', '$origin', '$variety', $quantity, '$units', '$cost', '$material', '$method', '$comments')";
-								//echo($query);
+								//echo($query."<br><br><br>");
 								$result = mysqli_query($dbh,$query);
 							}
 						}
@@ -692,12 +747,16 @@ function markNotificationAsSent($dbh,$id){
 function parseIngredients($ingredients){
 	$ret="";
 	$ingredient_elements=explode("*",$ingredients);
-	for($i=0;$i<sizeof($ingredient_elements);$i+=3){
-		if($ret==""){
-			$ret=$ingredient_elements[$i].": ".$ingredient_elements[$i+1]." ".$ingredient_elements[$i+2];
-		} else {
-			$ret=$ret.", ".$ingredient_elements[$i].": ".$ingredient_elements[$i+1]." ".$ingredient_elements[$i+2];
+	if(sizeof($ingredient_elements)>1){
+		for($i=0;$i<sizeof($ingredient_elements);$i+=3){
+			if($ret==""){
+				$ret=$ingredient_elements[$i].": ".$ingredient_elements[$i+1]." ".$ingredient_elements[$i+2];
+			} else {
+				$ret=$ret.", ".$ingredient_elements[$i].": ".$ingredient_elements[$i+1]." ".$ingredient_elements[$i+2];
+			}
 		}
+	} else {
+		$ret=trim($ingredients);
 	}
 	return $ret;
 }
@@ -708,30 +767,34 @@ function reverseParseIngredients($ingredients){
 	$ingredients=trim($ingredients);
 	$ingredients = preg_replace('!\s+!', ' ', $ingredients);
 	$ingredient_list=explode(",",$ingredients);
-	for($i=0;$i<sizeof($ingredient_list);$i++){	
-		$ingredient_elements=explode(":",$ingredient_list[$i]);
-		if(sizeof($ingredient_elements)==2){
-			$second_part=explode(" ",trim($ingredient_elements[1]));
-			if(sizeof($second_part)==2){
-				$ingredient=str_replace(":","",$ingredient_elements[0]);
-				$ingredient=str_replace("*","",$ingredient);
-				$quantity=str_replace(":","",$second_part[0]);
-				$quantity=str_replace("*","",$quantity);
-				$units=str_replace(":","",$second_part[1]);
-				$units=str_replace("*","",$units);
-				if($ret==""){
-					$ret=trim($ingredient)."*".trim($quantity)."*".trim($units);
+	if(sizeof($ingredient_list)>1){
+		for($i=0;$i<sizeof($ingredient_list);$i++){	
+			$ingredient_elements=explode(":",$ingredient_list[$i]);
+			if(sizeof($ingredient_elements)==2){
+				$second_part=explode(" ",trim($ingredient_elements[1]));
+				if(sizeof($second_part)==2){
+					$ingredient=str_replace(":","",$ingredient_elements[0]);
+					$ingredient=str_replace("*","",$ingredient);
+					$quantity=str_replace(":","",$second_part[0]);
+					$quantity=str_replace("*","",$quantity);
+					$units=str_replace(":","",$second_part[1]);
+					$units=str_replace("*","",$units);
+					if($ret==""){
+						$ret=trim($ingredient)."*".trim($quantity)."*".trim($units);
+					} else {
+						$ret.="*".trim($ingredient)."*".trim($quantity)."*".trim($units);
+					}
 				} else {
-					$ret.="*".trim($ingredient)."*".trim($quantity)."*".trim($units);
+					$ret=-1;
+					break;
 				}
 			} else {
 				$ret=-1;
 				break;
 			}
-		} else {
-			$ret=-1;
-			break;
-		}
+		} 
+	} else {
+		$ret=$ingredients;
 	}
 	return $ret;
 }

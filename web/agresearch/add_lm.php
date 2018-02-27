@@ -181,13 +181,75 @@ if(isset($_POST['add'])){
 			var ip = document.getElementById("included_plots");
 			ip.innerHTML=formatPlotsHTML(pl.value,p.value);
 	   }
+	   
+	   function validateForm(type,has_samples){
+		  
+			var p = document.getElementById("plots");
+			if(p.value==""){
+				alert("You must choose one plot");
+				return false;
+			}
+			
+			var day = parseInt(document.getElementById("dd").value,10);
+			var month = parseInt(document.getElementById("mm").value,10);
+			var year = parseInt(document.getElementById("yyyy").value);
+			var today = new Date();
+			if(year<2017 || year>parseInt(today.getFullYear())){
+				alert("Date out of valid range");
+				return false;
+			} else {
+				var monthLength = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ];
+				if(year % 400 == 0 || (year % 100 != 0 && year % 4 == 0))
+					monthLength[1] = 29;
+				if(day > monthLength[month - 1]){
+					alert("Invalid date");
+					return false;
+				} else {
+					var newDate = new Date(document.getElementById("mm").value+"/"+document.getElementById("dd").value+"/"+document.getElementById("yyyy").value);
+					if(newDate > today){
+						alert("Date must be in the past");
+						return false;
+					}
+				}
+			}
+			
+			if(type==1 && has_samples==0){
+			
+				var u = document.getElementById("units");
+				if(u.value==""){
+					alert("Units not specified");
+					return false;
+				}
+			
+				var v = document.getElementById("value");
+				if(v.value==""){
+					alert("Value must not be empty");
+					return false;
+				}
+			} else if(has_samples==1){
+				if(type!=2){
+					var s = document.getElementById("samples");
+					if(s.innerHTML=="" || s.innerHTML==":"){
+						alert("You must add at least one sample");
+						return false;
+					}
+				} else {
+					var h = document.getElementById("health");
+					if(h.innerHTML==""){
+						alert("You must add at least one sample");
+						return false;
+					}
+				}
+			}
+		
+	   }
        //-->
 </script>
 </head>
 <body>
 <div class="w3-container w3-card-4">
 <h2 class="w3-green">Add measurement</h2>
-<form method="post" enctype="multipart/form-data" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+<form method="post" enctype="multipart/form-data" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" onsubmit="return validateForm(<?php echo($measurement_type.",".$measurement_has_samples); ?>)">
 <input name="id" type="hidden" id="id" value="<? echo($id); ?>">
 <input name="type" type="hidden" id="type" value="<? echo($measurement_type); ?>">
 <input name="has_samples" type="hidden" id="has_samples" value="<? echo($measurement_has_samples); ?>">
@@ -223,7 +285,7 @@ for($i=0;$i<sizeof($plot_list);$i++){
 <b>Date:</b>
 <div class="w3-row-padding">
   <div class="w3-third">
-    <select class="w3-select w3-text-green" name="dd">
+    <select class="w3-select w3-text-green" name="dd" id="dd">
 		<option value="" disabled>Day</option>
 		<?php
 		for($i=1;$i<=31;$i++){
@@ -243,7 +305,7 @@ for($i=0;$i<sizeof($plot_list);$i++){
 	</select>
   </div>
   <div class="w3-third">
-    <select class="w3-select w3-text-green" name="mm">
+    <select class="w3-select w3-text-green" name="mm" id="mm">
 		<option value="" disabled>Month</option>
 		<?php
 		for($i=1;$i<=12;$i++){
@@ -263,14 +325,14 @@ for($i=0;$i<sizeof($plot_list);$i++){
 	</select>
   </div>
   <div class="w3-third">
-    <input class="w3-input w3-border-teal w3-text-green" type="text" name="yyyy" value="<?php echo($yy); ?>" onkeypress="return isNumberKey(event)">
+    <input class="w3-input w3-border-teal w3-text-green" type="text" name="yyyy" id="yyyy" value="<?php echo($yy); ?>" onkeypress="return isNumberKey(event)">
   </div>
 </div>
 <?php 
 if($measurement_has_samples==0){
 	if($measurement_type==0){ ?>
 <b>Value:</b>
-<select class="w3-select w3-text-green" name="value">
+<select class="w3-select w3-text-green" name="value" id="value">
 <?php
 		$categories=explode(",",$measurement_categories);
 		for($i=0;$i<sizeof($categories);$i++){
@@ -281,8 +343,8 @@ if($measurement_has_samples==0){
 <?php	
 	} else {
 ?>
-<b>Units:</b> <input class="w3-input w3-border-green w3-text-green" name="units" type="text" value="<?php echo($measurement_units); ?>">
-<b>Value:</b> <input class="w3-input w3-border-green w3-text-green" name="value" type="text" value="" onkeypress="return isNumberKey(event)">
+<b>Units:</b> <input class="w3-input w3-border-green w3-text-green" name="units" id="units" type="text" value="<?php echo($measurement_units); ?>">
+<b>Value:</b> <input class="w3-input w3-border-green w3-text-green" name="value" id="value" type="text" value="" onkeypress="return isNumberKey(event)">
 <?php	
 	}
 } else {

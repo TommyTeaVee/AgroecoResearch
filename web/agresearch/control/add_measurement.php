@@ -46,6 +46,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 			$measurement_categories="";
 		}
 		$measurement_periodicity=$_POST['measurement_periodicity'];
+		if($measurement_periodicity==""){
+			$measurement_periodicity=0;
+		}
 		if(isset($_POST['measurement_has_sample_number'])){
 			$measurement_has_sample_number=$_POST['measurement_has_sample_number'];
 		} else {
