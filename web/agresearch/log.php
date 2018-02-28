@@ -122,6 +122,11 @@ function confirmDelete(){
 <body>
 <div class="w3-container w3-card-4">
 <h2 class="w3-green">Data manager</h2><br>
+<?php
+if($_SESSION['filter_reminder']!=""){
+	echo("Filtered by: ".$_SESSION['filter_reminder']."<br>");
+}
+?>
 <p><table class="w3-table w3-border w3-bordered w3-striped w3-hoverable w3-mobile">
   <thead>
 	<tr class="w3-green">
@@ -135,15 +140,11 @@ function confirmDelete(){
   </thead>
 <?php 
 if(isset($_SESSION['log_activity_filter'])){
-	$query="SELECT 'Log', log_id AS id, log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, activity_name AS item, log.user_id AS user FROM field, activity, log WHERE field.field_id = log.field_id".$_SESSION['log_field_filter'].$_SESSION['log_date_filter']."AND activity.activity_id = log.activity_id AND log.activity_id=".$_SESSION['log_activity_filter']." ORDER BY date DESC, fname, frn, item LIMIT $from, $max_messages";
+	$query="SELECT 'Activity', log_id AS id, log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, activity_name AS item, log.user_id AS user FROM field, activity, log WHERE field.field_id = log.field_id".$_SESSION['log_field_filter'].$_SESSION['log_date_filter'].$_SESSION['log_user_filter']."AND activity.activity_id = log.activity_id AND log.activity_id=".$_SESSION['log_activity_filter']." ORDER BY date DESC, fname, frn, item LIMIT $from, $max_messages";
 } else if(isset($_SESSION['log_measurement_filter'])){
-	$query="SELECT 'Log', log_id AS id, log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, measurement_name AS item, log.user_id AS user FROM field, measurement, log WHERE field.field_id = log.field_id".$_SESSION['log_field_filter'].$_SESSION['log_date_filter']."AND measurement.measurement_id = log.measurement_id AND log.measurement_id=".$_SESSION['log_measurement_filter']." ORDER BY date DESC, fname, frn, item LIMIT $from, $max_messages";
-} else if(isset($_SESSION['input_log_crop_filter'])){
-	$query="SELECT 'Input', input_log_id AS id, input_log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, crop_name AS item, input_log.user_id AS user FROM field, crop, input_log WHERE field.field_id = input_log.field_id".$_SESSION['input_log_field_filter'].$_SESSION['input_log_date_filter']."AND crop.crop_id = input_log.crop_id AND input_log.crop_id=".$_SESSION['input_log_crop_filter']." ORDER BY date DESC, fname, frn, item LIMIT $from, $max_messages";
-} else if(isset($_SESSION['input_log_treatment_filter'])){
-	$query="SELECT 'Input', input_log_id AS id, input_log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, treatment_name AS item, input_log.user_id AS user FROM field, treatment, input_log WHERE field.field_id = input_log.field_id".$_SESSION['input_log_field_filter'].$_SESSION['input_log_date_filter']."AND treatment.treatment_id = input_log.treatment_id AND input_log.treatment_id=".$_SESSION['input_log_treatment_filter']." ORDER BY date DESC, fname, frn, item LIMIT $from, $maxmessages";
+	$query="SELECT 'Measurement', log_id AS id, log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, measurement_name AS item, log.user_id AS user FROM field, measurement, log WHERE field.field_id = log.field_id".$_SESSION['log_field_filter'].$_SESSION['log_date_filter'].$_SESSION['log_user_filter']."AND measurement.measurement_id = log.measurement_id AND log.measurement_id=".$_SESSION['log_measurement_filter']." ORDER BY date DESC, fname, frn, item LIMIT $from, $max_messages";
 } else {
-	$query="(SELECT 'Activity', log_id AS id, log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, activity_name AS item, log.user_id AS user FROM field, activity, log WHERE field.field_id = log.field_id".$_SESSION['log_field_filter'].$_SESSION['log_date_filter']."AND activity.activity_id = log.activity_id AND log.activity_id>0) UNION (SELECT 'Measurement', log_id AS id, log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, measurement_name AS item, log.user_id AS user FROM field, measurement, log WHERE field.field_id = log.field_id".$_SESSION['log_field_filter'].$_SESSION['log_date_filter']."AND measurement.measurement_id = log.measurement_id AND log.measurement_id>0) UNION (SELECT 'Input', input_log_id AS id, input_log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, crop_name AS item, input_log.user_id AS user FROM field, crop, input_log WHERE field.field_id = input_log.field_id".$_SESSION['input_log_field_filter'].$_SESSION['input_log_date_filter']."AND crop.crop_id = input_log.crop_id AND input_log.crop_id>0) UNION (SELECT 'Input', input_log_id AS id, input_log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, treatment_name AS item, input_log.user_id AS user FROM field, treatment, input_log WHERE field.field_id = input_log.field_id".$_SESSION['input_log_field_filter'].$_SESSION['input_log_date_filter']."AND treatment.treatment_id = input_log.treatment_id AND input_log.treatment_id>0) ORDER BY date DESC, fname, frn, item LIMIT $from, $max_messages";
+	$query="(SELECT 'Activity', log_id AS id, log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, activity_name AS item, log.user_id AS user FROM field, activity, log WHERE field.field_id = log.field_id".$_SESSION['log_field_filter'].$_SESSION['log_date_filter'].$_SESSION['log_user_filter']."AND activity.activity_id = log.activity_id AND log.activity_id>0) UNION (SELECT 'Measurement', log_id AS id, log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, measurement_name AS item, log.user_id AS user FROM field, measurement, log WHERE field.field_id = log.field_id".$_SESSION['log_field_filter'].$_SESSION['log_date_filter'].$_SESSION['log_user_filter']."AND measurement.measurement_id = log.measurement_id AND log.measurement_id>0) UNION (SELECT 'Input', input_log_id AS id, input_log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, crop_name AS item, input_log.user_id AS user FROM field, crop, input_log WHERE field.field_id = input_log.field_id".$_SESSION['input_log_field_filter'].$_SESSION['input_log_date_filter'].$_SESSION['input_log_user_filter']."AND crop.crop_id = input_log.crop_id AND input_log.crop_id>0) UNION (SELECT 'Input', input_log_id AS id, input_log_date AS date, field_name AS fname, field_replication_number AS frn, plots AS plot, treatment_name AS item, input_log.user_id AS user FROM field, treatment, input_log WHERE field.field_id = input_log.field_id".$_SESSION['input_log_field_filter'].$_SESSION['input_log_date_filter'].$_SESSION['input_log_user_filter']."AND treatment.treatment_id = input_log.treatment_id AND input_log.treatment_id>0) ORDER BY date DESC, fname, frn, item LIMIT $from, $max_messages";
 }
 $result = mysqli_query($dbh,$query);
 $n=0;
@@ -192,7 +193,7 @@ if($from>0){
 ?>
 </div><div class="w3-half" align="center">
 <?php 
-if(getTotalItems($dbh,$_SESSION['log_field_filter'],$_SESSION['input_log_field_filter'],$_SESSION['log_date_filter'],$_SESSION['input_log_date_filter'],$_SESSION['log_activity_filter'],$_SESSION['log_measurement_filter'],$_SESSION['input_log_crop_filter'],$_SESSION['input_log_treatment_filter'])>($from+$max_messages)){
+if(getTotalItems($dbh,$_SESSION['log_field_filter'],$_SESSION['input_log_field_filter'],$_SESSION['log_date_filter'],$_SESSION['input_log_date_filter'],$_SESSION['log_activity_filter'],$_SESSION['log_measurement_filter'],$_SESSION['input_log_crop_filter'],$_SESSION['input_log_treatment_filter'],$_SESSION['log_user_filter'],$_SESSION['input_log_user_filter'])>($from+$max_messages)){
 	$next=$from+$max_messages;
 	echo('<a href="log.php?from='.$next.'">Next</a>');
 }

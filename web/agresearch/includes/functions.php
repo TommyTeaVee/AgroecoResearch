@@ -37,6 +37,18 @@ function getUserNameFromId($dbh,$user_id){
 	return $ret;
 }
 
+function getUsers($dbh){
+	$ret=array();
+	$query="SELECT user_id, user_name FROM user ORDER BY user_name";
+	$result = mysqli_query($dbh,$query);
+	$i=0;
+	while($row = mysqli_fetch_array($result,MYSQL_NUM)){
+		$ret[$i]=$row;
+		$i++;
+	}
+	return $ret;
+}
+
 function getCrops($dbh,$int){
 	$ret=array();
 	if($int==1){
@@ -437,7 +449,7 @@ function getCropSymbolFromId($dbh,$crop_id){
 	return $ret;
 }
 
-function getTotalItems($dbh,$log_field_filter,$input_log_field_filter,$log_date_filter,$input_log_date_filter,$activity_filter,$measurement_filter,$crop_filter,$treatment_filter){
+function getTotalItems($dbh,$log_field_filter,$input_log_field_filter,$log_date_filter,$input_log_date_filter,$activity_filter,$measurement_filter,$crop_filter,$treatment_filter,$log_user_filter,$input_log_user_filter){
 	
 	$n=0;
 	$m=0;
@@ -455,6 +467,14 @@ function getTotalItems($dbh,$log_field_filter,$input_log_field_filter,$log_date_
 			$where=" WHERE ".$log_date_filter;
 		} else {
 			$where.=" AND ".$log_date_filter;
+		}
+	}
+	if($log_user_filter!=" "){
+		$log_user_filter=substr($log_user_filter,5);
+		if($where==""){
+			$where=" WHERE ".$log_user_filter;
+		} else {
+			$where.=" AND ".$log_user_filter;
 		}
 	}
 	if($activity_filter>0){
@@ -493,6 +513,14 @@ function getTotalItems($dbh,$log_field_filter,$input_log_field_filter,$log_date_
 			$where=" WHERE ".$input_log_date_filter;
 		} else {
 			$where.=" AND ".$input_log_date_filter;
+		}
+	}
+	if($input_log_user_filter!=" "){
+		$input_log_user_filter=substr($input_log_user_filter,5);
+		if($where==""){
+			$where=" WHERE ".$input_log_user_filter;
+		} else {
+			$where.=" AND ".$input_log_user_filter;
 		}
 	}
 	if($crop_filter>0){
