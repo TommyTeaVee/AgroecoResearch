@@ -193,7 +193,7 @@ if($from>0){
 ?>
 </div><div class="w3-half" align="center">
 <?php 
-if(getTotalItems($dbh,$_SESSION['log_field_filter'],$_SESSION['input_log_field_filter'],$_SESSION['log_date_filter'],$_SESSION['input_log_date_filter'],$_SESSION['log_activity_filter'],$_SESSION['log_measurement_filter'],$_SESSION['input_log_crop_filter'],$_SESSION['input_log_treatment_filter'],$_SESSION['log_user_filter'],$_SESSION['input_log_user_filter'])>($from+$max_messages)){
+if(getTotalItems($dbh,$_SESSION['log_field_filter'],$_SESSION['input_log_field_filter'],$_SESSION['log_date_filter'],$_SESSION['input_log_date_filter'],$_SESSION['log_activity_filter'],$_SESSION['log_measurement_filter'],"","",$_SESSION['log_user_filter'],$_SESSION['input_log_user_filter'])>($from+$max_messages)){
 	$next=$from+$max_messages;
 	echo('<a href="log.php?from='.$next.'">Next</a>');
 }

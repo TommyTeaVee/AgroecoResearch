@@ -324,13 +324,71 @@ if(isset($_POST['apply'])){
 
           return true;
        }
+	   
+	   function validateForm(){
+		   
+		   var newDate1;
+		   var newDate2;
+		   var today = new Date();
+		   var monthLength = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ];
+			
+			var day = parseInt(document.getElementById("dd1").value,10);
+			var month = parseInt(document.getElementById("mm1").value,10);
+			var year = parseInt(document.getElementById("yy1").value);
+			
+			if(year<2017 || year>parseInt(today.getFullYear())){
+				alert("Date 1 out of valid range");
+				return false;
+			} else {
+				if(year % 400 == 0 || (year % 100 != 0 && year % 4 == 0))
+					monthLength[1] = 29;
+				if(day > monthLength[month - 1]){
+					alert("Invalid date 1");
+					return false;
+				} else {
+					newDate1 = new Date(document.getElementById("mm1").value+"/"+document.getElementById("dd1").value+"/"+document.getElementById("yy1").value);
+					if(newDate1 > today){
+						alert("Date 1 must be in the past");
+						return false;
+					}
+				}
+			}
+			
+			day = parseInt(document.getElementById("dd2").value,10);
+			month = parseInt(document.getElementById("mm2").value,10);
+			year = parseInt(document.getElementById("yy2").value);
+			
+			if(year<2017 || year>parseInt(today.getFullYear())){
+				alert("Date 2 out of valid range");
+				return false;
+			} else {
+				if(year % 400 == 0 || (year % 100 != 0 && year % 4 == 0))
+					monthLength[1] = 29;
+				if(day > monthLength[month - 1]){
+					alert("Invalid date 2");
+					return false;
+				} else {
+					newDate2 = new Date(document.getElementById("mm2").value+"/"+document.getElementById("dd2").value+"/"+document.getElementById("yy2").value);
+					if(newDate2 > today){
+						alert("Date 2 must be in the past");
+						return false;
+					}
+				}
+			}
+			
+			if(newDate1 > newDate2){
+				alert("Date 1 must be earlier than date 2");
+				return false;
+			}
+		
+	   }
        //-->
 </script>
 </head>
 <body class="w3-small">
 <div class="w3-container w3-card-4">
 <h2 class="w3-green">Filters</h2>
-<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" onsubmit="return validateForm()">
 <p>
 <input class="w3-check" type="checkbox" id="toggle_user" name="toggle_user" onclick="toggleUser()" <?php echo(($_SESSION['user']>0) ? 'checked' : ''); ?>><label class="w3-text-green">User</label>
 <select class="w3-select w3-text-green" name="user" id="user" <?php echo(($_SESSION['user']>0) ? '' : 'disabled'); ?>>
@@ -344,7 +402,6 @@ for($i=0;$i<sizeof($users);$i++){
 ?>
 </select>
 </p>
-<p>
 <p>
 <input class="w3-check" type="checkbox" id="toggle_field" name="toggle_field" onclick="toggleField()" <?php echo(($_SESSION['field']>0) ? 'checked' : ''); ?>><label class="w3-text-green">Field</label>
 <select class="w3-select w3-text-green" name="field" id="field" <?php echo(($_SESSION['field']>0) ? '' : 'disabled'); ?>>

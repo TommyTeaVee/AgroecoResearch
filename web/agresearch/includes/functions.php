@@ -49,6 +49,20 @@ function getUsers($dbh){
 	return $ret;
 }
 
+function getUserInitials($full_name){
+	$ret="";
+	$name_parts=explode(" ",$full_name);
+	for($i=0;$i<sizeof($name_parts);$i++){
+		$initial=strtoupper(substr($name_parts[$i],0,1));
+		if($ret==""){
+			$ret=$initial;
+		} else {
+			$ret.=$initial;
+		}
+	}
+	return $ret;
+}
+
 function getCrops($dbh,$int){
 	$ret=array();
 	if($int==1){
@@ -143,10 +157,22 @@ function getFieldConfiguration($field_id,$dbh){
 
 function getFieldNameFromId($dbh,$id){
 	$ret="";
-	$query="SELECT field_name, field_replication_number FROM field WHERE field_id=$id";
-	$result = mysqli_query($dbh,$query);
-	if($row = mysqli_fetch_array($result,MYSQL_NUM)){
-		$ret=$row[0]." R".$row[1];
+	if(substr_count($id,",")>0){
+		$query="SELECT field_name, field_replication_number FROM field WHERE field_id IN($id)";
+		$result = mysqli_query($dbh,$query);
+		while($row = mysqli_fetch_array($result,MYSQL_NUM)){
+			if($ret==""){
+				$ret=$row[0]." R".$row[1];
+			} else {
+				$ret.=",R".$row[1];
+			}
+		}
+	} else {
+		$query="SELECT field_name, field_replication_number FROM field WHERE field_id=$id";
+		$result = mysqli_query($dbh,$query);
+		if($row = mysqli_fetch_array($result,MYSQL_NUM)){
+			$ret=$row[0]." R".$row[1];
+		}
 	}
 	return $ret;
 }
