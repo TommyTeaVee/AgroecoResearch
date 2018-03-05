@@ -483,11 +483,11 @@ function getTotalItems($dbh,$log_field_filter,$input_log_field_filter,$log_date_
 	$only_input=false;
 	
 	$where="";
-	if($log_field_filter!=" "){
+	if(trim($log_field_filter)!=""){
 		$log_field_filter=substr($log_field_filter,5);
 		$where=" WHERE ".$log_field_filter;
 	}
-	if($log_date_filter!=" "){
+	if(trim($log_date_filter)!=""){
 		$log_date_filter=substr($log_date_filter,5);
 		if($where==""){
 			$where=" WHERE ".$log_date_filter;
@@ -495,7 +495,7 @@ function getTotalItems($dbh,$log_field_filter,$input_log_field_filter,$log_date_
 			$where.=" AND ".$log_date_filter;
 		}
 	}
-	if($log_user_filter!=" "){
+	if(trim($log_user_filter)!=""){
 		$log_user_filter=substr($log_user_filter,5);
 		if($where==""){
 			$where=" WHERE ".$log_user_filter;
@@ -529,11 +529,11 @@ function getTotalItems($dbh,$log_field_filter,$input_log_field_filter,$log_date_
 	}
 	
 	$where="";
-	if($input_log_field_filter!=" "){
+	if(trim($input_log_field_filter)!=""){
 		$input_log_field_filter=substr($input_log_field_filter,5);
 		$where=" WHERE ".$input_log_field_filter;
 	}
-	if($input_log_date_filter!=" "){
+	if(trim($input_log_date_filter)!=""){
 		$input_log_date_filter=substr($input_log_date_filter,5);
 		if($where==""){
 			$where=" WHERE ".$input_log_date_filter;
@@ -541,7 +541,7 @@ function getTotalItems($dbh,$log_field_filter,$input_log_field_filter,$log_date_
 			$where.=" AND ".$input_log_date_filter;
 		}
 	}
-	if($input_log_user_filter!=" "){
+	if(trim($input_log_user_filter)!=""){
 		$input_log_user_filter=substr($input_log_user_filter,5);
 		if($where==""){
 			$where=" WHERE ".$input_log_user_filter;
@@ -719,6 +719,10 @@ function checkMessages($mail_server, $mail_user, $mail_password, $dbh){
 						} else {
 							$text = trim(utf8_decode(decodeISO88591($attachment)));
 						}
+						
+						//remove new lines!!
+						$text=str_replace(array("\n\r", "\n", "\r"),'',$text);
+						
 						$what_log=explode("<>",$text);
 						$ma_log_entry=explode("|",$what_log[0]);
 						
@@ -733,7 +737,7 @@ function checkMessages($mail_server, $mail_user, $mail_password, $dbh){
 								$treatment_id=$ma_log_entry_part[4];
 								$measurement_id=$ma_log_entry_part[5];
 								$activity_id=$ma_log_entry_part[6];
-								$date=$ma_log_entry_part[7];
+								$date=str_replace(' ','',$ma_log_entry_part[7]);
 								$number_value=$ma_log_entry_part[8];
 								$units=$ma_log_entry_part[9];
 								$text_value=$ma_log_entry_part[10];
@@ -760,7 +764,7 @@ function checkMessages($mail_server, $mail_user, $mail_password, $dbh){
 								$user_id=$i_log_entry_part[3];
 								$crop_id=$i_log_entry_part[4];
 								$treatment_id=$i_log_entry_part[5];
-								$date=$i_log_entry_part[6];
+								$date=str_replace(' ','',$i_log_entry_part[6]);
 								$age=$i_log_entry_part[7];
 								$origin=$i_log_entry_part[8];
 								if($origin=="null") { $origin=""; }
