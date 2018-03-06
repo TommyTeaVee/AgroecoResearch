@@ -28,10 +28,11 @@ function showPopup(url,width,height) {
 </script>
 <body>
 <div class="w3-container w3-card-4">
-<h2 class="w3-green">Reports</h2><br>
+<h2 class="w3-green">Reports</h2>
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+<div align="center"><h4 class="w3-green">Reports are generated as CSV files. To open a report in Excel, please use 'comma' as separator and 'double quotes' as text delimiter.</h4></div><br>
 <p>
-<div align="center"><button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:40%; height:40px; max-width:500px;" id="timeline" name="timeline" onclick="return showPopup('timeline.php',800,700)">Timeline</button><br><br><button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:40%; height:40px; max-width:500px;" id="menu" name="menu">Menu</button></div><br>
+<div align="center"><button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:40%; height:40px; max-width:500px;" id="monthly" name="monthly" onclick="return showPopup('monthly.php',800,700)">Monthly report</button><br><br><button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:40%; height:40px; max-width:500px;" id="timeline" name="timeline" onclick="return showPopup('timeline.php',800,700)">Timeline</button><br><br><button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:40%; height:40px; max-width:500px;" id="menu" name="menu">Menu</button></div><br>
 </form><br>
 </div>
 </body>
