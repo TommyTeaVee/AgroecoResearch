@@ -155,6 +155,16 @@ function getFieldConfiguration($field_id,$dbh){
 	return $ret;
 }
 
+function getFieldIdFromName($dbh,$name){
+	$ret=-1;
+	$query="SELECT field_id FROM field WHERE field_name='$name' ORDER BY field_id LIMIT 0,1";
+	$result = mysqli_query($dbh,$query);
+	if($row = mysqli_fetch_array($result,MYSQL_NUM)){
+		$ret=$row[0];
+	}
+	return $ret;
+}
+
 function getFieldNameFromId($dbh,$id){
 	$ret="";
 	if(substr_count($id,",")>0){
@@ -919,5 +929,34 @@ function parseSampleValues($sample_values){
 		}
 	}
 	return $ret.$tail;
+}
+
+function getMaxWeatherFilenameId($dbh){
+	$ret=0;
+	$query="SELECT MAX(weather_data_id) FROM weather_data";
+	$result = mysqli_query($dbh,$query);
+	if($row = mysqli_fetch_array($result,MYSQL_NUM)){
+		$ret=$row[0]+1;
+	}
+	$ret="_".$ret;
+	return $ret;
+}
+
+function getStartEndDatesFromWeatherDataFile($file){
+	$ret="";
+	$row=0;
+	if(($f = fopen($file, "r")) !== FALSE) {
+		while (($data = fgetcsv($f, 1000, "\t")) !== FALSE) {
+			$row++;
+			if($row==3){
+				$date1=$data[0];
+			}
+			$last_date=$data[0];
+		}
+		$date2=$last_date;
+		$ret=$date1.",".$date2;
+		fclose($f);
+	}
+    return $ret;
 }
 ?>

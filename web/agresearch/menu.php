@@ -11,6 +11,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 		header("Location: log.php");
 	} else if(isset($_POST['notifications'])){
 		header("Location: notifications.php");
+	} else if(isset($_POST['weather'])){
+		header("Location: weather/index.php");
 	}
 	
 } else if(isset($_SESSION['admin']) && $_SESSION['admin']==true){
@@ -30,7 +32,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 <p>
 <div align="center"><button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:40%; height:40px; max-width:500px;" id="log" name="log">Manage data</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" id="analysis" name="analysis" style="width:40%; height:40px; max-width:500px;">Analysis tools</button></div><br>
 <div align="center"><button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:40%; height:40px; max-width:500px;" id="download" name="download">Download app</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:40%; height:40px; max-width:500px;" id="reports" name="reports">Reports</button></div><br>
-<div align="center"><button class="w3-button w3-green w3-round w3-border w3-border-green" id="notifications" name="notifications" style="width:40%; height:40px; max-width:500px;">Notifications</button></div><br>
+<div align="center"><button class="w3-button w3-green w3-round w3-border w3-border-green" id="notifications" name="notifications" style="width:40%; height:40px; max-width:500px;">Notifications</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:40%; height:40px; max-width:500px;" id="weather" name="weather">Weather data</button></div><br>
 </form><br>
 </div>
 </body>
