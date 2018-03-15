@@ -15,7 +15,15 @@ if(isset($_POST['menu'])){
 		$result = mysqli_query($dbh,$query);
 		if($row = mysqli_fetch_array($result,MYSQL_NUM)){
 			$filename="files/".$row[0];
-			//TODO: open download window (popup)
+			header('Content-Description: File Transfer');
+			header('Content-Type: application/octet-stream');
+			header('Content-Disposition: attachment; filename="'.basename($filename).'"');
+			header('Expires: 0');
+			header('Cache-Control: must-revalidate');
+			header('Pragma: public');
+			header('Content-Length: ' . filesize($filename));
+			flush(); // Flush system output buffer
+			readfile($filename);
 		}
 	}
 } else if(isset($_POST['upload'])){
