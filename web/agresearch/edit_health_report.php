@@ -183,7 +183,7 @@ for($i=0;$i<sizeof($health_report_items);$i++){
 					$selected=" selected";
 					$found=true;	
 				}
-				echo('<option value="'.$category_item.'"'.$selected.'>'.$category_item.'</option>');
+				echo('<option value="'.$k.'"'.$selected.'>'.$category_item.'</option>');
 			}
 			if($found || $sample_elements[$j]==" " || $sample_elements[$j]==""){
 				echo('<option value="-1">Other</option>');
@@ -193,7 +193,7 @@ for($i=0;$i<sizeof($health_report_items);$i++){
 				echo('</select>');
 				echo('<input class="w3-input w3-border-teal w3-text-green w3-small" type="text" name="other" id="other" value="'.$sample_elements[$j].'">');
 			}
-			echo('</select></td>');
+			echo('</td>');
 		}
 		echo('<td><button class="w3-button w3-green w3-round w3-border w3-border-green w3-medium w3-round-large" id="delete" name="delete" onclick="deleteRow(this)">Delete</button></td>');
 		echo('</tr>');

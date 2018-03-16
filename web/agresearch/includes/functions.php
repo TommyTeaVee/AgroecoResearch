@@ -907,6 +907,19 @@ function parseHealthReportValues($dbh,$sample_values){
 	return $ret;
 }
 
+function getHealthReportItemCategory($dbh,$item,$category){
+	$ret="";
+	$problem_names=getHealthReportItems($dbh);
+	$chosen_problem=$problem_names[$item];
+	$query="SELECT item_categories FROM health_report_item WHERE item='$chosen_problem'";
+	$result = mysqli_query($dbh,$query);
+	if($row = mysqli_fetch_array($result,MYSQL_NUM)){
+		$categories=explode(",",$row[0]);
+		$ret=$categories[$category];
+	}
+	return $ret;
+}
+
 function parseSampleValues($sample_values){
 	$ret="";
 	$elements=explode("*",$sample_values);

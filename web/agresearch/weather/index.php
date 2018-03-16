@@ -76,7 +76,7 @@ $prev_field="";
 while($row = mysqli_fetch_array($result,MYSQL_NUM)){
 	if($row[1]!=$prev_field){
 		echo('<option class="w3-green w3-text-white" value="" disabled>'.$row[1].'</option>');
-		$prev_field=$row[0];
+		$prev_field=$row[1];
 	}
 	echo('<option class="w3-text-green" value="'.$row[0].'">Data from '.$row[2].' to '.$row[3].'</option>');
 }
