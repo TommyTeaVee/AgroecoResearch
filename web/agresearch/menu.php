@@ -8,6 +8,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 	} else if(isset($_POST['download'])){
 		header("Location: app/index.php");
 	} else if(isset($_POST['log'])){
+		$_SESSION['reset']=false;
 		header("Location: log.php");
 	} else if(isset($_POST['notifications'])){
 		header("Location: notifications.php");
