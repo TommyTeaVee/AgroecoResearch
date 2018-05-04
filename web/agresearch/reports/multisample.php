@@ -79,7 +79,7 @@ if(isset($_POST['generate'])){
 	$column=0;
 	
 	for($i=0;$i<sizeof($fields);$i++){
-		$query="SELECT DISTINCT plots, log_value_text, log_date FROM log WHERE measurement_id=$measurement AND field_id=".$fields[$i]." ".$log_date_filter." ORDER BY plots";
+		$query="SELECT DISTINCT plots, log_value_text, log_date FROM log WHERE measurement_id=$measurement AND field_id=".$fields[$i]." ".$log_date_filter." ORDER BY plots, log_date";
 		$result = mysqli_query($dbh,$query);
 		if($i==0){
 			array_push($header_row,getFieldNameFromId($dbh,$fields[$i]));
@@ -91,11 +91,20 @@ if(isset($_POST['generate'])){
 			array_push($header_row,getFieldNameFromId($dbh,$fields[$i]));
 		}
 	
+		$distinct_dates=array();
+		$replication_plots=array();
 		while($row=mysqli_fetch_array($result,MYSQL_NUM)){
 			if($multiple_dates){
 				array_push($plot_name_row,calculatePlotLabelsWithoutCrop($dbh,$fields[$i],$row[0])." (".$row[2].")");
+				if(!in_array($row[2],$distinct_dates)){
+					array_push($distinct_dates,$row[2]);
+				}
 			} else {
 				array_push($plot_name_row,calculatePlotLabelsWithoutCrop($dbh,$fields[$i],$row[0]));
+			}
+			
+			if(!in_array($row[0],$replication_plots)){
+				array_push($replication_plots,$row[0]);
 			}
 			
 			$samples=explode("*",$row[1]);
@@ -122,10 +131,22 @@ if(isset($_POST['generate'])){
 			$column++;
 			$prev_plot_count++;
 		}
+		//TODO: add missing plots as empty columns
+		/*
+		$missing_plots=getMissingPlotLabels($dbh,$fields[$i],$replication_plots,$distinct_dates);
+		if(sizeof($missing_plots)>0){
+			for($l=0;$l<sizeof($missing_plots);$l++){
+				array_push($plot_name_row,$missing_plots[$l]);
+				$prev_plot_count++;
+				$column++;
+			}
+		}
+		*/
+		
 	}
 	
 	fputcsv($df, $header_row);
-	fputcsv($df, $plot_name_row);
+	fputcsv($df, $plot_name_row); 
 	for($i=0;$i<sizeof($data_block);$i++){
 		$row=$data_block[$i];
 		fputcsv($df, $row);

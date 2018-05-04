@@ -374,6 +374,35 @@ function calculatePlotLabelsWithoutCrop($dbh,$field_id,$plotsCSV){
 	return $ret;
 }
 
+function getMissingPlotLabels($dbh,$field_id,$replication_plots,$distinct_dates){
+	/*
+	TODO: get only the plots that are relevant for the measurement
+	$ret=array();
+	$query="SELECT field_configuration FROM field WHERE field_id=$field_id";
+	$result = mysqli_query($dbh,$query);
+	if($row = mysqli_fetch_array($result,MYSQL_NUM)){
+		$field_configuration=$row[0];
+		$elements=explode(";",$field_configuration);
+		$missing_plots=array();
+		for($i=2;$i<sizeof($elements);$i++){
+			if(!in_array($i,$replication_plots)){
+				array_push($missing_plots,$i);
+			}
+		}
+		if(sizeof($missing_plots)>0){
+			for($i=0;$i<sizeof($missing_plots);$i++){
+				$plot_label=calculatePlotLabelsWithoutCrop($dbh,$field_id,$missing_plots[$i]);
+				for($j=0;$j<sizeof($distinct_dates);$j++){
+					$complete_plot_label=$plot_label." (".$distinct_dates[$j].")";
+					array_push($ret,$complete_plot_label);
+				}
+			}
+		}
+	}
+	return $ret;
+	*/
+}
+
 function getAllPlots($dbh,$field_id){
 	$ret="";
 	$query="SELECT field_configuration FROM field WHERE field_id=$field_id";
