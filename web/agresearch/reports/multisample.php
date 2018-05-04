@@ -22,12 +22,15 @@ if(isset($_POST['generate'])){
 			if($date1>$date2){
 				$log_date_filter=" AND (log.log_date BETWEEN '".$yy2."-".$mm2."-".$dd2."' AND '".$yy1."-".$mm1."-".$dd1."') ";
 				$date_title="from $dd2/$mm2/$yy2 to $dd1/$mm1/$yy1";
+				$multiple_dates=true;
 			} else if($date1<$date2) {
 				$log_date_filter=" AND (log.log_date BETWEEN '".$yy1."-".$mm1."-".$dd1."' AND '".$yy2."-".$mm2."-".$dd2."') ";
 				$date_title="from $dd1/$mm1/$yy1 to $dd2/$mm2/$yy2";
+				$multiple_dates=true;
 			} else {
 				$log_date_filter=" AND log.log_date = '".$yy1."-".$mm1."-".$dd1."' ";
 				$date_title="$dd1/$mm1/$yy1";
+				$multiple_dates=false;
 			}
 		} else {
 			$log_date_filter=" ";
@@ -76,7 +79,7 @@ if(isset($_POST['generate'])){
 	$column=0;
 	
 	for($i=0;$i<sizeof($fields);$i++){
-		$query="SELECT DISTINCT plots, log_value_text FROM log WHERE measurement_id=$measurement AND field_id=".$fields[$i]." ".$log_date_filter." ORDER BY plots";
+		$query="SELECT DISTINCT plots, log_value_text, log_date FROM log WHERE measurement_id=$measurement AND field_id=".$fields[$i]." ".$log_date_filter." ORDER BY plots";
 		$result = mysqli_query($dbh,$query);
 		if($i==0){
 			array_push($header_row,getFieldNameFromId($dbh,$fields[$i]));
@@ -89,7 +92,11 @@ if(isset($_POST['generate'])){
 		}
 	
 		while($row=mysqli_fetch_array($result,MYSQL_NUM)){
-			array_push($plot_name_row,calculatePlotLabelsWithoutCrop($dbh,$fields[$i],$row[0]));
+			if($multiple_dates){
+				array_push($plot_name_row,calculatePlotLabelsWithoutCrop($dbh,$fields[$i],$row[0])." (".$row[2].")");
+			} else {
+				array_push($plot_name_row,calculatePlotLabelsWithoutCrop($dbh,$fields[$i],$row[0]));
+			}
 			
 			$samples=explode("*",$row[1]);
 			$nsample=0;
