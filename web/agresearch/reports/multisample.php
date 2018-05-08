@@ -8,6 +8,8 @@ session_start();
 
 if(isset($_POST['generate'])){
 	$fields=explode(",",$_POST['field']);
+	
+	$date_in_label = (isset($_POST['date_in_label']));
 		
 	if(isset($_POST['dd1']) && isset($_POST['mm1']) && isset($_POST['yy1']) && isset($_POST['dd2']) && isset($_POST['mm2']) && isset($_POST['yy2'])){
 		$dd1=$_POST['dd1'];
@@ -90,21 +92,24 @@ if(isset($_POST['generate'])){
 			$prev_plot_count=0;
 			array_push($header_row,getFieldNameFromId($dbh,$fields[$i]));
 		}
-	
+		
+		$replication_plots=getPlotsAssociatedWithMeasurement($dbh,$fields[$i],($measurement*-1));
+		$found_plots=array();
 		$distinct_dates=array();
-		$replication_plots=array();
+		
 		while($row=mysqli_fetch_array($result,MYSQL_NUM)){
-			if($multiple_dates){
-				array_push($plot_name_row,calculatePlotLabelsWithoutCrop($dbh,$fields[$i],$row[0])." (".$row[2].")");
+			$label=calculatePlotLabelsWithoutCrop($dbh,$fields[$i],$row[0]);
+			if($multiple_dates && $date_in_label){
+				array_push($plot_name_row,$label." (".$row[2].")");
 				if(!in_array($row[2],$distinct_dates)){
 					array_push($distinct_dates,$row[2]);
 				}
 			} else {
-				array_push($plot_name_row,calculatePlotLabelsWithoutCrop($dbh,$fields[$i],$row[0]));
+				array_push($plot_name_row,$label);
 			}
 			
-			if(!in_array($row[0],$replication_plots)){
-				array_push($replication_plots,$row[0]);
+			if(!in_array($label,$found_plots)){
+				array_push($found_plots,$label);
 			}
 			
 			$samples=explode("*",$row[1]);
@@ -131,19 +136,31 @@ if(isset($_POST['generate'])){
 			$column++;
 			$prev_plot_count++;
 		}
-		//TODO: add missing plots as empty columns
-		/*
-		$missing_plots=getMissingPlotLabels($dbh,$fields[$i],$replication_plots,$distinct_dates);
-		if(sizeof($missing_plots)>0){
-			for($l=0;$l<sizeof($missing_plots);$l++){
-				array_push($plot_name_row,$missing_plots[$l]);
-				$prev_plot_count++;
-				$column++;
+		
+		
+		for($j=0;$j<sizeof($replication_plots);$j++){
+			$plot=$replication_plots[$j];
+			if(!in_array($plot,$found_plots)){
+				if($multiple_dates && $date_in_label){
+					for($k=0;$k<sizeof($distinct_dates);$k++){
+						
+						array_push($plot_name_row,$plot." (".$distinct_dates[$k].")");
+						$prev_plot_count++;
+						$column++;
+						
+					}
+				} else {
+					
+					array_push($plot_name_row,$plot);
+					$prev_plot_count++;
+					$column++;
+					
+				}
 			}
 		}
-		*/
 		
 	}
+	
 	
 	fputcsv($df, $header_row);
 	fputcsv($df, $plot_name_row); 
@@ -151,6 +168,7 @@ if(isset($_POST['generate'])){
 		$row=$data_block[$i];
 		fputcsv($df, $row);
 	}
+	
 	
 	fclose($df);
 	header("Location: get_report.php?name=$filename");
@@ -385,6 +403,9 @@ if($field_aggregate!=""){
 	}
 ?>
 </select>
+</p>
+<p>
+<input class="w3-check" type="checkbox" id="date_in_label" name="date_in_label"><label class="w3-text-green">Include date in labels</label>
 </p>
 <button class="w3-button w3-green w3-round w3-border w3-border-green w3-medium w3-round-large" id="generate" name="generate">Generate</button> <button class="w3-button w3-green w3-round w3-border w3-border-green w3-medium w3-round-large" onclick="javascript:window.close();">Close</button><br><br>
 </form>

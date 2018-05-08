@@ -165,6 +165,20 @@ function getFieldConfiguration($field_id,$dbh){
 	return $ret;
 }
 
+function getPlotsAssociatedWithMeasurement($dbh,$field_id,$measurement_id){
+	$ret=array();
+	$configuration=getFieldConfiguration($field_id,$dbh);
+	$parts=explode(";",$configuration);
+	for($i=2;$i<sizeof($parts);$i++){
+		$plot=calculatePlotLabelsWithoutCrop($dbh,$field_id,($i-2));
+		if(isPlotAssociatedWithTask($dbh,$parts[$i],$measurement_id,"lm") && !in_array($plot,$ret)){
+			array_push($ret,$plot);
+		} else {
+		}
+	}
+	return $ret;
+}
+
 function getFieldIdFromName($dbh,$name){
 	$ret=-1;
 	$query="SELECT field_id FROM field WHERE field_name='$name' ORDER BY field_id LIMIT 0,1";
@@ -374,9 +388,8 @@ function calculatePlotLabelsWithoutCrop($dbh,$field_id,$plotsCSV){
 	return $ret;
 }
 
-function getMissingPlotLabels($dbh,$field_id,$replication_plots,$distinct_dates){
+function getMissingPlotLabels($dbh,$field_id,$replication_plots,$distinct_dates,$measurement_id){
 	/*
-	TODO: get only the plots that are relevant for the measurement
 	$ret=array();
 	$query="SELECT field_configuration FROM field WHERE field_id=$field_id";
 	$result = mysqli_query($dbh,$query);
@@ -385,8 +398,8 @@ function getMissingPlotLabels($dbh,$field_id,$replication_plots,$distinct_dates)
 		$elements=explode(";",$field_configuration);
 		$missing_plots=array();
 		for($i=2;$i<sizeof($elements);$i++){
-			if(!in_array($i,$replication_plots)){
-				array_push($missing_plots,$i);
+			if(isPlotAssociatedWithTask($dbh,$elements[$i],$measurement_id,"lm") && !in_array(($i-2),$replication_plots)){
+				array_push($missing_plots,($i-2));
 			}
 		}
 		if(sizeof($missing_plots)>0){
