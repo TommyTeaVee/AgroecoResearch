@@ -90,6 +90,7 @@ if(isset($_POST['generate'])){
 		array_push($all_measurements,$measurement_string);
 	}
 	
+	
 	$query1="SELECT DISTINCT user.user_name, activity.activity_name, log.log_date FROM log,user,activity WHERE user.user_id=log.user_id ".$log_field_filter.$log_date_filter.$log_activity_filter." AND activity.activity_id=log.activity_id ORDER BY log.log_date,activity.activity_name";
 	$result = mysqli_query($dbh,$query1);
 	$registered_activities=array();
@@ -129,59 +130,65 @@ if(isset($_POST['generate'])){
 	array_push($date_array_display,"");
 	while($date2>=$current_date){
 		array_push($date_array,date('Y-m-d',date($current_date)));
-		array_push($date_array_display,date('m/d',date($current_date)));
+		array_push($date_array_display,date('M j',date($current_date)));
 		$current_date=strtotime(date('Y-m-d',$current_date).' + 1 day');
 	}
 	fputcsv($df, $date_array_display);
-	$title=array("Activities");
-	fputcsv($df, $title);
 	
-	//activities
-	for($i=0;$i<sizeof($all_activities);$i++){
-		$activity_row=array();
-		array_push($activity_row,$all_activities[$i]);
-		for($j=1;$j<sizeof($date_array);$j++){
-			$current_date=$date_array[$j];
-			$found=false;
-			for($k=0;$k<sizeof($registered_activities);$k++){
-				$registered_activities_parts=explode(",",$registered_activities[$k]);
-				if(($registered_activities_parts[2]==$current_date) && ($registered_activities_parts[1]==$all_activities[$i])){
-					array_push($activity_row,$registered_activities_parts[0]);
-					$found=true;
-					break;
+	if(isset($_POST['toggle_activity'])){
+		$title=array("Activities");
+		fputcsv($df, $title);
+	
+		//activities
+		for($i=0;$i<sizeof($all_activities);$i++){
+			$activity_row=array();
+			array_push($activity_row,$all_activities[$i]);
+			for($j=1;$j<sizeof($date_array);$j++){
+				$current_date=$date_array[$j];
+				$found=false;
+				for($k=0;$k<sizeof($registered_activities);$k++){
+					$registered_activities_parts=explode(",",$registered_activities[$k]);
+					if(($registered_activities_parts[2]==$current_date) && ($registered_activities_parts[1]==$all_activities[$i])){
+						array_push($activity_row,$registered_activities_parts[0]);
+						$found=true;
+						break;
+					}
+				}
+				if(!$found){
+					array_push($activity_row,"");
 				}
 			}
-			if(!$found){
-				array_push($activity_row,"");
-			}
+			fputcsv($df, $activity_row);
 		}
-		fputcsv($df, $activity_row);
 	}
 	
-	$title=array("Measurements");
-	fputcsv($df, $title);
 	
-	//measurements
+	if(isset($_POST['toggle_measurement'])){
+		$title=array("Measurements");
+		fputcsv($df, $title);
 	
-	for($i=0;$i<sizeof($all_measurements);$i++){
-		$measurement_row=array();
-		array_push($measurement_row,$all_measurements[$i]);
-		for($j=1;$j<sizeof($date_array);$j++){
-			$current_date=$date_array[$j];
-			$found=false;
-			for($k=0;$k<sizeof($registered_measurements);$k++){
-				$registered_measurements_parts=explode(",",$registered_measurements[$k]);
-				if(($registered_measurements_parts[2]==$current_date) && ($registered_measurements_parts[1]==$all_measurements[$i])){
-					array_push($measurement_row,$registered_measurements_parts[0]);
-					$found=true;
-					break;
+		//measurements
+	
+		for($i=0;$i<sizeof($all_measurements);$i++){
+			$measurement_row=array();
+			array_push($measurement_row,$all_measurements[$i]);
+			for($j=1;$j<sizeof($date_array);$j++){
+				$current_date=$date_array[$j];
+				$found=false;
+				for($k=0;$k<sizeof($registered_measurements);$k++){
+					$registered_measurements_parts=explode(",",$registered_measurements[$k]);
+					if(($registered_measurements_parts[2]==$current_date) && ($registered_measurements_parts[1]==$all_measurements[$i])){
+						array_push($measurement_row,$registered_measurements_parts[0]);
+						$found=true;
+						break;
+					}
+				}
+				if(!$found){
+					array_push($measurement_row,"");
 				}
 			}
-			if(!$found){
-				array_push($measurement_row,"");
-			}
+			fputcsv($df, $measurement_row);
 		}
-		fputcsv($df, $measurement_row);
 	}
 	
 	fclose($df);
