@@ -1065,4 +1065,24 @@ function getStartEndDatesFromWeatherDataFile($file){
 	}
     return $ret;
 }
+
+function my_standard_deviation(array $a, $sample = false) {
+	$n = count($a);
+    if ($n === 0) {
+		return " ";
+    }
+    if ($sample && $n === 1) {
+		return " ";
+    }
+    $mean = array_sum($a) / $n;
+    $carry = 0.0;
+    foreach ($a as $val) {
+		$d = ((double) $val) - $mean;
+        $carry += $d * $d;
+    };
+    if ($sample) {
+           --$n;
+	}
+    return sqrt($carry / $n);
+}
 ?>

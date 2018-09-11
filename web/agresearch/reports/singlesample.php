@@ -50,9 +50,7 @@ if(isset($_POST['generate'])){
 	}
 	
 	//generate report
-	
-	
-	$filename="multisample".date("Y-m-d").".csv";
+	$filename="singlesample".date("Y-m-d").".csv";
 	
 	$files = glob('generated/*'); 
 	foreach($files as $file){ 
@@ -74,132 +72,73 @@ if(isset($_POST['generate'])){
 	fputcsv($df, $title);
 	
 	//header
-	$header_row=array(" ");
 	$plot_name_row=array();
 	$date_row=array();
 	$data_block=array();
-	$prev_plot_count=0;
-	$column=0;
 	
 	//results
 	$result_block=array();
-	$n_samples_row=array("Number of samples");
 	$mean_row=array("Mean");
 	$std_dev_row=array("Standard deviation");
 	$std_dev_values=array();
 	
+	$found_plots_dates=array();
+	$data_row=array();
+	
 	for($i=0;$i<sizeof($fields);$i++){
-		$query="SELECT DISTINCT plots, log_value_text, log_date FROM log WHERE measurement_id=$measurement AND field_id=".$fields[$i]." ".$log_date_filter." ORDER BY plots, log_date";
+		$query="SELECT DISTINCT plots, log_value_number, log_date FROM log WHERE measurement_id=$measurement AND field_id=".$fields[$i]." ".$log_date_filter." ORDER BY plots, log_date";
 		$result = mysqli_query($dbh,$query);
-		if($i==0){
-			array_push($header_row,getFieldNameFromId($dbh,$fields[$i]));
-		} else {
-			for($j=0;$j<($prev_plot_count-1);$j++){
-				array_push($header_row," ");
-			}
-			$prev_plot_count=0;
-			array_push($header_row,getFieldNameFromId($dbh,$fields[$i]));
-		}
-		
-		$replication_plots=getPlotsAssociatedWithMeasurement($dbh,$fields[$i],($measurement*-1));
-		$found_plots=array();
-		$distinct_dates=array();
+		array_push($data_row,array());
 		
 		while($row=mysqli_fetch_array($result,MYSQL_NUM)){
+			
 			$label=calculatePlotLabelsWithoutCrop($dbh,$fields[$i],$row[0]);
+			
 			if($multiple_dates && $date_in_label){
-				array_push($plot_name_row,$label);
-				array_push($date_row,$row[2]);
-				if(!in_array($row[2],$distinct_dates)){
-					array_push($distinct_dates,$row[2]);
+				$label=$label." ".$row[2];
+			}
+			$sample=$row[1];
+			if(!in_array($label,$found_plots_dates)){
+				array_push($found_plots_dates,$label);
+			}
+			$index=array_search($label,$found_plots_dates);
+			$x=sizeof($data_row[$i]);
+			if($index==$x){
+				array_push($data_row[$i],$sample);
+			} else if($index>$x){
+				for($j=0;$j<($index-$x);$j++){
+					array_push($data_row[$i],"*");
 				}
+				array_push($data_row[$i],$sample);
 			} else {
-				array_push($plot_name_row,$label);
-			}
-			
-			if(!in_array($label,$found_plots)){
-				array_push($found_plots,$label);
-			}
-			
-			$samples=explode("*",$row[1]);
-			array_push($n_samples_row,sizeof($samples)/2);
-			$sample_sum=0;
-			
-			$std_dev_values=array();
-			
-			$nsample=0;
-			for($j=0;$j<sizeof($samples);$j+=2){
-				$sample=$samples[$j+1];
-				$sample_sum+=$sample;
-				array_push($std_dev_values,$sample);
-				if(sizeof($data_block)<($nsample+1)){
-					$new_row=array(($nsample+1));
-					for($k=0;$k<$column;$k++){
-						array_push($new_row," ");
-					}
-					array_push($new_row,$sample);
-					array_push($data_block,$new_row);
-				} else {
-					
-					while(sizeof($data_block[$nsample])<=$column){
-						array_push($data_block[$nsample]," ");
-					}
-					array_push($data_block[$nsample],$sample);
-				}
-				
-				$nsample++;
-			}
-			
-			$mean=($sample_sum/(sizeof($samples)/2));
-			array_push($mean_row,$mean);
-			
-			array_push($std_dev_row,my_standard_deviation($std_dev_values));
-		
-			
-			$column++;
-			$prev_plot_count++;
+				$data_row[$i][$index]=$sample;
+			}		
 		}
-		
-		
-		for($j=0;$j<sizeof($replication_plots);$j++){
-			$plot=$replication_plots[$j];
-			if(!in_array($plot,$found_plots)){
-				if($multiple_dates && $date_in_label){
-					for($k=0;$k<sizeof($distinct_dates);$k++){
-						
-						array_push($plot_name_row,$plot);
-						array_push($date_row,$distinct_dates[$k]);
-						array_push($n_samples_row,"0");
-						$prev_plot_count++;
-						$column++;
-						
-					}
-				} else {
-					
-					array_push($plot_name_row,$plot);
-					array_push($n_samples_row,"0");
-					$prev_plot_count++;
-					$column++;
-					
-				}
-			}
-		}
-		
+		array_unshift($data_row[$i],getFieldNameFromId($dbh,$fields[$i]));
+		array_push($data_block,$data_row[$i]);
 	}
-	
-	array_push($result_block,$n_samples_row);
-	array_push($result_block,$mean_row);
-	array_push($result_block,$std_dev_row);
-	
-	fputcsv($df, $header_row);
-	
+		
+	for($i=0;$i<sizeof($found_plots_dates);$i++){
+		if($multiple_dates && $date_in_label){
+			if($i==0){
+				array_push($plot_name_row," ");
+				array_push($date_row,"Field");
+			}
+			$label_parts=explode(" ",$found_plots_dates[$i]);
+			array_push($plot_name_row,$label_parts[0]);
+			array_push($date_row,$label_parts[1]);
+		} else {
+			if($i==0){
+				array_push($plot_name_row,"Field");
+			}
+			array_push($plot_name_row,$found_plots_dates[$i]);
+		}
+	}
+
 	if($multiple_dates && $date_in_label){
-		array_unshift($plot_name_row," ");
 		fputcsv($df,$plot_name_row);
-		array_unshift($date_row,"Sample number");
 		fputcsv($df,$date_row);
 	} else {
-		array_unshift($plot_name_row,"Sample number");
 		fputcsv($df, $plot_name_row);
 	}
 	
@@ -208,6 +147,20 @@ if(isset($_POST['generate'])){
 		fputcsv($df, $row);
 	}
 	
+	for($i=1;$i<sizeof($plot_name_row);$i++){
+		$mean_sum=0;
+		$std_dev_values=array();
+		for($j=0;$j<sizeof($data_block);$j++){
+			$mean_sum+=$data_block[$j][$i];
+			array_push($std_dev_values,$data_block[$j][$i]);
+		}
+		$mean=$mean_sum/sizeof($data_block);
+		array_push($mean_row,$mean);
+		array_push($std_dev_row,my_standard_deviation($std_dev_values));
+	}
+	array_push($result_block,$mean_row);
+	array_push($result_block,$std_dev_row);
+	
 	fputcsv($df,array(" "));
 	
 	for($i=0;$i<sizeof($result_block);$i++){
@@ -215,14 +168,13 @@ if(isset($_POST['generate'])){
 		fputcsv($df,$row);
 	}
 	
-	
 	fclose($df);
 	header("Location: get_report.php?name=$filename");
 	
 } else if(isset($_SESSION['admin']) && $_SESSION['admin']==true){
 	$currentYear=date("Y");
 	
-	$query="SELECT DISTINCT measurement_id, measurement_name, measurement_category, measurement_subcategory FROM measurement WHERE measurement_has_sample_number=1 AND measurement_type<>2 ORDER BY measurement_category, measurement_subcategory, measurement_name";
+	$query="SELECT DISTINCT measurement_id, measurement_name, measurement_category, measurement_subcategory FROM measurement WHERE measurement_has_sample_number=0 AND measurement_type<>2 ORDER BY measurement_category, measurement_subcategory, measurement_name";
 	$result = mysqli_query($dbh,$query);
 	$measurements_array=array();
 	while($row = mysqli_fetch_array($result,MYSQL_NUM)){
@@ -321,7 +273,7 @@ if(isset($_POST['generate'])){
 </head>
 <body class="w3-small">
 <div class="w3-container w3-card-4">
-<h2 class="w3-green">Multiple sample measurement report</h2>
+<h2 class="w3-green">Single sample measurement report</h2>
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" onsubmit="return validateForm()">
 <p>
 <label class="w3-text-green">Field</label>
