@@ -91,6 +91,7 @@ if(isset($_POST['generate'])){
 	for($i=0;$i<sizeof($fields);$i++){
 		$query="SELECT DISTINCT plots, log_value_text, log_date FROM log WHERE measurement_id=$measurement AND field_id=".$fields[$i]." ".$log_date_filter." ORDER BY plots, log_date";
 		$result = mysqli_query($dbh,$query);
+		
 		if($i==0){
 			array_push($header_row,getFieldNameFromId($dbh,$fields[$i]));
 		} else {
@@ -101,12 +102,30 @@ if(isset($_POST['generate'])){
 			array_push($header_row,getFieldNameFromId($dbh,$fields[$i]));
 		}
 		
+		$target_order=array("Control","PSL","SL","PS","PL","S","L","P");
+		$db_result_unordered=array();
+		$db_result_ordered=array();
+		while($row=mysqli_fetch_array($result,MYSQL_NUM)){
+			$label=calculatePlotLabelsWithoutCrop($dbh,$fields[$i],$row[0]);
+			array_push($db_result_unordered,array($label,$row[1],$row[2]));
+		}
+		
+		for($j=0;$j<sizeof($target_order);$j++){
+			for($k=0;$k<sizeof($db_result_unordered);$k++){
+				if($db_result_unordered[$k][0]==$target_order[$j]){
+					array_push($db_result_ordered,$db_result_unordered[$k]);
+				}
+			}
+		}
+		
 		$replication_plots=getPlotsAssociatedWithMeasurement($dbh,$fields[$i],($measurement*-1));
 		$found_plots=array();
 		$distinct_dates=array();
 		
-		while($row=mysqli_fetch_array($result,MYSQL_NUM)){
-			$label=calculatePlotLabelsWithoutCrop($dbh,$fields[$i],$row[0]);
+		for($l=0;$l<sizeof($db_result_ordered);$l++){
+			$row=$db_result_ordered[$l];
+			$label=$row[0];
+	
 			if($multiple_dates && $date_in_label){
 				array_push($plot_name_row,$label);
 				array_push($date_row,$row[2]);

@@ -167,13 +167,21 @@ function getFieldConfiguration($field_id,$dbh){
 
 function getPlotsAssociatedWithMeasurement($dbh,$field_id,$measurement_id){
 	$ret=array();
+	$unordered=array();
 	$configuration=getFieldConfiguration($field_id,$dbh);
 	$parts=explode(";",$configuration);
 	for($i=2;$i<sizeof($parts);$i++){
 		$plot=calculatePlotLabelsWithoutCrop($dbh,$field_id,($i-2));
-		if(isPlotAssociatedWithTask($dbh,$parts[$i],$measurement_id,"lm") && !in_array($plot,$ret)){
-			array_push($ret,$plot);
-		} else {
+		if(isPlotAssociatedWithTask($dbh,$parts[$i],$measurement_id,"lm") && !in_array($plot,$unordered)){
+			array_push($unordered,$plot);
+		} 
+	}
+	$target_order=array("Control","PSL","SL","PS","PL","S","L","P");
+	for($i=0;$i<sizeof($target_order);$i++){
+		for($j=0;$j<sizeof($unordered);$j++){
+			if($unordered[$j]==$target_order[$i]){
+				array_push($ret,$unordered[$j]);
+			}
 		}
 	}
 	return $ret;

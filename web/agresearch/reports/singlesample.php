@@ -88,11 +88,29 @@ if(isset($_POST['generate'])){
 	for($i=0;$i<sizeof($fields);$i++){
 		$query="SELECT DISTINCT plots, log_value_number, log_date FROM log WHERE measurement_id=$measurement AND field_id=".$fields[$i]." ".$log_date_filter." ORDER BY plots, log_date";
 		$result = mysqli_query($dbh,$query);
+		
+		$target_order=array("Control","PSL","SL","PS","PL","S","L","P");
+		$db_result_unordered=array();
+		$db_result_ordered=array();
+		while($row=mysqli_fetch_array($result,MYSQL_NUM)){
+			$label=calculatePlotLabelsWithoutCrop($dbh,$fields[$i],$row[0]);
+			array_push($db_result_unordered,array($label,$row[1],$row[2]));
+		}
+		
+		for($j=0;$j<sizeof($target_order);$j++){
+			for($k=0;$k<sizeof($db_result_unordered);$k++){
+				if($db_result_unordered[$k][0]==$target_order[$j]){
+					array_push($db_result_ordered,$db_result_unordered[$k]);
+				}
+			}
+		}
+		
 		array_push($data_row,array());
 		
-		while($row=mysqli_fetch_array($result,MYSQL_NUM)){
+		for($j=0;$j<sizeof($db_result_ordered);$j++){
 			
-			$label=calculatePlotLabelsWithoutCrop($dbh,$fields[$i],$row[0]);
+			$row=$db_result_ordered[$j];
+			$label=$row[0];
 			
 			if($multiple_dates && $date_in_label){
 				$label=$label." ".$row[2];
