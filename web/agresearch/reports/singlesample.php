@@ -65,7 +65,7 @@ if(isset($_POST['generate'])){
 	fputcsv($df, $title);
 	$title=array("Period: ".$date_title);
 	fputcsv($df, $title);
-	$mname=getMeasurementNameFromId($dbh,$measurement);
+	$mname=getMeasurementNameFromIdWithUnits($dbh,$measurement);
 	$title=array("Parameter: ".$mname);
 	fputcsv($df, $title);
 	$title=array(" ");
@@ -92,15 +92,26 @@ if(isset($_POST['generate'])){
 		$target_order=array("Control","PSL","SL","PS","PL","S","L","P");
 		$db_result_unordered=array();
 		$db_result_ordered=array();
+		$found_dates=array();
 		while($row=mysqli_fetch_array($result,MYSQL_NUM)){
 			$label=calculatePlotLabelsWithoutCrop($dbh,$fields[$i],$row[0]);
 			array_push($db_result_unordered,array($label,$row[1],$row[2]));
+			if(!in_array($row[2],$found_dates)){
+				array_push($found_dates,$row[2]);
+			}
 		}
 		
 		for($j=0;$j<sizeof($target_order);$j++){
+			$found=false;
 			for($k=0;$k<sizeof($db_result_unordered);$k++){
 				if($db_result_unordered[$k][0]==$target_order[$j]){
 					array_push($db_result_ordered,$db_result_unordered[$k]);
+					$found=true;
+				}
+			}
+			if(!$found){
+				for($k=0;$k<sizeof($found_dates);$k++){
+					array_push($db_result_ordered,array($target_order[$j]," ",$found_dates[$k]));
 				}
 			}
 		}
@@ -168,13 +179,24 @@ if(isset($_POST['generate'])){
 	for($i=1;$i<sizeof($plot_name_row);$i++){
 		$mean_sum=0;
 		$std_dev_values=array();
+		$divisor=sizeof($data_block);
 		for($j=0;$j<sizeof($data_block);$j++){
-			$mean_sum+=$data_block[$j][$i];
-			array_push($std_dev_values,$data_block[$j][$i]);
+			if($data_block[$j][$i]==" " || $data_block[$j][$i]==""){
+				$divisor--;
+			} else {
+				$mean_sum+=$data_block[$j][$i];
+				array_push($std_dev_values,$data_block[$j][$i]);
+			}
 		}
-		$mean=$mean_sum/sizeof($data_block);
-		array_push($mean_row,$mean);
-		array_push($std_dev_row,my_standard_deviation($std_dev_values));
+		if($divisor>0){
+			$mean=$mean_sum/$divisor;
+			array_push($mean_row,$mean);
+			array_push($std_dev_row,my_standard_deviation($std_dev_values));
+		} else {
+			array_push($mean_row,0);
+			array_push($std_dev_row,0);
+		}
+		
 	}
 	array_push($result_block,$mean_row);
 	array_push($result_block,$std_dev_row);
@@ -291,7 +313,7 @@ if(isset($_POST['generate'])){
 </head>
 <body class="w3-small">
 <div class="w3-container w3-card-4">
-<h2 class="w3-green">Single sample measurement report</h2>
+<h2 class="w3-green">Plot-based measurement report</h2>
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" onsubmit="return validateForm()">
 <p>
 <label class="w3-text-green">Field</label>

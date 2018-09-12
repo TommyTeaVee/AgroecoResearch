@@ -124,7 +124,7 @@ function confirmDelete(){
 </head>
 <body>
 <div class="w3-container w3-card-4">
-<h2 class="w3-green">Data manager</h2><br>
+<h2 class="w3-green">View / add / edit data</h2><br>
 <?php
 if($_SESSION['filter_reminder']!=""){
 	echo("Filtered by: ".$_SESSION['filter_reminder']."<br>");
