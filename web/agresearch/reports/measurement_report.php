@@ -65,6 +65,16 @@ function goTo(n){
 	document.location = 'measurement_report.php?from=' + n + "&selected=" + selected;
 }
 
+function generateReport(){
+	var selected = document.getElementById("selected").value;
+	if(selected==""){
+		alert("No data points were selected");
+	} else {
+		var url = "generate.php?selected=" + selected
+		showPopup(url,800,700);
+	}
+}
+
 function addRemove(n,x){
 	var add_to_report =  document.getElementsByName("add_to_report[]");
 	var add = (add_to_report[n].checked);
@@ -97,7 +107,6 @@ function addRemove(n,x){
 <body>
 <div class="w3-container w3-card-4">
 <h2 class="w3-green">Download data</h2>
-<div align="center"><h4 class="w3-green">Data is downloaded as a CSV file. To open this file in Excel, please use 'comma' as separator and 'double quotes' as text delimiter.</h4></div><br>
 <?php
 if($_SESSION['report_filter_reminder']!=""){
 	echo("Filtered by: ".$_SESSION['report_filter_reminder']."<br>");
@@ -157,7 +166,7 @@ if(getTotalItemsReport($dbh,$_SESSION['report_log_field_filter'],$_SESSION['repo
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 <input name="selected" type="hidden" id="selected" value="<?php echo($selected); ?>">
 </form>
-<button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:20%; height:40px; max-width:300px;" type="button" id="generate" name="generate" onclick="">Generate report</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:20%; height:40px; max-width:300px;" type="button" id="filters" name="filters" onclick="">Filters</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:20%; height:40px; max-width:300px;" type="button" id="menu" name="menu" onclick="goToMenu()">Menu</button><br><br>
+<button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:20%; height:40px; max-width:300px;" type="button" id="generate" name="generate" onclick="generateReport()">Generate report</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:20%; height:40px; max-width:300px;" type="button" id="filters" name="filters" onclick="">Filters</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:20%; height:40px; max-width:300px;" type="button" id="menu" name="menu" onclick="goToMenu()">Menu</button><br><br>
 </div>
 </body>
 </html>

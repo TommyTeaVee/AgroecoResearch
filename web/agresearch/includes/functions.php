@@ -141,6 +141,16 @@ function getMeasurementSubcategories($dbh){
 	return $ret;
 }
 
+function isMultisample($dbh,$id){
+	$ret=false;
+	$query="SELECT measurement_has_sample_number FROM measurement WHERE measurement_id=$id";
+	$result = mysqli_query($dbh,$query);
+	if($row = mysqli_fetch_array($result,MYSQL_NUM)){
+		$ret=($row[0]==1);
+	}
+	return $ret;
+}
+
 function getActivityCategories($dbh){
 	$ret=array();
 	$query="SELECT DISTINCT activity_category FROM activity ORDER BY activity_category";
@@ -245,6 +255,16 @@ function getParentField($field_id,$dbh){
 	$result = mysqli_query($dbh,$query);
 	if($row = mysqli_fetch_array($result,MYSQL_NUM)){
 		$ret=$row[0];
+	}
+	return $ret;
+}
+
+function getChildFields($dbh,$field_id){
+	$ret=array();
+	$query="SELECT field_id FROM field WHERE parent_field_id=$field_id";
+	$result = mysqli_query($dbh,$query);
+	while($row = mysqli_fetch_array($result,MYSQL_NUM)){
+		array_push($ret,$row[0]);
 	}
 	return $ret;
 }
