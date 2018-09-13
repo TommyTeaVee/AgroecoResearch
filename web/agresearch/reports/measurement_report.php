@@ -36,6 +36,7 @@ if(isset($_SESSION['admin']) && $_SESSION['admin']==true){
 	
 	if(!isset($_GET['from']) || $_SESSION['report_reset']){
 		$from=0;
+		$selected="";
 		$_SESSION['report_reset']=false;
 	} else {
 		$from=$_GET['from'];
@@ -122,7 +123,7 @@ if($_SESSION['report_filter_reminder']!=""){
 	</tr>
   </thead>
 <?php
-$query="SELECT DISTINCT log.log_date AS date, field.parent_field_id AS field, log.measurement_id FROM log, field, measurement WHERE field.field_id = log.field_id AND measurement.measurement_id = log.measurement_id AND measurement.measurement_type <> 2 ORDER BY date, field LIMIT $from, $max_messages";
+$query="SELECT DISTINCT log.log_date AS date, field.parent_field_id AS field, log.measurement_id FROM log, field, measurement WHERE field.field_id = log.field_id AND measurement.measurement_id = log.measurement_id AND measurement.measurement_type <> 2".$_SESSION['report_log_field_filter'].$_SESSION['report_log_date_filter']."ORDER BY date DESC, field LIMIT $from, $max_messages";
 $result = mysqli_query($dbh,$query);
 $n=0;
 while($row = mysqli_fetch_array($result,MYSQL_NUM)){
@@ -157,7 +158,7 @@ if($from>0){
 ?>
 </div><div class="w3-half" align="center">
 <?php 
-if(getTotalItemsReport($dbh,$_SESSION['report_log_field_filter'],$_SESSION['report_log_date_filter'],$_SESSION['report_log_measurement_filter'],$_SESSION['report_log_crop_filter'])>($from+$max_messages)){
+if(getTotalItemsReport($dbh,$_SESSION['report_log_field_filter'],$_SESSION['report_log_date_filter'],$_SESSION['report_log_measurement_filter'])>($from+$max_messages)){
 	$next=$from+$max_messages;
 	echo('<a href="javascript:goTo('.$next.');">Next</a>');
 }
@@ -166,7 +167,7 @@ if(getTotalItemsReport($dbh,$_SESSION['report_log_field_filter'],$_SESSION['repo
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 <input name="selected" type="hidden" id="selected" value="<?php echo($selected); ?>">
 </form>
-<button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:20%; height:40px; max-width:300px;" type="button" id="generate" name="generate" onclick="generateReport()">Generate report</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:20%; height:40px; max-width:300px;" type="button" id="filters" name="filters" onclick="">Filters</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:20%; height:40px; max-width:300px;" type="button" id="menu" name="menu" onclick="goToMenu()">Menu</button><br><br>
+<button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:20%; height:40px; max-width:300px;" type="button" id="generate" name="generate" onclick="generateReport()">Generate report</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:20%; height:40px; max-width:300px;" type="button" id="filters" name="filters" onclick="return showPopup('filters.php',800,700)">Filters</button> <button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:20%; height:40px; max-width:300px;" type="button" id="menu" name="menu" onclick="goToMenu()">Menu</button><br><br>
 </div>
 </body>
 </html>
