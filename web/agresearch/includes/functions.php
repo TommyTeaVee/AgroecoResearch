@@ -628,7 +628,7 @@ function getCropSymbolFromId($dbh,$crop_id){
 
 function getTotalItemsReport($dbh,$field_filter,$date_filter,$measurement_filter){
 	$ret=0;
-	$query="SELECT DISTINCT log.log_date AS date, field.parent_field_id AS field, log.measurement_id FROM log, field, measurement WHERE field.field_id = log.field_id AND measurement.measurement_id = log.measurement_id AND measurement.measurement_type <> 2".$field_filter.$date_filter."ORDER BY date, field";
+	$query="SELECT DISTINCT log.log_date AS date, field.parent_field_id AS field, log.measurement_id FROM log, field, measurement WHERE field.field_id = log.field_id AND measurement.measurement_id = log.measurement_id AND measurement.measurement_type <> 2".$field_filter.$date_filter.$measurement_filter."ORDER BY date, field";
 	$result = mysqli_query($dbh,$query);
 	$ret=mysqli_num_rows($result);
 	return $ret;

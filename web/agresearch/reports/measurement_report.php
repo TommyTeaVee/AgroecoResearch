@@ -20,8 +20,14 @@ if(isset($_SESSION['admin']) && $_SESSION['admin']==true){
 	} else if($_SESSION['report_log_field_filter']==""){
 		$_SESSION['log_field_filter']=" ";
 	}
+	
 	if(!isset($_SESSION['report_log_date_filter'])){
 		$_SESSION['report_log_date_filter']=" ";
+	}
+	
+	if(!isset($_SESSION['report_log_measurement_filter'])){
+		$_SESSION['report_log_measurement_filter']=" ";
+		$_SESSION['report_measurement_category_filter']=" ";
 	}
 	
 	if(!isset($_SESSION['report_max_messages']) || !is_numeric($_SESSION['report_max_messages'])){
@@ -123,7 +129,36 @@ if($_SESSION['report_filter_reminder']!=""){
 	</tr>
   </thead>
 <?php
-$query="SELECT DISTINCT log.log_date AS date, field.parent_field_id AS field, log.measurement_id FROM log, field, measurement WHERE field.field_id = log.field_id AND measurement.measurement_id = log.measurement_id AND measurement.measurement_type <> 2".$_SESSION['report_log_field_filter'].$_SESSION['report_log_date_filter']."ORDER BY date DESC, field LIMIT $from, $max_messages";
+if($_SESSION['report_log_measurement_filter']!=" "){
+	if($_SESSION['report_log_measurement_filter']>0){
+		$measurement_filter=" AND measurement.measurement_id = ".$_SESSION['report_log_measurement_filter']." ";
+	} else if($_SESSION['report_log_measurement_filter']==-1 && $_SESSION['report_measurement_category_filter']>0){
+		$cat=$_SESSION['report_measurement_category_filter']-1;
+		$query="SELECT measurement_id, measurement_category FROM measurement ORDER BY measurement_category";
+		$result = mysqli_query($dbh,$query);
+		$n=0;
+		$prev_cat="";
+		$measurement_filter="";
+		while($row = mysqli_fetch_array($result,MYSQL_NUM)){
+			$this_cat=$row[1];
+			if($prev_cat==""){
+				$prev_cat=$this_cat;
+			} else if($this_cat!=$prev_cat){
+				$prev_cat=$this_cat;
+				$n++;
+			}
+			if($n==$cat){
+				$measurement_filter = ($measurement_filter=="") ? " AND measurement.measurement_id IN(".$row[0] : $measurement_filter.",".$row[0];
+			}
+		}
+		if($measurement_filter!=""){
+			$measurement_filter.=") ";
+		}
+	} else {
+		$measurement_filter="";
+	}
+}
+$query="SELECT DISTINCT log.log_date AS date, field.parent_field_id AS field, log.measurement_id FROM log, field, measurement WHERE field.field_id = log.field_id AND measurement.measurement_id = log.measurement_id AND measurement.measurement_type <> 2".$_SESSION['report_log_field_filter'].$_SESSION['report_log_date_filter'].$measurement_filter."ORDER BY date DESC, field LIMIT $from, $max_messages";
 $result = mysqli_query($dbh,$query);
 $n=0;
 while($row = mysqli_fetch_array($result,MYSQL_NUM)){
@@ -158,7 +193,7 @@ if($from>0){
 ?>
 </div><div class="w3-half" align="center">
 <?php 
-if(getTotalItemsReport($dbh,$_SESSION['report_log_field_filter'],$_SESSION['report_log_date_filter'],$_SESSION['report_log_measurement_filter'])>($from+$max_messages)){
+if(getTotalItemsReport($dbh,$_SESSION['report_log_field_filter'],$_SESSION['report_log_date_filter'],$measurement_filter)>($from+$max_messages)){
 	$next=$from+$max_messages;
 	echo('<a href="javascript:goTo('.$next.');">Next</a>');
 }

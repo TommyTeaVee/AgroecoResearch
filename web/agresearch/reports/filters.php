@@ -64,9 +64,9 @@ if(isset($_POST['apply'])){
 		$_SESSION['report_log_measurement_filter']=$_POST['measurement'];
 		$_SESSION['report_measurement_category_filter']=$_POST['measurement_category']+1;
 		if($filter_reminder==""){
-			$filter_reminder="Measurement";
+			$filter_reminder="Parameter";
 		} else {
-			$filter_reminder.=", Measurement";
+			$filter_reminder.=", Parameter";
 		}
 	} else {
 		unset($_SESSION['report_log_measurement_filter']);
@@ -449,10 +449,10 @@ if($field_aggregate!=""){
 </div>
 </p>
 <p>
-<input class="w3-check" type="checkbox" id="toggle_measurement" name="toggle_measurement" onclick="toggleMeasurement()" <?php echo(($_SESSION['report_log_measurement_filter']>0) ? 'checked' : ''); ?>><label class="w3-text-green">Measurement</label>
+<input class="w3-check" type="checkbox" id="toggle_measurement" name="toggle_measurement" onclick="toggleMeasurement()" <?php echo(($_SESSION['report_log_measurement_filter']>0 || $_SESSION['report_log_measurement_filter']==-1) ? 'checked' : ''); ?>><label class="w3-text-green">Measurement</label>
 <div class="w3-row-padding">
 <div class="w3-half">
-<select class="w3-select w3-text-green" name="measurement_category" id="measurement_category" onChange="updateMeasurementDropdown();" <?php echo(($_SESSION['report_log_measurement_filter']>0) ? '' : 'disabled'); ?>>
+<select class="w3-select w3-text-green" name="measurement_category" id="measurement_category" onChange="updateMeasurementDropdown();" <?php echo(($_SESSION['report_log_measurement_filter']>0 || $_SESSION['report_log_measurement_filter']==-1) ? '' : 'disabled'); ?>>
 <option value="" disabled selected>Choose category:</option>
 <?php
 $cats_array=explode(",",$cats_php);
@@ -464,7 +464,7 @@ for($i=0;$i<sizeof($cats_array);$i++){
 </select>
 </div>
 <div class="w3-half">
-<select class="w3-select w3-text-green" name="measurement" id="measurement" <?php echo(($_SESSION['report_log_measurement_filter']>0) ? '' : 'disabled'); ?>>
+<select class="w3-select w3-text-green" name="measurement" id="measurement" <?php echo(($_SESSION['report_log_measurement_filter']>0 || $_SESSION['report_log_measurement_filter']==-1) ? '' : 'disabled'); ?>>
 <option value="" disabled selected>Choose measurement:</option>
 <?php
 if(isset($_SESSION['report_log_measurement_filter'])){
