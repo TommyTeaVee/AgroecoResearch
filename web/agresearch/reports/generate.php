@@ -127,7 +127,12 @@ if(isset($_GET['selected'])){
 						}
 			
 						$samples=explode("*",$row[1]);
-						array_push($n_samples_row,sizeof($samples)/2);
+						if(sizeof($samples)==1){
+							array_push($n_samples_row,0);
+						} else {
+							array_push($n_samples_row,sizeof($samples)/2);
+						}
+					
 						$sample_sum=0;
 			
 						$std_dev_values=array();
