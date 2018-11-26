@@ -24,16 +24,19 @@ function showPopup(url,width,height) {
 	if (window.focus) {newwindow.focus()}
 	return false;
 }
+
+function goTo(url) {
+	document.location=url;
+}
 // -->
 </script>
 <body>
 <div class="w3-container w3-card-4">
 <h2 class="w3-green">Download data</h2>
-<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 <div align="center"><h4 class="w3-green">Data is downloaded as a CSV file. To open this file in Excel, please use 'comma' as separator and 'double quotes' as text delimiter.</h4></div><br>
 <p>
-<div align="center"><button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:40%; height:40px; max-width:500px;" id="monthly" name="monthly" onclick="return showPopup('monthly.php',800,700)">Monthly overview</button><br><br><button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:40%; height:40px; max-width:500px;" id="singlesample" name="singlesample" onclick="return showPopup('singlesample.php',800,700)">Plot-based measurements</button><br><br><button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:40%; height:40px; max-width:500px;" id="multisample" name="multisample" onclick="return showPopup('multisample.php',800,700)">Plant-based measurements</button><br><br><button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:40%; height:40px; max-width:500px;" id="menu" name="menu">Menu</button></div><br>
-</form><br>
+<div align="center"><button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:40%; height:40px; max-width:500px;" id="monthly" name="monthly" onclick="return showPopup('monthly.php',800,700)">Monthly overview</button><br><br><button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:40%; height:40px; max-width:500px;" id="singlesample" name="singlesample" onclick="goTo('measurement_report.php')">Parameter reports</button><br><br><button class="w3-button w3-green w3-round w3-border w3-border-green" style="width:40%; height:40px; max-width:500px;" id="menu" name="menu" onclick="goTo('./../menu.php')">Menu</button></div><br>
+<br>
 </div>
 </body>
 </html>

@@ -15,11 +15,13 @@ $color_code_app=array("0","1","2","3","4","5","6","7","8","9","10");
 $log_row_color="w3-khaki";
 $input_log_row_color="w3-yellow";
 
-$email="agroeco@sautiyawakulima.net";
-$password="NdQtCPZqk3vNfLzk";
+$email="agroecojun2018@sautiyawakulima.net";
+$password="9X8CwaZsHzmZWMSuxL";
 $smtp_server="smtp.sautiyawakulima.net";
 $smtp_server_port="578";
 $mail_server="{134.0.12.74:110/pop3/notls}";
 
 $max_log_items_per_page=15;
+
+$comment_categories=array("Climatic event","Other events","Fall army worm","Other pests");
 ?>

@@ -111,7 +111,7 @@ function confirmDelete(){
 		}
 	}
 	if(log_values.length>0 || input_log_values.length>0){
-		if(window.confirm("Delete selcted items?")){
+		if(window.confirm("Delete selected items?")){
 			document.location = "log.php?delete_log=" + log_values.join(',') + "&delete_input_log=" + input_log_values.join(',');
 		}
 	} else {
