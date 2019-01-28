@@ -271,7 +271,7 @@ function getChildFields($dbh,$field_id){
 
 function getAllReplications($field_id,$dbh){
 	$ret=array();
-	$query="SELECT field_id FROM field WHERE parent_field_id=$field_id";
+	$query="SELECT field_id FROM field WHERE parent_field_id=$field_id AND field_is_active";
 	$result = mysqli_query($dbh,$query);
 	while($row = mysqli_fetch_array($result,MYSQL_NUM)){
 		array_push($ret,$row[0]);
@@ -352,6 +352,45 @@ function recalculateConfig($config){
 	}
 	$elements[0]='F=('.$n.','.$intercropping.','.$soil_management.','.$pest_control.')';
 	$ret=implode(";",$elements);
+	return $ret;
+}
+
+function updateFieldConfiguration($dbh,$field_id,$config){
+	$ret="";
+	$yy=date('Y');
+	$mm=date('m');
+	$dd=date('d');
+	$current_date=$yy."-".$mm."-".$dd;
+	$query="SELECT user_id, field_name, field_replication_number, field_lat, field_lng FROM field WHERE field_id = $field_id";
+	$result = mysqli_query($dbh,$query);
+	if($row = mysqli_fetch_array($result,MYSQL_NUM)){
+		$user_id=$row[0];
+		$field_name=$row[1];
+		$field_replication_number=$row[2];
+		$field_lat=$row[3];
+		$field_lng=$row[4];
+		if($field_replication_number==1){
+			$query="INSERT INTO field (user_id, field_date_created, field_name, field_replication_number, field_lat, field_lng, field_configuration) VALUES ($user_id, '".$current_date."', '".$field_name."', 1, '".$field_lat."', '".$field_lng."', '".$config."')";
+			$result = mysqli_query($dbh,$query);
+			$new_field_id=mysqli_insert_id($dbh);
+			$query="UPDATE field SET parent_field_id = $new_field_id WHERE field_id=$new_field_id";
+			$result = mysqli_query($dbh,$query);
+		} else {
+			$query="SELECT field_id FROM field WHERE field_name='".$field_name."' AND field_replication_number=1 AND field_is_active=1 AND field_date_created >= '".$current_date."'";
+			$result = mysqli_query($dbh,$query);
+			if($row = mysqli_fetch_array($result,MYSQL_NUM)){
+				$parent_field_id=$row[0];
+				$query="INSERT INTO field (user_id, parent_field_id, field_date_created, field_name, field_replication_number, field_lat, field_lng, field_configuration) VALUES ($user_id, $parent_field_id, '".$current_date."', '".$field_name."', $field_replication_number, '".$field_lat."', '".$field_lng."', '".$config."')";
+				$result = mysqli_query($dbh,$query);
+			} else {
+				$ret="You must first update ".$field_name." replication 1";
+			}
+		}
+		if($ret==""){
+			$query="UPDATE field SET field_date_final = '".$current_date."', field_is_active = 0 WHERE field_id = $field_id";
+			$result = mysqli_query($dbh,$query);
+		}
+	}
 	return $ret;
 }
 
@@ -744,13 +783,35 @@ function getTotalItems($dbh,$log_field_filter,$input_log_field_filter,$log_date_
 
 function getFields($dbh){
 	$ret=array();
-	$query="SELECT field_id, field_name, field_replication_number FROM field ORDER BY field_name, field_replication_number";
+	$query="SELECT field_id, field_name, field_replication_number FROM field WHERE field_is_active=1 ORDER BY field_name, field_replication_number";
 	$result = mysqli_query($dbh,$query);
 	$i=0;
 	while($row = mysqli_fetch_array($result,MYSQL_NUM)){
 		$ret[$i]=$row;
 		$i++;
 	}
+	return $ret;
+}
+
+function getFieldsAllVersions($dbh){
+	$ret=array();
+	$query="SELECT field_id, field_name, field_replication_number FROM field ORDER BY field_name, field_replication_number";
+	$result = mysqli_query($dbh,$query);
+	$i=0;
+	$prev_field="";
+	while($row = mysqli_fetch_array($result,MYSQL_NUM)){
+		$current_field=$row[1]."; R".$row[2];
+		if($current_field!=$prev_field){
+			if($prev_field!=""){
+				array_push($ret,$field_row);
+			}
+			$field_row=$current_field.";".$row[0];
+			$prev_field=$current_field;
+		} else {
+			$field_row.=",".$row[0];
+		}
+	}
+	array_push($ret,$field_row);
 	return $ret;
 }
 
@@ -1116,7 +1177,13 @@ function getStartEndDatesFromWeatherDataFile($file){
 			$last_date=$data[0];
 		}
 		$date2=$last_date;
-		$ret=$date1.",".$date2;
+		$d1 = DateTime::createFromFormat('m/d/y', $date1);
+		$d1 = $d1 && $d1->format('m/d/y') === $date1;
+		$d2 = DateTime::createFromFormat('m/d/y', $date2);
+		$d2 = $d2 && $d2->format('m/d/y') === $date2;
+		if($d1 && $d2){
+			$ret=$date1.",".$date2;
+		}
 		fclose($f);
 	}
     return $ret;

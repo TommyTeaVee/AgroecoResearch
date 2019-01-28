@@ -251,8 +251,8 @@ if(isset($_POST['add'])){
 <div class="w3-container w3-card-4">
 <h2 class="w3-green">Add activity</h2>
 <form method="post" enctype="multipart/form-data" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" onsubmit="return validateForm()">
-<input name="id" type="hidden" id="id" value="<? echo($id); ?>">
-<input name="field" type="hidden" id="field" value="<? echo($field); ?>">
+<input name="id" type="hidden" id="id" value="<?php echo($id); ?>">
+<input name="field" type="hidden" id="field" value="<?php echo($field); ?>">
 <input name="plots" type="hidden" id="plots" value="">
 <input name="plot_labels" type="hidden" id="plot_labels" value="">
 <p><div class="w3-text-green">

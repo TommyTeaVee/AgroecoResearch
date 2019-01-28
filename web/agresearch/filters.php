@@ -406,25 +406,27 @@ for($i=0;$i<sizeof($users);$i++){
 <input class="w3-check" type="checkbox" id="toggle_field" name="toggle_field" onclick="toggleField()" <?php echo(($_SESSION['field']>0) ? 'checked' : ''); ?>><label class="w3-text-green">Field</label>
 <select class="w3-select w3-text-green" name="field" id="field" <?php echo(($_SESSION['field']>0) ? '' : 'disabled'); ?>>
 <?php
-$fields=getFields($dbh);
+$fields=getFieldsAllVersions($dbh);
 $field_aggregate="";
 $prev_field="";
 for($i=0;$i<sizeof($fields);$i++){
-	$field=$fields[$i];
-	if(($field[1]!=$prev_field) && $prev_field!=""){
+	$field_row=$fields[$i];
+	$field_parts=explode(";",$field_row);
+	$field_name=$field_parts[0];
+	if(($field_name!=$prev_field) && $prev_field!=""){
 		$selected = ($field_aggregate==$_SESSION['field']) ? 'selected' : '';
 		echo('<option value="'.$field_aggregate.'"'.$selected.'>'.$prev_field.' (ALL)</option>');
-		$prev_field=$field[1];
+		$prev_field=$field_name;
 		$field_aggregate="";
 	}
-	$prev_field=$field[1];
+	$prev_field=$field_name;
 	if($field_aggregate==""){
-		$field_aggregate=$field[0];
+		$field_aggregate=$field_parts[2];
 	} else {
-		$field_aggregate.=",".$field[0];
+		$field_aggregate.=",".$field_parts[2];
 	}
-	$selected = ($field[0]==$_SESSION['field']) ? 'selected' : '';
-	echo('<option value="'.$field[0].'"'.$selected.'>'.$field[1].' R'.$field[2].'</option>');
+	$selected = ($field_parts[2]==$_SESSION['field']) ? 'selected' : '';
+	echo('<option value="'.$field_parts[2].'"'.$selected.'>'.$field_name.$field_parts[1].'</option>');
 }
 if($field_aggregate!=""){
 	$selected = ($field_aggregate==$_SESSION['field']) ? 'selected' : '';

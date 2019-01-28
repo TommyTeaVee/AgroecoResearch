@@ -6,26 +6,38 @@ include_once "./../includes/functions.php";
 $dbh = initDB();
 
 session_start();
+$proceed=true;
+$update_error="";
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
 	$field_id=$_POST['id'];
+	$fname=$_POST['fname'];
 	$config=$_POST['fieldConfig'];
 	$config=recalculateConfig($config);
-	if(isset($_POST['update'])){
+	if(isset($_POST['edit'])){
 		$query="UPDATE field SET field_configuration='$config' WHERE field_id=$field_id";
 		$result = mysqli_query($dbh,$query);
 		header("Location: fields.php");
-	} else if(isset($_POST['update_copy'])){
-		$parent_field_id=getParentField($field_id,$dbh);
-		$query="UPDATE field SET field_configuration='$config' WHERE parent_field_id=$parent_field_id";
-		$result = mysqli_query($dbh,$query);
-		header("Location: fields.php");
+		$proceed=false;
+	} else if(isset($_POST['update'])){
+		$update_error=updateFieldConfiguration($dbh,$field_id,$config);
+		if($update_error==""){
+			header("Location: fields.php");
+			$proceed=false;
+		}
 	} else if(isset($_POST['cancel'])){
 		header("Location: fields.php");
+		$proceed=false;
+	} 
+} 
+
+if(isset($_SESSION['admin']) && $_SESSION['admin']==true && $proceed) {
+	if(isset($_GET['id'])) {
+		$field_id=$_GET['id'];
 	}
-} else if(isset($_SESSION['admin']) && $_SESSION['admin']==true) {
-	$field_id=$_GET['id'];
-	$fname=$_GET['fname'];
+	if(isset($_GET['fname'])){
+		$fname=$_GET['fname'];
+	}
 	$config=getFieldConfiguration($field_id,$dbh);
 	$config_parts=explode(";",$config);
 	$general=parseConfig($config_parts[0]);
@@ -96,8 +108,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
 <div class="w3-container w3-card-4">
 <h2 class="w3-green">Configure plots: <?php echo($fname); ?></h2><br>
+<?php
+if($update_error!=""){
+	echo('<span class="w3-text-red">'.$update_error.'</span><br>');
+}
+?>
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" id="config">
 <input name="id" id="id" type="hidden" value="<?php  echo($field_id); ?>">
+<input name="fname" id="fname" type="hidden" value="<?php  echo($fname); ?>">
 <input name="fieldConfig" id="fieldConfig" type="hidden" value="<?php  echo($config); ?>">
 <p><div class="w3-row-padding"><div class="w3-half w3-text-green">
 <table>
@@ -293,7 +311,7 @@ for($i=0;$i<sizeof($used_colors);$i++){
 		}
 	}
 </script>
-</p><button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="update" name="update">Update configuration</button> <button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="update_copy" name="update_copy">Update configuration and copy to replications</button> <button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="cancel" name="cancel">Cancel</button><br><br>
+</p><button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="edit" name="edit">Edit configuration</button> <button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="update" name="update">Update configuration (as new field)</button> <button class="w3-button w3-padding-large w3-green w3-round w3-border w3-border-green" id="cancel" name="cancel">Cancel</button><br><br>
 </div></form>
 </body>
 </html>

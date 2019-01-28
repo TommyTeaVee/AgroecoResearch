@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net
 --
 -- Servidor: 192.168.86.197
--- Tiempo de generación: 26-11-2018 a las 10:09:13
+-- Tiempo de generación: 28-01-2019 a las 09:48:43
 -- Versión del servidor: 5.5.57-0+deb7u1-log
 -- Versión de PHP: 5.3.29-1~dotdeb.0
 
@@ -73,25 +73,14 @@ CREATE TABLE IF NOT EXISTS `field` (
   `parent_field_id` int(10) unsigned NOT NULL,
   `user_id` int(10) unsigned NOT NULL,
   `field_date_created` date NOT NULL,
+  `field_date_final` date DEFAULT NULL,
   `field_name` varchar(30) NOT NULL,
   `field_replication_number` int(10) unsigned NOT NULL,
   `field_lat` varchar(30) NOT NULL,
   `field_lng` varchar(30) NOT NULL,
-  `field_configuration` text NOT NULL
+  `field_configuration` text NOT NULL,
+  `field_is_active` tinyint(4) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Fields registered in the ag. research';
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `field_history`
---
-
-CREATE TABLE IF NOT EXISTS `field_history` (
-  `field_history_id` int(10) unsigned NOT NULL,
-  `user_id` int(10) unsigned NOT NULL,
-  `valid_until` date NOT NULL,
-  `field_configuration` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -322,12 +311,6 @@ ALTER TABLE `field`
   ADD PRIMARY KEY (`field_id`);
 
 --
--- Indices de la tabla `field_history`
---
-ALTER TABLE `field_history`
-  ADD PRIMARY KEY (`field_history_id`);
-
---
 -- Indices de la tabla `general_observation`
 --
 ALTER TABLE `general_observation`
@@ -423,11 +406,6 @@ ALTER TABLE `crop`
 --
 ALTER TABLE `field`
   MODIFY `field_id` int(10) unsigned NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT de la tabla `field_history`
---
-ALTER TABLE `field_history`
-  MODIFY `field_history_id` int(10) unsigned NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT de la tabla `general_observation`
 --

@@ -199,8 +199,8 @@ if(isset($_POST['edit'])){
 <div class="w3-container w3-card-4">
 <h2 class="w3-green">Edit item</h2>
 <form method="post" enctype="multipart/form-data" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" onsubmit="return validateForm(<?php echo($row[6].",".$row[14]); ?>)">
-<input name="id" type="hidden" id="id" value="<? echo($id); ?>">
-<input name="type" type="hidden" id="type" value="<? echo($row[6]); ?>">
+<input name="id" type="hidden" id="id" value="<?php echo($id); ?>">
+<input name="type" type="hidden" id="type" value="<?php echo($row[6]); ?>">
 <input name="plots" type="hidden" id="plots" value="<?php echo($row[4]); ?>">
 <input name="plot_labels" type="hidden" id="plot_labels" value="<?php echo($plot_labels); ?>">
 <p><div class="w3-text-green">

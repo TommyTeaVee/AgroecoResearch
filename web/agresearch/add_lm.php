@@ -250,11 +250,11 @@ if(isset($_POST['add'])){
 <div class="w3-container w3-card-4">
 <h2 class="w3-green">Add measurement</h2>
 <form method="post" enctype="multipart/form-data" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" onsubmit="return validateForm(<?php echo($measurement_type.",".$measurement_has_samples); ?>)">
-<input name="id" type="hidden" id="id" value="<? echo($id); ?>">
-<input name="type" type="hidden" id="type" value="<? echo($measurement_type); ?>">
-<input name="has_samples" type="hidden" id="has_samples" value="<? echo($measurement_has_samples); ?>">
+<input name="id" type="hidden" id="id" value="<?php echo($id); ?>">
+<input name="type" type="hidden" id="type" value="<?php echo($measurement_type); ?>">
+<input name="has_samples" type="hidden" id="has_samples" value="<?php echo($measurement_has_samples); ?>">
 <input name="units_original" type="hidden" id="units_original" value="<?php echo($measurement_units); ?>">
-<input name="field" type="hidden" id="field" value="<? echo($field); ?>">
+<input name="field" type="hidden" id="field" value="<?php echo($field); ?>">
 <input name="plots" type="hidden" id="plots" value="">
 <input name="plot_labels" type="hidden" id="plot_labels" value="">
 <p><div class="w3-text-green">
