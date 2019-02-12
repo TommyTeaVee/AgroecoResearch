@@ -127,7 +127,7 @@ function confirmDelete(){
 <h2 class="w3-green">View / add / edit data</h2><br>
 <?php
 if($_SESSION['filter_reminder']!=""){
-	echo("Filtered by: ".$_SESSION['filter_reminder']."<br>");
+	echo('Filtered by: '.$_SESSION['filter_reminder'].' || <a href="remove_filters.php">Remove filters</a><br>');
 }
 ?>
 <p><table class="w3-table w3-border w3-bordered w3-striped w3-hoverable w3-mobile">
@@ -164,7 +164,7 @@ while($row = mysqli_fetch_array($result,MYSQL_NUM)){
 	echo('</td>');
 	echo('<td>'.$row[0].'</td>');
 	echo('<td>'.$row[2].'</td>');
-	$plot_labels = calculatePlotLabels($dbh,$row[8],$row[5]);
+	$plot_labels = calculatePlotLabelsLogScreen($dbh,$row[8],$row[5]);
 	echo('<td>'.$row[3].' R'.$row[4].': '.$plot_labels.'</td>');
 	echo('<td>'.$row[6].'</td>');
 	if($row[0]=="Input"){
@@ -190,16 +190,18 @@ if($n==0){ echo("No results"); }
 <?php
 if($from>0){
 	$prev=$from-$max_messages;
-	echo('<a href="log.php?from='.$prev.'">Previous</a>');
+	echo('<a href="log.php?from=0">First</a> || <a href="log.php?from='.$prev.'">Previous</a>');
 } else {
 	echo('&nbsp;');
 }
 ?>
 </div><div class="w3-half" align="center">
 <?php 
-if(getTotalItems($dbh,$_SESSION['log_field_filter'],$_SESSION['input_log_field_filter'],$_SESSION['log_date_filter'],$_SESSION['input_log_date_filter'],$_SESSION['log_activity_filter'],$_SESSION['log_measurement_filter'],"","",$_SESSION['log_user_filter'],$_SESSION['input_log_user_filter'])>($from+$max_messages)){
+$total_items=getTotalItems($dbh,$_SESSION['log_field_filter'],$_SESSION['input_log_field_filter'],$_SESSION['log_date_filter'],$_SESSION['input_log_date_filter'],$_SESSION['log_activity_filter'],$_SESSION['log_measurement_filter'],"","",$_SESSION['log_user_filter'],$_SESSION['input_log_user_filter']);
+if($total_items>($from+$max_messages)){
 	$next=$from+$max_messages;
-	echo('<a href="log.php?from='.$next.'">Next</a>');
+	$last=floor($total_items/$max_messages)*$max_messages;
+	echo('<a href="log.php?from='.$next.'">Next</a> || <a href="log.php?from='.$last.'">Last</a>');
 }
 ?></div></div>
 <br>

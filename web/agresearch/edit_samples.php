@@ -69,6 +69,29 @@ function insertRow(type){
     table.appendChild(new_row);
 }
 
+function insert10Rows(type){
+	var table=document.getElementById('sample_table');
+	
+	for(var i=0;i<10;i++){
+		var new_row=table.rows[1].cloneNode(true);
+		var len=table.rows.length;
+       
+		var inp1=new_row.cells[0].getElementsByTagName('input')[0];
+		inp1.id += len;
+		inp1.value = len;
+		if(type==0){
+			var inp2 = new_row.cells[1].getElementsByTagName('select')[0];
+			inp2.setAttribute("onchange","checkOther(this,'')");
+			inp2.value='<?php echo($categories_list[0]); ?>';
+		} else {
+			var inp2 = new_row.cells[1].getElementsByTagName('input')[0];
+			inp2.value = '';
+		}
+		inp2.id += len;
+		table.appendChild(new_row);
+	}
+}
+
 function deleteRow(row){
 	var table = document.getElementById('sample_table');
     var rowCount = table.rows.length;
@@ -222,7 +245,7 @@ if($type=="0"){
 </table>
 </div>
 </div>
-<button class="w3-button w3-green w3-round w3-border w3-border-green w3-large w3-round-large" id="add_sample" name="add_sample" onclick="insertRow(<?php echo($type); ?>)">Add sample</button><br><br>
+<button class="w3-button w3-green w3-round w3-border w3-border-green w3-large w3-round-large" id="add_sample" name="add_sample" onclick="insertRow(<?php echo($type); ?>)">Add sample</button> <button class="w3-button w3-green w3-round w3-border w3-border-green w3-large w3-round-large" id="add_10samples" name="add_10samples" onclick="insert10Rows(<?php echo($type); ?>)">Add 10 samples</button><br><br>
 <button class="w3-button w3-green w3-round w3-border w3-border-green w3-large w3-round-large" id="edit" name="edit" onclick="saveSamples(<?php echo($id); ?>)"><?php if($id>=0) { echo("Edit"); } else { echo("Save"); } ?></button> <button class="w3-button w3-green w3-round w3-border w3-border-green w3-large w3-round-large" onclick="javascript:window.close();">Close</button><br><br>
 </div>
 </body>

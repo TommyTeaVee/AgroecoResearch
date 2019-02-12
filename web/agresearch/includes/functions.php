@@ -434,6 +434,50 @@ function calculatePlotLabels($dbh,$field_id,$plotsCSV){
 	return $ret;
 }
 
+function calculatePlotLabelsLogScreen($dbh,$field_id,$plotsCSV){
+	$ret="";
+	
+	$query="SELECT field_configuration FROM field WHERE field_id=$field_id";
+	$result = mysqli_query($dbh,$query);
+	if($row = mysqli_fetch_array($result,MYSQL_NUM)){
+		$field_configuration=$row[0];
+		$elements=explode(";",$field_configuration);
+		$plots=explode(",",$plotsCSV);
+		
+		if(sizeof($plots)==(sizeof($elements)-3)){
+			$ret="All plots";
+		} else {
+		
+			for($i=0;$i<sizeof($plots);$i++){
+				$plot=$elements[$plots[$i]+2];
+				$plot_parts=parseConfig($plot);
+				$plot_string=getCropSymbolFromId($dbh,$plot_parts[0]);
+				$plot_treatments="";
+				if($plot_parts[3]!=0){
+					$plot_treatments="P";
+				}
+				if($plot_parts[2]!=0){
+					$plot_treatments.="S";
+				}
+				if($plot_parts[1]!=0){
+					$plot_treatments.="L";
+				}
+				if($plot_treatments!=""){
+					$plot_string=$plot_string."-".$plot_treatments;
+				}
+		
+				if($ret==""){
+					$ret=$plot_string;
+				} else {
+					$ret.=", ".$plot_string;
+				}
+			}
+		}
+	}
+	
+	return $ret;
+}
+
 function calculatePlotLabelsWithoutCrop($dbh,$field_id,$plotsCSV){
 	$ret="";
 	
