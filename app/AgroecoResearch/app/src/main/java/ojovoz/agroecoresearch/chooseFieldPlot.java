@@ -98,6 +98,7 @@ public class chooseFieldPlot extends AppCompatActivity {
 
         agroHelper = new agroecoHelper(this,"crops,fields,treatments,activities,measurements");
         fields = agroHelper.fields;
+        fieldId = (agroHelper.fieldIdExists(fieldId)) ? fieldId : -1;
 
         if(getIntent().getExtras().getBoolean("newCropInput")){
             /*

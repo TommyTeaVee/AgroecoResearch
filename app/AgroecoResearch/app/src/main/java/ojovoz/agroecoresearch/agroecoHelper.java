@@ -716,6 +716,19 @@ public class agroecoHelper {
         return ret;
     }
 
+    public boolean fieldIdExists(int fieldId){
+        boolean ret=false;
+        Iterator<oField> iterator = fields.iterator();
+        while(iterator.hasNext()){
+            oField f = iterator.next();
+            if(f.fieldId==fieldId){
+                ret=true;
+                break;
+            }
+        }
+        return ret;
+    }
+
     public ArrayList<oActivity> getActivities(oPlot plot, oField field){
         ArrayList<oActivity> ret = new ArrayList<>();
         if(plot!=null) {
