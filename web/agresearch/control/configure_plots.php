@@ -317,6 +317,8 @@ for($i=0;$i<sizeof($used_colors);$i++){
 </html>
 <?php
 } else {
-        header("Location: index.php");
+	if($proceed){
+		header("Location: index.php");
+	}
 }
 ?>
